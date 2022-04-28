@@ -24,7 +24,7 @@ class average(sympy.Function):
 			return simplify(arg, **kwargs)
 		
 		if arg.func == sympy.core.add.Add:
-			return sympy.core.add.Add(*[average(i,wrt).simplify() for i in arg.args])
+			return simplify( sympy.core.add.Add(*[average(i,wrt) for i in arg.args]), **kwargs)
 		elif arg.func == sympy.core.mul.Mul:
 			inside = []
 			outside = []
