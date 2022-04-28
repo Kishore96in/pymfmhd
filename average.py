@@ -3,6 +3,7 @@ import sympy
 class average(sympy.Function):
 	"""
 	Represents a Reynolds average. First argument is the expression averaged, second argument is the set of symbols over which the average is done.
+	TODO: Actually, the need to specify 'wrt' makes this unable to represent an ensemble average, I think! Problem? Or does that just mean we need to add a dummy 'realization label' to each stochastic field?
 	"""
 	nargs=2
 	
@@ -18,7 +19,11 @@ class average(sympy.Function):
 	
 	def _eval_simplify(self, **kwargs):
 		from sympy.simplify.simplify import simplify
-		#TODO: Implement all Reynolds rules.
+		"""
+		TODO: Implement all Reynolds rules. Need to implement
+		* some way to 'mark' a field as a fluctuation, such that all averages of it become zero.
+		* implement commutation with derivatives and integrals over independent variables.
+		"""
 		#TODO: Support a 'deep' argument like powsimp does.
 		arg = self.args[0]
 		wrt = self.args[1]
