@@ -17,6 +17,7 @@ class average(sympy.Function):
 	def _eval_simplify(self, **kwargs):
 		from sympy.simplify.simplify import simplify
 		#TODO: Implement all Reynolds rules.
+		#TODO: Support a 'deep' argument like powsimp does.
 		arg = self.args[0]
 		wrt = self.args[1]
 		if len(wrt) == 0:
