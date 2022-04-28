@@ -12,7 +12,7 @@ class average(sympy.Function):
 	
 	@property
 	def free_symbols(self):
-		wrt = self.args[1]
+		wrt = set(self.args[1]) #Make sure this is a set. For some reason, sympy seems to instantiate it as a finiteset. Not sure if that is a sympy bug.
 		sym = self.args[0].free_symbols
 		return {s for s in sym if s not in wrt}
 	
