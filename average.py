@@ -53,4 +53,6 @@ class average(sympy.Function):
 				return simplify(arg, **kwargs)
 			elif new_wrt != wrt:
 				return average(simplify(arg, **kwargs), new_wrt)
+			else:
+				return self
 
