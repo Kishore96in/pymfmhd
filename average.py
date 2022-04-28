@@ -15,7 +15,7 @@ class average(sympy.Function):
 		return {s for s in sym if s not in wrt}
 	
 	def _eval_simplify(self, **kwargs):
-		#TODO: Think about whether simplify should be called while returning. Probably makes sense to.
+		from sympy.simplify.simplify import simplify
 		#TODO: Implement all Reynolds rules.
 		arg = self.args[0]
 		wrt = self.args[1]
@@ -33,11 +33,12 @@ class average(sympy.Function):
 					inside.append(a)
 				#TODO: Do I need to worry about the case of bound symbols? check for that is any([ s in  a.atoms(sympy.Symbol) for s in wrt ])
 				else:
-					outside.append(a.simplify())
+					outside.append(a)
+			outmulsimp = simplify(sympy.core.mul.Mul(*outside), **kwargs)
 			if len(inside) > 0:
-				return sympy.core.mul.Mul(*outside, average(sympy.core.mul.Mul(*inside).simplify(), wrt) )
+				return sympy.core.mul.Mul(outmulsimp, average(simplify(sympy.core.mul.Mul(*inside), **kwargs), wrt) )
 			else:
-				return sympy.core.mul.Mul(*outside)
+				return outmulsimp
 		elif arg.func == average:
 			new_wrt = wrt.union(arg.args[1])
 			return average(arg.args[0].simplify(), new_wrt)
