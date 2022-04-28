@@ -4,7 +4,6 @@ class average(sympy.Function):
 	"""
 	Represents a Reynolds average. First argument is the expression averaged, second argument is the set of symbols over which the average is done.
 	"""
-	#TODO: Somehow make average(a, set()) = a (i.e. remove average if wrt is empty. Should I do that even when not simplifying?
 	def _latex(self, printer=None):
 		args = "\,".join([ printer.doprint(i) for i in self.args])
 		return r"\left<{%s}\right>" % (args)
@@ -21,6 +20,7 @@ class average(sympy.Function):
 		arg = self.args[0]
 		wrt = self.args[1]
 		if len(wrt) == 0:
+			#TODO: Should I make sure this happens even when not simplifying?
 			return simplify(arg, **kwargs)
 		
 		if arg.func == sympy.core.add.Add:
