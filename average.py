@@ -48,6 +48,8 @@ class average(sympy.Function):
 			for s in wrt:
 				if s in arg.free_symbols:
 					new_wrt.add(s)
-			if new_wrt != wrt:
-				return average(arg.simplify(), new_wrt)
+			if len(new_wrt) == 0:
+				return simplify(arg, **kwargs)
+			elif new_wrt != wrt:
+				return average(simplify(arg, **kwargs), new_wrt)
 
