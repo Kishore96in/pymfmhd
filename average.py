@@ -20,6 +20,9 @@ class average(sympy.Function):
 		#TODO: Implement all Reynolds rules.
 		arg = self.args[0]
 		wrt = self.args[1]
+		if len(wrt) == 0:
+			return simplify(arg, **kwargs)
+		
 		if arg.func == sympy.core.add.Add:
 			return sympy.core.add.Add(*[average(i,wrt).simplify() for i in arg.args])
 		elif arg.func == sympy.core.mul.Mul:
