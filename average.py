@@ -21,6 +21,7 @@ class average(sympy.Function):
 		wrt = self.args[1]
 		if len(wrt) == 0:
 			#TODO: Should I make sure this happens even when not simplifying?
+			#TODO: I think this case will now be handled by the else clause in the next block.
 			return simplify(arg, **kwargs)
 		
 		if arg.func == sympy.core.add.Add:
