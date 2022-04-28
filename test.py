@@ -31,7 +31,10 @@ class average(sympy.Function):
 				#TODO: Do I need to worry about the case of bound symbols? check for that is any([ s in  a.atoms(sympy.Symbol) for s in wrt ])
 				else:
 					outside.append(a.simplify())
-			return sympy.core.mul.Mul(*outside, average(sympy.core.mul.Mul(*inside).simplify(), wrt) )
+			if len(inside) > 0:
+				return sympy.core.mul.Mul(*outside, average(sympy.core.mul.Mul(*inside).simplify(), wrt) )
+			else:
+				return sympy.core.mul.Mul(*outside)
 		elif arg.func == average:
 			new_wrt = wrt.union(arg.args[1])
 			return average(arg.args[0].simplify(), new_wrt)
