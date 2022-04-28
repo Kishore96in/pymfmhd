@@ -4,6 +4,8 @@ class average(sympy.Function):
 	"""
 	Represents a Reynolds average. First argument is the expression averaged, second argument is the set of symbols over which the average is done.
 	"""
+	nargs=2
+	
 	def _latex(self, printer=None):
 		args = "\,".join([ printer.doprint(i) for i in self.args])
 		return r"\left<{%s}\right>" % (args)
