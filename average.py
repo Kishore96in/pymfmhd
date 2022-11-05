@@ -21,7 +21,7 @@ class average(sympy.Function):
 		from sympy.simplify.simplify import simplify
 		"""
 		TODO: Implement all Reynolds rules. Need to implement
-		* some way to 'mark' a field as a fluctuation, such that all averages of it become zero.
+		* some way to 'mark' a field as a fluctuation, such that all averages of it become zero. VEST basically assumes there is only a single spatial variable, and needs one to explicitly mark objects as constants at instantiation.
 		* implement commutation with derivatives and integrals over independent variables.
 		"""
 		#TODO: Support a 'deep' argument like powsimp does.
