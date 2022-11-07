@@ -47,7 +47,7 @@ def do_epsilon_delta(Expr, eps, delta):
 						break #We have found the epsilon that is contracted with this e1
 		
 		newargs = other + epsilons
-		return sympy.core.mul.Mul(*newargs)
+		return Expr.func(*newargs)
 	elif Expr.func == sympy.core.add.Add or sympy.core.mul.Mul or sympy.tensor.tensor.TensAdd:
 		return Expr.func(*[do_epsilon_delta(i) for i in Expr.args])
 	else:
