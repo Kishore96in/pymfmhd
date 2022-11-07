@@ -84,29 +84,28 @@ def do_epsilon_delta(Expr, eps, delta):
 					other.append(arg)
 			
 			for i1, e1 in enumerate(epsilons):
-				if e1 != 1: #1 is the placeholder we use to denote eliminated epsilons
-					inds1 = e1.get_indices()
-					for i2, e2 in enumerate(epsilons[i1+1:], start=i1+1):
-						if e2 != 1: #1 is the placeholder we use to denote eliminated epsilons
-							inds2 = e2.get_indices()
-							common_inds = [ind for ind in inds1 if -ind in inds2] #Get indices which are in both the epsilons
-							if len(common_inds) > 0:
-								to_elim = common_inds[0]
-								other_indices = (
-									[ind for ind in inds1 if ind != to_elim],
-									[ind for ind in inds2 if ind != -to_elim]
-									)
-								
-								prefactor = sympy.tensor.tensor.TensMul(e1, e2).canon_bp().coeff #Account for the ordering of indices. Should be +1 or -1
-								
-								#Make the epsilon-delta replacement. e1 will never be looped over after this, so we can just replace it by the required combination of deltas.
-								epsilons[i2] = 1
-								epsilons[i1] = prefactor * (
-									delta(other_indices[0][0], other_indices[1][0]) * delta(other_indices[0][1], other_indices[1][1])
-									- delta(other_indices[0][0], other_indices[1][1]) * delta(other_indices[0][1], other_indices[1][0])
-									)
-								
-								break #We have found the epsilon that is contracted with this e1
+				for i2, e2 in enumerate(epsilons[i1+1:], start=i1+1):
+					if e1 != 1 and e2 != 1: #1 is the placeholder we use to denote eliminated epsilons
+						inds1 = e1.get_indices()
+						inds2 = e2.get_indices()
+						common_inds = [ind for ind in inds1 if -ind in inds2] #Get indices which are in both the epsilons
+						if len(common_inds) > 0:
+							to_elim = common_inds[0]
+							other_indices = (
+								[ind for ind in inds1 if ind != to_elim],
+								[ind for ind in inds2 if ind != -to_elim]
+								)
+							
+							prefactor = sympy.tensor.tensor.TensMul(e1, e2).canon_bp().coeff #Account for the ordering of indices. Should be +1 or -1
+							
+							#Make the epsilon-delta replacement. e1 will never be looped over after this, so we can just replace it by the required combination of deltas.
+							epsilons[i2] = 1
+							epsilons[i1] = prefactor * (
+								delta(other_indices[0][0], other_indices[1][0]) * delta(other_indices[0][1], other_indices[1][1])
+								- delta(other_indices[0][0], other_indices[1][1]) * delta(other_indices[0][1], other_indices[1][0])
+								)
+							
+							break #We have found the epsilon that is contracted with this e1
 			
 			newargs = other + epsilons
 			return sympy.core.mul.Mul(*newargs)
