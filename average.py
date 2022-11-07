@@ -92,7 +92,10 @@ def do_epsilon_delta(Expr, eps, delta):
 							common_inds = [ind for ind in inds1 if -ind in inds2] #Get indices which are in both the epsilons
 							if len(common_inds) > 0:
 								to_elim = common_inds[0]
-								other_indices = ([ind for ind in inds1 if ind != to_elim],[ind for ind in inds2 if ind != -to_elim])
+								other_indices = (
+									[ind for ind in inds1 if ind != to_elim],
+									[ind for ind in inds2 if ind != -to_elim]
+									)
 								
 								prefactor = sympy.tensor.tensor.TensMul(e1, e2).canon_bp().coeff #Account for the ordering of indices. Should be +1 or -1
 								
