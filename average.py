@@ -62,6 +62,17 @@ class average(sympy.Function):
 
 
 def do_epsilon_delta(Expr, eps, delta):
+	"""
+	Performs the replacement corresponding to the epsilon-delta identity.
+	
+	Arguments:
+		Expr: any sympy expression (e.g. TensAdd, Add, Mul, TensMul)
+		eps: .epsilon method of a sympy.tensor.tensor.TensorIndexType instance
+		delta: .delta method of a sympy.tensor.tensor.TensorIndexType instance
+	
+	Returns:
+		a sympy expression with epsilon-delta replacements performed.
+	"""
 	if Expr.func == sympy.tensor.tensor.TensMul:
 			epsilons = []
 			other = []
