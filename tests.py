@@ -35,6 +35,9 @@ def check_tens_eq(expr1, expr2):
 check_tens_eq( do_epsilon_delta( eps(r,p,q) * eps(-r, s, t), eps, delta ),
 	delta(p,s)*delta(q,t) - delta(p,t)*delta(q,s),
 	)
+check_tens_eq( do_epsilon_delta( eps(-r,p,q) * eps(r, -s, t), eps, delta ),
+	delta(p,-s)*delta(q,t) - delta(p,t)*delta(q,-s),
+	)
 check_tens_eq( do_epsilon_delta( eps(r,p,q) * eps(s, -r, t), eps, delta ),
 	- delta(p,s)*delta(q,t) + delta(p,t)*delta(q,s),
 	)
