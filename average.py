@@ -103,7 +103,7 @@ def do_epsilon_delta(Expr, eps, delta):
 									- delta(other_indices[0][0], other_indices[1][1]) * delta(other_indices[0][1], other_indices[1][0])
 									)
 								
-								break
+								break #We have found the epsilon that is contracted with this e1
 			
 			newargs = other + epsilons
 			return sympy.core.mul.Mul(*newargs)
