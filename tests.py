@@ -1,7 +1,8 @@
 import sympy as sy
 import sympy.tensor.tensor
 
-from average import average, do_epsilon_delta
+from average import average
+from tensor import do_epsilon_delta
 
 x,y = sy.symbols("x y")
 
