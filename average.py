@@ -60,3 +60,38 @@ class average(sympy.Function):
 			else:
 				return self
 
+
+def do_epsilon_delta(Expr, eps, delta):
+	if Expr.func == sympy.tensor.tensor.TensMul:
+			epsilons = []
+			other = []
+			
+			for arg in Expr.args:
+				if hasattr(arg, "component") and arg.component == eps:
+					epsilons.append(arg)
+				else:
+					other.append(arg)
+			
+			for i1, e1 in enumerate(epsilons):
+				if e1 != 1: #1 is the placeholder we use to denote eliminated epsilons
+					inds1 = e1.get_indices()
+					for i2, e2 in enumerate(epsilons[i1+1:], start=i1+1):
+						if e2 != 1: #1 is the placeholder we use to denote eliminated epsilons
+							inds2 = e2.get_indices()
+							common_inds = [ind for ind in inds1 if -ind in inds2] #Get indices which are in both the epsilons
+							if len(common_inds) > 0:
+								to_elim = common_inds[0]
+								other_indices = ([ind for ind in inds1 if ind != to_elim],[ind for ind in inds2 if ind != -to_elim])
+								
+								epsilons[i2] = 1
+								epsilons[i1] = delta(other_indices[0][0], other_indices[1][0]) * delta(other_indices[0][1], other_indices[1][1]) + delta(other_indices[0][0], other_indices[1][1]) * delta(other_indices[0][1], other_indices[1][0])
+								
+								break
+			
+			newargs = other + epsilons
+			return sympy.core.mul.Mul(*newargs)
+	elif Expr.func == sympy.core.add.Add or sympy.core.mul.Mul or sympy.tensor.tensor.TensAdd:
+		return Expr.func(*[do_epsilon_delta(i) for i in Expr.args])
+	else:
+		return Expr
+
