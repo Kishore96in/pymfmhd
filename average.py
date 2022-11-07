@@ -15,6 +15,8 @@ TODO: Check how much of Cadabra's functionality I can reuse. At least Kroenecker
 TODO: Can I somehow tell sympy to not worry about the covariant/contravariant distinction?
 """
 import sympy
+import sympy.tensor.tensor
+sy = sympy
 
 class average(sympy.Function):
 	"""
@@ -130,3 +132,13 @@ def do_epsilon_delta(Expr, eps, delta):
 	else:
 		return Expr
 
+if __name__ == "__main__":
+	#Testing the epsilon-delta stuff
+	
+	Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
+	p, q, r, s, t = sy.tensor.tensor.tensor_indices("p q r s t", Cartesian)
+	
+	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(-r, s, t), Cartesian.epsilon, Cartesian.delta ) )
+	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(s, -r, t), Cartesian.epsilon, Cartesian.delta ) )
+	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(-r, -p, t), Cartesian.epsilon, Cartesian.delta ).contract_delta(Cartesian.delta) )
+	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(-r, -p, -q), Cartesian.epsilon, Cartesian.delta ).contract_delta(Cartesian.delta) )
