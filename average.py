@@ -12,6 +12,7 @@ TODO: Function to replicate the 'ind=' functionality from VEST.
 TODO: Something similar to VEST's FullSimplifyVectorForm
 TODO: Figure out what exactly VEST's userFormSpec does. Sounds useful.
 TODO: Check how much of Cadabra's functionality I can reuse. At least Kroenecker delta seems to be implemented there. https://cadabra.science/. AUR package available.
+TODO: Can I somehow tell sympy to not worry about the covariant/contravariant distinction?
 """
 import sympy
 
