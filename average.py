@@ -84,6 +84,8 @@ def do_epsilon_delta(Expr, eps, delta):
 								other_indices = ([ind for ind in inds1 if ind != to_elim],[ind for ind in inds2 if ind != -to_elim])
 								
 								prefactor = sympy.tensor.tensor.TensMul(e1, e2).canon_bp().coeff #Account for the ordering of indices. Should be +1 or -1
+								
+								#Make the epsilon-delta replacement. e1 will never be looped over after this, so we can just replace it by the required combination of deltas.
 								epsilons[i2] = 1
 								epsilons[i1] = prefactor * (
 									delta(other_indices[0][0], other_indices[1][0]) * delta(other_indices[0][1], other_indices[1][1])
