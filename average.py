@@ -131,7 +131,7 @@ def do_epsilon_delta(Expr, eps, delta):
 		return Expr
 
 if __name__ == "__main__":
-	#Testing the epsilon-delta stuff
+	#Testing the epsilon-delta stuff NOTE: these can be removed, since tests.py also checks these.
 	import sympy.tensor.tensor
 	sy = sympy
 	
