@@ -104,6 +104,7 @@ def gen_delta_combs(inds, delta):
 		
 		delta_combs.append(this_delta)
 	
+	return delta_combs
 
 def do_angular_integral(Expr, wavevec, delta):
 	"""
