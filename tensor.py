@@ -15,6 +15,7 @@ TODO: Can I somehow tell sympy to not worry about the covariant/contravariant di
 """
 
 import sympy
+import itertools
 
 def do_epsilon_delta(Expr, eps, delta):
 	"""
@@ -68,6 +69,16 @@ def do_epsilon_delta(Expr, eps, delta):
 		return Expr.func(*[do_epsilon_delta(i) for i in Expr.args])
 	else:
 		return Expr
+
+def gen_ind_combs(inds):
+	n = len(inds) #Assume this is even. TODO: Raise error if odd?
+	
+	ind_combs = []
+	for comb in itertools.combinations( itertools.combinations(range(n),2), int(n/2) ):
+		if comb not in ind_combs:
+			ind_combs.append(comb)
+	
+	return ind_combs
 
 if __name__ == "__main__":
 	#Testing the epsilon-delta stuff NOTE: these can be removed, since tests.py also checks these.
