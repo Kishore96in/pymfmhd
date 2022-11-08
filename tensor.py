@@ -164,12 +164,12 @@ def do_angular_integral(Expr, wavevec, delta):
 
 def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 	"""
-	Take partial derivative of a tensor expression with respect to a tensor
+	Take partial derivative of a tensor expression with respect to a tensor. If the expression contains scalar functions dependent on the amplitude of the wavevector, you should specify that symbol as ampl
 	
 	Arguments:
 		Expr: an instance of sympy.tensor.tensor.TensExpr
 		wavevec: an instance of sympy.tensor.tensor.Tensor
-		ampl: an instance of sympy.core.symbol.Symbol. Requires indextype.
+		ampl: an instance of sympy.core.symbol.Symbol. Requires indextype to be specified.
 		indextype: an instance of sympy.tensor.tensor.TensorIndexType
 	
 	Returns:
