@@ -119,3 +119,7 @@ check_tens_eq(
 	partialdiff( K(p) / k , K(q), indextype=Cartesian, ampl=k ),
 	( delta(p, -q) - K(p)*K(-q)/k**2 )/k
 	)
+check_tens_eq(
+	partialdiff( 1 / k**2 , K(p), indextype=Cartesian, ampl=k ),
+	-2 * K(-p)/k**4
+	)
