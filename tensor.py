@@ -155,14 +155,13 @@ def do_angular_integral(Expr, wavevec, delta):
 		return Expr
 
 if __name__ == "__main__":
-	#Testing the epsilon-delta stuff NOTE: these can be removed, since tests.py also checks these.
 	import sympy.tensor.tensor
 	sy = sympy
 	
 	Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
 	p, q, r, s, t = sy.tensor.tensor.tensor_indices("p q r s t", Cartesian)
 	
-	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(-r, s, t), Cartesian.epsilon, Cartesian.delta ) )
-	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(s, -r, t), Cartesian.epsilon, Cartesian.delta ) )
-	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(-r, -p, t), Cartesian.epsilon, Cartesian.delta ).contract_delta(Cartesian.delta) )
-	print( do_epsilon_delta( Cartesian.epsilon(r,p,q) * Cartesian.epsilon(-r, -p, -q), Cartesian.epsilon, Cartesian.delta ).contract_delta(Cartesian.delta) )
+	K = sy.tensor.tensor.TensorHead("K", [Cartesian])
+	
+	print( do_angular_integral( K(p) * K(q), K, Cartesian.delta ) )
+	print( do_angular_integral( K(p) * K(q) * K(r) * K(s), K, Cartesian.delta ) )
