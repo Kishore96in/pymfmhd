@@ -94,6 +94,9 @@ def gen_ind_combs(inds):
 	return ind_combs
 
 def gen_delta_combs(inds, delta):
+	"""
+	Used in do_angular_integral() to generate combinations of the Kronecker delta that appear in the angular integral over unit vectors.
+	"""
 	ind_combs = gen_ind_combs(inds)
 	
 	delta_combs = []
