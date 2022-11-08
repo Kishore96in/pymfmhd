@@ -85,11 +85,11 @@ def gen_ind_combs(inds):
 		for i2, ind2 in enumerate(inds[1:], 1):
 			remaining_inds = [inds[i] for i in range(len(inds)) if (i != 0 and i != i2)]
 			
-			if len(remaining_inds) > 2:
+			if len(remaining_inds) > 0:
 				for comb in gen_ind_combs(remaining_inds):
 					ind_combs.append( [(ind1,ind2)] + comb )
 			else:
-				ind_combs.append([(ind1,ind2), tuple(remaining_inds)])
+				ind_combs.append([(ind1,ind2)])
 	
 	return ind_combs
 
