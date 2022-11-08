@@ -17,6 +17,7 @@ TODO: May need to define a custom Tensor or TensorHead that becomes a non-tensor
 """
 
 import sympy
+import sympy.tensor.tensor
 import sympy.tensor.toperators
 
 import warnings
@@ -180,7 +181,6 @@ def partialdiff(Expr, wavevec, indextype=None):
 	return ret
 
 if __name__ == "__main__":
-	import sympy.tensor.tensor
 	sy = sympy
 	
 	Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
