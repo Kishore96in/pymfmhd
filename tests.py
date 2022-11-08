@@ -28,10 +28,16 @@ def check_tens_eq(expr1, expr2):
 	"""
 	Canonicalizes the two given tensor expressions and checks equality.
 	"""
-	diff = expr1 - expr2
-	if diff != 0:
-		diff = diff.canon_bp().simplify()
-	assert diff == 0
+	try:
+		diff = expr1 - expr2
+		if diff != 0:
+			diff = diff.canon_bp().simplify()
+		assert diff == 0
+	except:
+		print("Something went wrong.")
+		print(f"{expr1 = }")
+		print(f"{expr2 = }")
+		raise
 
 check_tens_eq( do_epsilon_delta( eps(r,p,q) * eps(-r, s, t), eps, delta ),
 	delta(p,s)*delta(q,t) - delta(p,t)*delta(q,s),
