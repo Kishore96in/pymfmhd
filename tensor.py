@@ -195,10 +195,11 @@ if __name__ == "__main__":
 	sy = sympy
 	
 	Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
+	Cartesian.set_metric(Cartesian.delta)
 	p, q, r, s, t, u = sy.tensor.tensor.tensor_indices("p q r s t u", Cartesian)
+	f = sympy.symbols('f', cls=sympy.Function)
 	
 	K = sy.tensor.tensor.TensorHead("K", [Cartesian])
+	k = sympy.symbols("K")
 	
-	print( do_angular_integral( K(p) * K(q), K, Cartesian.delta ) )
-	print( do_angular_integral( K(p) * K(q) * K(r) * K(s), K, Cartesian.delta ) )
-	print( do_angular_integral( K(p) * K(q) * K(r) * K(s) * K(t) * K(u), K, Cartesian.delta ) )
+	print( partialdiff( K(p) * K(q) * f(k) , K(r), indextype=Cartesian, ampl=k ) )
