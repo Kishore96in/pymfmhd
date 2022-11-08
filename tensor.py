@@ -97,10 +97,13 @@ def gen_delta_combs(inds, delta):
 	ind_combs = gen_ind_combs(inds)
 	
 	delta_combs = []
-	for comb in ind_comb:
+	for comb in ind_combs:
 		this_delta = 1
 		for i in range(len(comb)):
-			this_delta *= 
+			this_delta *= delta(*comb[i])
+		
+		delta_combs.append(this_delta)
+	
 
 def do_angular_integral(Expr, wavevec, delta):
 	"""
