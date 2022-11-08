@@ -60,7 +60,5 @@ class average(sympy.Function):
 			else:
 				return self
 
-
-
 if __name__ == "__main__":
 	pass
