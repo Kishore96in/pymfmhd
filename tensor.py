@@ -15,7 +15,9 @@ TODO: Can I somehow tell sympy to not worry about the covariant/contravariant di
 """
 
 import sympy
+import warnings
 import itertools
+import scipy
 
 def do_epsilon_delta(Expr, eps, delta):
 	"""
@@ -71,14 +73,82 @@ def do_epsilon_delta(Expr, eps, delta):
 		return Expr
 
 def gen_ind_combs(inds):
-	n = len(inds) #Assume this is even. TODO: Raise error if odd?
+	"""
+	Given a list 'inds' such that len(inds)%2==0, construct permutations of the indices that appear in the corresponding angular integral over len(inds) instances of a unit vector. The number of combinations is listed as 'distinct FICTs' in table 1 of [Kearsley, Fong 1975 - Linearly Independent Sets of Isotropic Cartesian Tensors of Ranks up to Eight]. I believe the formula for the number of elements returned is len(ind_combs) = double_factorial(len(inds)-1).
 	
+	For our purposes, we do not care about linear independence (see https://mathematica.stackexchange.com/questions/77855/finding-basis-of-isotropic-tensors-of-rank-n for the more complicated approach required in that case)
+	"""
 	ind_combs = []
-	for comb in itertools.combinations( itertools.combinations(range(n),2), int(n/2) ):
-		if comb not in ind_combs:
-			ind_combs.append(comb)
+	
+	if len(inds) > 0:
+		ind1 = inds[0]
+		for i2, ind2 in enumerate(inds[1:], 1):
+			remaining_inds = [inds[i] for i in range(len(inds)) if (i != 0 and i != i2)]
+			
+			if len(remaining_inds) > 2:
+				for comb in gen_ind_combs(remaining_inds):
+					ind_combs.append( [(ind1,ind2)] + comb )
+			else:
+				ind_combs.append([(ind1,ind2), tuple(remaining_inds)])
 	
 	return ind_combs
+
+def gen_delta_combs(inds, delta):
+	ind_combs = gen_ind_combs(inds)
+	
+	delta_combs = []
+	for comb in ind_comb:
+		this_delta = 1
+		for i in range(len(comb)):
+			this_delta *= 
+
+def do_angular_integral(Expr, wavevec, delta):
+	"""
+	Perform angular integrals over the vector wavevec.
+	
+	Arguments:
+		Expr: sympy expression
+		wavevec: sympy.tensor.tensor.TensorHead instance
+		delta: .delta method of a sympy.tensor.tensor.TensorIndexType instance
+	
+	Returns:
+		A sympy expression
+	"""
+	if Expr.func == sympy.tensor.tensor.TensMul:
+		wavevecs = []
+		other = []
+		
+		#TODO: Need to raise warning/error if any member of other depends on wavevec?
+		
+		for arg in Expr.args:
+			if hasattr(arg, "component") and arg.component == wavevec:
+				wavevecs.append(arg)
+			else:
+				other.append(arg)
+		
+		prod_wavevecs = Expr.func(*wavevecs)
+		inds = prod_wavevecs.get_free_indices()
+		#TODO: Not sure what to do about the internally contracted indices (e.g. K(p) * K(-p) ). Just instantiate a scalar symbol with the same name? Perhaps have the user pass the wavenumber variable as an argument? Currently they are just ignored!
+		n = len(inds)
+		pi = sympy.pi
+		
+		if n % 2 == 1:
+			angint = 0
+		else:
+			delta_combs = gen_delta_combs(inds, delta)
+			if n <= 6:
+				angint = 4*pi/sp.special.factorial2(n+1) * sympy.tensor.tensor.TensMul(*delta_combs)
+			else:
+				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
+				warnings.RuntimeWarning("Integral over {} wavevectors not implemented.".format(n))
+				angint = prod_wavevecs
+		
+		newargs = other + [ angint ]
+		return Expr.func(*newargs)
+	elif Expr.func == sympy.core.add.Add or sympy.core.mul.Mul or sympy.tensor.tensor.TensAdd:
+		return Expr.func(*[do_angular_integral(i) for i in Expr.args])
+	else:
+		return Expr
 
 if __name__ == "__main__":
 	#Testing the epsilon-delta stuff NOTE: these can be removed, since tests.py also checks these.
