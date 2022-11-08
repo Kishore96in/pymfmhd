@@ -86,7 +86,7 @@ check_tens_eq(
 	)
 
 #Test partial derivatives
-f = sympy.symbols('f', cls=sympy.Function)
+f, g = sympy.symbols('f g', cls=sympy.Function)
 k = sympy.symbols("K") #'amplitude' of K
 
 check_tens_eq(
@@ -104,4 +104,8 @@ check_tens_eq(
 check_tens_eq(
 	partialdiff( K(p) * K(q) * f(k) , K(r), indextype=Cartesian, ampl=k ),
 	f(k)*K(p)*delta(q, -r) + f(k)*K(q)*delta(p, -r) + 1/k * sympy.Derivative(f(k), k)*K(p)*K(q)*K(-r)
+	)
+check_tens_eq(
+	partialdiff( K(p) * K(q) * f(k) + Cartesian.delta(p,q) * g(k), K(r), indextype=Cartesian, ampl=k ),
+	f(k)*K(p)*delta(q, -r) + f(k)*K(q)*delta(p, -r) + 1/k * sympy.Derivative(f(k), k)*K(p)*K(q)*K(-r) + 1/k*sympy.Derivative(g(k), k)*K(-r)*delta(p, q)
 	)

@@ -175,31 +175,35 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 	Returns:
 		ret: an instance of sympy.tensor.tensor.TensExpr
 	"""
-	ret = sympy.tensor.toperators.PartialDerivative( Expr, wavevec )
-	ret = ret._perform_derivative()
-	
-	if ampl is not None:
-		if indextype is None:
-			raise TypeError("indextype needs to be specified to make use of ampl.")
-		else:
-			if len(wavevec.indices) > 1:
-				raise NotImplementedError("Unsure how to define amplitude for tensor with more than one index.")
-			
-			lowered_wavevec = wavevec.head(- wavevec.indices[0] )
-			scalarpart = Expr.coeff
-			tensorpart = Expr/scalarpart
-			
-			if scalarpart.has(wavevec.head):
-				warnings.RuntimeWarning("Ignoring {} dependence in {}".format(wavevec, scalarpart))
-			
-			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
-	
-	if indextype is not None:
-		#NOTE: a separate call to contract_metric does not seem to be needed when we have already set the metric of the TensorIndexType to delta
-		ret = ret.contract_delta(indextype.delta).contract_metric(indextype.metric)
-	
-	return ret
-
+	if isinstance(Expr, sympy.tensor.tensor.TensAdd) or isinstance(Expr, sympy.core.add.Add):
+		return Expr.func(*[ partialdiff(arg, wavevec, indextype=indextype, ampl=ampl) for arg in Expr.args ])
+	elif isinstance(Expr, sympy.tensor.tensor.TensExpr):
+		ret = sympy.tensor.toperators.PartialDerivative( Expr, wavevec )
+		ret = ret._perform_derivative()
+		
+		if ampl is not None:
+			if indextype is None:
+				raise TypeError("indextype needs to be specified to make use of ampl.")
+			else:
+				if len(wavevec.indices) > 1:
+					raise NotImplementedError("Unsure how to define amplitude for tensor with more than one index.")
+				
+				lowered_wavevec = wavevec.head(- wavevec.indices[0] )
+				scalarpart = Expr.coeff
+				tensorpart = Expr/scalarpart
+				
+				if scalarpart.has(wavevec.head):
+					warnings.RuntimeWarning("Ignoring {} dependence in {}".format(wavevec, scalarpart))
+				
+				ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
+		
+		if indextype is not None:
+			#NOTE: a separate call to contract_metric does not seem to be needed when we have already set the metric of the TensorIndexType to delta
+			ret = ret.contract_delta(indextype.delta).contract_metric(indextype.metric)
+		
+		return ret
+	else:
+		raise NotImplementedError("Don't know how to deal with {}".format(Expr.func))
 if __name__ == "__main__":
 	sy = sympy
 	
