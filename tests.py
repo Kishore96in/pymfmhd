@@ -115,3 +115,7 @@ check_tens_eq(
 	partialdiff( K(p) * K(q) * f(k) + Cartesian.delta(p,q) * g(k), K(r), indextype=Cartesian, ampl=k ),
 	f(k)*K(p)*delta(q, -r) + f(k)*K(q)*delta(p, -r) + 1/k * sympy.Derivative(f(k), k)*K(p)*K(q)*K(-r) + 1/k*sympy.Derivative(g(k), k)*K(-r)*delta(p, q)
 	)
+check_tens_eq(
+	partialdiff( K(p) / k , K(q), indextype=Cartesian, ampl=k ),
+	( delta(p, -q) - K(p)*K(-q)/k**2 )/k
+	)
