@@ -122,13 +122,13 @@ def do_angular_integral(Expr, wavevec, delta):
 		wavevecs = []
 		other = []
 		
-		#TODO: Need to raise warning/error if any member of other depends on wavevec?
-		
 		for arg in Expr.args:
 			if hasattr(arg, "component") and arg.component == wavevec:
 				wavevecs.append(arg)
 			else:
 				other.append(arg)
+		
+		#TODO: Need to raise warning/error if any member of other depends on wavevec?
 		
 		prod_wavevecs = Expr.func(*wavevecs)
 		inds = prod_wavevecs.get_indices()
