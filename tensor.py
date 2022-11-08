@@ -131,8 +131,7 @@ def do_angular_integral(Expr, wavevec, delta):
 				other.append(arg)
 		
 		prod_wavevecs = Expr.func(*wavevecs)
-		inds = prod_wavevecs.get_free_indices()
-		#TODO: Not sure what to do about the internally contracted indices (e.g. K(p) * K(-p) ). Just instantiate a scalar symbol with the same name? Perhaps have the user pass the wavenumber variable as an argument? Currently they are just ignored!
+		inds = prod_wavevecs.get_indices()
 		n = len(inds)
 		
 		if n % 2 == 1:

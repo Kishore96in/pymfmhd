@@ -80,3 +80,7 @@ check_tens_eq(
 		+ delta(p,u) * delta(q,t) * delta(r,s)
 		)
 	)
+check_tens_eq(
+	do_angular_integral( K(p)*K(-p), K, delta),
+	4*sy.pi/3 * K(r)*K(-r) * delta(p,-p)
+	)
