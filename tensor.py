@@ -4,7 +4,7 @@ TODO Implement
 * Unit vectors (probably just implement as annotation on vector (fields)), but note that I need to be able to differentiate these guys.
 * Tensor fields
 * Derivative object? Need to be able to represent curl, dive, grad etc. Check how much can be shared with sympy's inbuilt derivative object. Probably should be able to add a derivative method to the Tensor object.
-TODO: Currently I can't do something like ( K(p)*K(-p) ) **2 . I would like to be able to do that. Implement a pow method for TensMul that raises an error if there are any free indices?
+
 TODO: function that prints an index-based expression in vector notation.
 TODO: Think about how I would handle, say, a divergenceless vector field. I don't think the assumptions system works yet, so what would be the best way to do it? I don't think subs would work. Workaround could be to add 'divergenceless' and 'curlless' annotations to vector fields.
 TODO: Function to replicate the 'ind=' functionality from VEST.
@@ -12,6 +12,8 @@ TODO: Something similar to VEST's FullSimplifyVectorForm
 TODO: Figure out what exactly VEST's userFormSpec does. Sounds useful.
 TODO: Check how much of Cadabra's functionality I can reuse. At least Kroenecker delta seems to be implemented there. https://cadabra.science/. AUR package available.
 TODO: Can I somehow tell sympy to not worry about the covariant/contravariant distinction?
+
+TODO: May need to define a custom Tensor or TensorHead that becomes a non-tensor when contracted by itself. Currently, you cannot do something like 1/( K(p)*K(-p) ), even though it is mathematically correct. OR figure out if there's a more graceful way to do it. Also would allow one to do something like ( K(p)*K(-p) ) **2 . Another way may be to implement a pow method for TensMul that raises an error if there are any free indices?
 """
 
 import sympy
