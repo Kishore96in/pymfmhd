@@ -152,7 +152,7 @@ def do_angular_integral(Expr, wavevec, delta):
 				angint = 4*sympy.pi/int(scipy.special.factorial2(n+1)) * prefactor * sympy.tensor.tensor.TensAdd(*delta_combs)
 			else:
 				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
-				warnings.RuntimeWarning("Integral over {} wavevectors not implemented.".format(n))
+				warnings.warn("Integral over {} wavevectors not implemented.".format(n), RuntimeWarning)
 				angint = prod_wavevecs
 		
 		newargs = other + [ angint ]
@@ -192,7 +192,7 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 			tensorpart = Expr/scalarpart
 			
 			if scalarpart.has(wavevec.head):
-				warnings.RuntimeWarning("Ignoring {} dependence in {}".format(wavevec, scalarpart))
+				warnings.warn("Ignoring {} dependence in {}".format(wavevec, scalarpart), RuntimeWarning)
 			
 			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
 		
