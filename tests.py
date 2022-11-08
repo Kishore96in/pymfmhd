@@ -2,7 +2,7 @@ import sympy as sy
 import sympy.tensor.tensor
 
 from average import average
-from tensor import do_epsilon_delta
+from tensor import do_epsilon_delta, do_angular_integral
 
 x,y = sy.symbols("x y")
 
@@ -20,7 +20,7 @@ assert average(sy.sin(y) + sy.cos(x), set([x])).simplify() == sy.sin(y) + averag
 
 #Test epsilon-delta identity
 Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
-p, q, r, s, t = sy.tensor.tensor.tensor_indices("p q r s t", Cartesian)
+p, q, r, s, t, u, w, i, j = sy.tensor.tensor.tensor_indices("p q r s t u w i j", Cartesian)
 delta = Cartesian.delta
 eps = Cartesian.epsilon
 
@@ -49,3 +49,34 @@ check_tens_eq( do_epsilon_delta( eps(r,p,q) * eps(-r, -p, -q), eps, delta ).cont
 	6,
 	)
 
+#Test angular integrals
+K = sy.tensor.tensor.TensorHead("K", [Cartesian])
+
+check_tens_eq(
+	do_angular_integral( K(p)*K(q), K, delta),
+	4*sy.pi/3 * K(r)*K(-r) * delta(p,q)
+	)
+check_tens_eq(
+	do_angular_integral( K(p)*K(q)*K(r)*K(s), K, delta),
+	4*sy.pi/15 * K(t)*K(-t) * K(u)*K(-u) * ( delta(p,q) * delta(r,s) + delta(p,r) * delta(q,s) + delta(p,s) * delta(r,q) )
+	)
+check_tens_eq(
+	do_angular_integral( K(p)*K(q)*K(r)*K(s)*K(t)*K(u), K, delta),
+	4*sy.pi/105 * K(i)*K(-i) * K(j)*K(-j) * K(w)*K(-w) * (
+		delta(p,q) * delta(r,s) * delta(t,u)
+		+ delta(p,q) * delta(r,t) * delta(s,u)
+		+ delta(p,q) * delta(r,u) * delta(t,s)
+		+ delta(p,r) * delta(q,s) * delta(t,u)
+		+ delta(p,r) * delta(q,t) * delta(s,u)
+		+ delta(p,r) * delta(q,u) * delta(t,s)
+		+ delta(p,s) * delta(q,r) * delta(t,u)
+		+ delta(p,s) * delta(q,t) * delta(r,u)
+		+ delta(p,s) * delta(q,u) * delta(r,t)
+		+ delta(p,t) * delta(q,r) * delta(s,u)
+		+ delta(p,t) * delta(q,s) * delta(r,u)
+		+ delta(p,t) * delta(q,u) * delta(r,s)
+		+ delta(p,u) * delta(q,r) * delta(s,t)
+		+ delta(p,u) * delta(q,s) * delta(r,t)
+		+ delta(p,u) * delta(q,t) * delta(r,s)
+		)
+	)
