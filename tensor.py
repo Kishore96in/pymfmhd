@@ -189,6 +189,9 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 			scalarpart = Expr.coeff
 			tensorpart = Expr/scalarpart
 			
+			if scalarpart.has(wavevec.head):
+				warnings.RuntimeWarning("Ignoring {} dependence in {}".format(wavevec, scalarpart))
+			
 			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
 	
 	if indextype is not None:
