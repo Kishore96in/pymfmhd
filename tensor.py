@@ -141,7 +141,7 @@ def do_angular_integral(Expr, wavevec, delta):
 		else:
 			delta_combs = gen_delta_combs(inds, delta)
 			if n <= 6:
-				angint = 4*pi/int(scipy.special.factorial2(n+1)) * sympy.tensor.tensor.TensMul(*delta_combs)
+				angint = 4*pi/int(scipy.special.factorial2(n+1)) * sympy.tensor.tensor.TensAdd(*delta_combs)
 			else:
 				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
 				warnings.RuntimeWarning("Integral over {} wavevectors not implemented.".format(n))
