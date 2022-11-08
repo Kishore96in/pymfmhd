@@ -210,9 +210,9 @@ if __name__ == "__main__":
 	Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
 	Cartesian.set_metric(Cartesian.delta)
 	p, q, r, s, t, u = sy.tensor.tensor.tensor_indices("p q r s t u", Cartesian)
-	f = sympy.symbols('f', cls=sympy.Function)
+	f, g = sympy.symbols('f g', cls=sympy.Function)
 	
 	K = sy.tensor.tensor.TensorHead("K", [Cartesian])
 	k = sympy.symbols("K")
 	
-	print( partialdiff( K(p) * K(q) * f(k) , K(r), indextype=Cartesian, ampl=k ) )
+	print( partialdiff( K(p) * K(q) * f(k) + Cartesian.delta(p,q) * g(k) , K(r), indextype=Cartesian, ampl=k ) )
