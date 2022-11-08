@@ -134,14 +134,13 @@ def do_angular_integral(Expr, wavevec, delta):
 		inds = prod_wavevecs.get_free_indices()
 		#TODO: Not sure what to do about the internally contracted indices (e.g. K(p) * K(-p) ). Just instantiate a scalar symbol with the same name? Perhaps have the user pass the wavenumber variable as an argument? Currently they are just ignored!
 		n = len(inds)
-		pi = sympy.pi
 		
 		if n % 2 == 1:
 			angint = 0
 		else:
 			delta_combs = gen_delta_combs(inds, delta)
 			if n <= 6:
-				angint = 4*pi/int(scipy.special.factorial2(n+1)) * sympy.tensor.tensor.TensAdd(*delta_combs)
+				angint = 4*sympy.pi/int(scipy.special.factorial2(n+1)) * sympy.tensor.tensor.TensAdd(*delta_combs)
 			else:
 				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
 				warnings.RuntimeWarning("Integral over {} wavevectors not implemented.".format(n))
