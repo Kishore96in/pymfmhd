@@ -15,6 +15,8 @@ TODO: Can I somehow tell sympy to not worry about the covariant/contravariant di
 """
 
 import sympy
+import sympy.tensor.toperators
+
 import warnings
 import itertools
 import scipy
@@ -156,6 +158,24 @@ def do_angular_integral(Expr, wavevec, delta):
 		return Expr.func(*[do_angular_integral(i) for i in Expr.args])
 	else:
 		return Expr
+
+def partialdiff(Expr, wavevec, indextype=None):
+	"""
+	Take partial derivative of a tensor expression with respect to a tensor
+	
+	Arguments:
+		Expr: an instance of sympy.tensor.tensor.TensExpr
+		wavevec: an instance of sympy.tensor.tensor.Tensor
+	
+	Returns:
+		ret: TODO
+	"""
+	ret = sympy.tensor.toperators.PartialDerivative( Expr, wavevec )
+	ret = ret._perform_derivative()
+	if indextype is not None:
+		ret = ret.contract_delta(indextype.delta).contract_metric(indextype.metric)
+	
+	return ret
 
 if __name__ == "__main__":
 	import sympy.tensor.tensor

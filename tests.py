@@ -2,7 +2,7 @@ import sympy as sy
 import sympy.tensor.tensor
 
 from average import average
-from tensor import do_epsilon_delta, do_angular_integral
+from tensor import do_epsilon_delta, do_angular_integral, partialdiff
 
 x,y = sy.symbols("x y")
 
@@ -83,4 +83,18 @@ check_tens_eq(
 check_tens_eq(
 	do_angular_integral( K(p)*K(-p), K, delta),
 	4*sy.pi/3 * K(r)*K(-r) * delta(p,-p)
+	)
+
+#Test partial derivatives
+check_tens_eq(
+	partialdiff( K(p), K(q), Cartesian ),
+	delta(p,-q)
+	)
+check_tens_eq(
+	partialdiff( K(p)*K(-p), K(q), Cartesian ),
+	2*K(-q)
+	)
+check_tens_eq(
+	partialdiff( K(p)*K(r), K(q), Cartesian ),
+	K(p) * delta(r,-q) + K(r) * delta(p,-q)
 	)
