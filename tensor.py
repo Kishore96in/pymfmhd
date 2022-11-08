@@ -160,9 +160,10 @@ if __name__ == "__main__":
 	sy = sympy
 	
 	Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
-	p, q, r, s, t = sy.tensor.tensor.tensor_indices("p q r s t", Cartesian)
+	p, q, r, s, t, u = sy.tensor.tensor.tensor_indices("p q r s t u", Cartesian)
 	
 	K = sy.tensor.tensor.TensorHead("K", [Cartesian])
 	
 	print( do_angular_integral( K(p) * K(q), K, Cartesian.delta ) )
 	print( do_angular_integral( K(p) * K(q) * K(r) * K(s), K, Cartesian.delta ) )
+	print( do_angular_integral( K(p) * K(q) * K(r) * K(s) * K(t) * K(u), K, Cartesian.delta ) )
