@@ -180,6 +180,9 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 	
 	if indextype is not None:
 		if ampl is not None:
+			if len(wavevec.indices) > 1:
+				raise NotImplementedError("Unsure how to define amplitude for tensor with more than one index.")
+			
 			lowered_wavevec = wavevec.head(- wavevec.indices[0] )
 			scalarpart = Expr.coeff
 			tensorpart = Expr/scalarpart
