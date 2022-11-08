@@ -184,18 +184,17 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 		if ampl is not None:
 			if indextype is None:
 				raise TypeError("indextype needs to be specified to make use of ampl.")
-			else:
-				if len(wavevec.indices) > 1:
-					raise NotImplementedError("Unsure how to define amplitude for tensor with more than one index.")
-				
-				lowered_wavevec = wavevec.head(- wavevec.indices[0] )
-				scalarpart = Expr.coeff
-				tensorpart = Expr/scalarpart
-				
-				if scalarpart.has(wavevec.head):
-					warnings.RuntimeWarning("Ignoring {} dependence in {}".format(wavevec, scalarpart))
-				
-				ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
+			if len(wavevec.indices) > 1:
+				raise NotImplementedError("Unsure how to define amplitude for tensor with more than one index.")
+			
+			lowered_wavevec = wavevec.head(- wavevec.indices[0] )
+			scalarpart = Expr.coeff
+			tensorpart = Expr/scalarpart
+			
+			if scalarpart.has(wavevec.head):
+				warnings.RuntimeWarning("Ignoring {} dependence in {}".format(wavevec, scalarpart))
+			
+			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
 		
 		if indextype is not None:
 			#NOTE: a separate call to contract_metric does not seem to be needed when we have already set the metric of the TensorIndexType to delta
