@@ -162,20 +162,31 @@ def do_angular_integral(Expr, wavevec, delta):
 	else:
 		return Expr
 
-def partialdiff(Expr, wavevec, indextype=None):
+def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 	"""
 	Take partial derivative of a tensor expression with respect to a tensor
 	
 	Arguments:
 		Expr: an instance of sympy.tensor.tensor.TensExpr
 		wavevec: an instance of sympy.tensor.tensor.Tensor
+		ampl: an instance of sympy.core.symbol.Symbol. Requires indextype.
+		indextype: an instance of sympy.tensor.tensor.TensorIndexType
 	
 	Returns:
-		ret: TODO
+		ret: an instance of sympy.tensor.tensor.TensExpr
 	"""
 	ret = sympy.tensor.toperators.PartialDerivative( Expr, wavevec )
 	ret = ret._perform_derivative()
+	
 	if indextype is not None:
+		if ampl is not None:
+			lowered_wavevec = wavevec.head(- wavevec.indices[0] )
+			scalarpart = Expr.coeff
+			tensorpart = Expr/scalarpart
+			
+			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
+		
+		#NOTE: a separate call to contract_metric does not seem to be needed when we have already set the metric of the TensorIndexType to delta
 		ret = ret.contract_delta(indextype.delta).contract_metric(indextype.metric)
 	
 	return ret
