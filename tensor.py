@@ -177,7 +177,7 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 	"""
 	if isinstance(Expr, sympy.tensor.tensor.TensAdd) or isinstance(Expr, sympy.core.add.Add):
 		return Expr.func(*[ partialdiff(arg, wavevec, indextype=indextype, ampl=ampl) for arg in Expr.args ])
-	elif isinstance(Expr, sympy.tensor.tensor.TensExpr):
+	else:
 		ret = sympy.tensor.toperators.PartialDerivative( Expr, wavevec )
 		ret = ret._perform_derivative()
 		
@@ -188,8 +188,14 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 				raise NotImplementedError("Unsure how to define amplitude for tensor with more than one index.")
 			
 			lowered_wavevec = wavevec.head(- wavevec.indices[0] )
-			scalarpart = Expr.coeff
-			tensorpart = Expr/scalarpart
+			
+			if isinstance(Expr, sympy.tensor.tensor.TensMul):
+				scalarpart = Expr.coeff
+				tensorpart = Expr/scalarpart
+			else:
+				warnings.warn("Could not find any tensor part of {}. Is this correct?".format(Expr), RuntimeWarning)
+				scalarpart = Expr
+				tensorpart = 1
 			
 			if scalarpart.has(wavevec.head):
 				warnings.warn("Ignoring {} dependence in {}".format(wavevec, scalarpart), RuntimeWarning)
@@ -201,8 +207,7 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 			ret = ret.contract_delta(indextype.delta).contract_metric(indextype.metric)
 		
 		return ret
-	else:
-		raise NotImplementedError("Don't know how to deal with {}".format(Expr.func))
+
 if __name__ == "__main__":
 	sy = sympy
 	
