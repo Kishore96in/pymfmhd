@@ -1,19 +1,3 @@
-"""
-TODO Implement
-* Vectors
-* Vector fields
-* Unit vectors (probably just implement as annotation on vector (fields)), but note that I need to be able to differentiate these guys.
-* Tensor fields
-* Derivative object? Need to be able to represent curl, dive, grad etc. Check how much can be shared with sympy's inbuilt derivative object.
-TODO: Think about how to implement summation convention. Just define a einsum(expr, index) function? IF I make the summation convention implicit, will probably be best to define a separate 'index' class like VEST does. Otherwise, interaction with other parts of sympy may become too messy. NOTE: whatever I do, need to make sure that e.g. (v_ib_i)^2 is interpreted as v_ib_iv_jb_j. NOTE: see discussion in https://github.com/sympy/sympy/issues/9284
-TODO: function that prints an index-based expression in vector notation.
-TODO: Think about how I would handle, say, a divergenceless vector field. I don't think the assumptions system works yet, so what would be the best way to do it? I don't think subs would work. Workaround could be to add 'divergenceless' and 'curlless' annotations to vector fields.
-TODO: Function to replicate the 'ind=' functionality from VEST.
-TODO: Something similar to VEST's FullSimplifyVectorForm
-TODO: Figure out what exactly VEST's userFormSpec does. Sounds useful.
-TODO: Check how much of Cadabra's functionality I can reuse. At least Kroenecker delta seems to be implemented there. https://cadabra.science/. AUR package available.
-TODO: Can I somehow tell sympy to not worry about the covariant/contravariant distinction?
-"""
 import sympy
 
 class average(sympy.Function):
