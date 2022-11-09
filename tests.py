@@ -155,6 +155,18 @@ check_tens_eq(
 	0
 	)
 check_tens_eq(
+	( - V(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
+	0
+	)
+check_tens_eq(
+	( K(p) * V(-p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
+	0
+	)
+check_tens_eq(
+	( - K(p) * K(q) * V(r) + V(s) * K(-s) * K(p) * V(q) * V(r) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
+	- K(p) * K(q) * V(r)
+	)
+check_tens_eq(
 	( - K(q) * K(-q) * V(p) + K(p) ).replace( *mul_matcher( K(r)*K(-r), k**2 ) ),
 	- k**2 * V(p) + K(p)
 	)
