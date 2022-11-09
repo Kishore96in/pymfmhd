@@ -253,8 +253,9 @@ class mul_matcher():
 		Heuristic matcher. May give false positives, but should never give false negatives. This is useful if we expect self.replacer to be an expensive function.
 		"""
 		for arg in self.matchmul.args:
-			m  = Expr.match(arg)
-			if m is None: #TODO: Need to check if this handles wilds and dummies.
+			_, m = Expr.replace(arg, 1, map=True)
+			
+			if len(m) == 0: #TODO: Need to check if this handles wilds and dummies.
 				return False
 		
 		#If we have reached here, it means every element of matchmul is also in Expr
