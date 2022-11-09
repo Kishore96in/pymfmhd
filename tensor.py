@@ -183,7 +183,7 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 	indextype = wavevec.index_types[0]
 	
 	if isinstance(Expr, sympy.tensor.tensor.TensAdd) or isinstance(Expr, sympy.core.add.Add):
-		return Expr.func(*[ partialdiff(arg, wavevec, indextype=indextype, ampl=ampl) for arg in Expr.args ])
+		return Expr.func(*[ partialdiff(arg, wavevec, ampl=ampl) for arg in Expr.args ])
 	else:
 		ret = sympy.tensor.toperators.PartialDerivative( Expr, wavevec )
 		ret = ret._perform_derivative()
