@@ -57,9 +57,14 @@ check_tens_eq( do_epsilon_delta( eps(r,p,q) * eps(-r, -p, -q), eps, delta ).cont
 
 #Test angular integrals
 K = sy.tensor.tensor.TensorHead("K", [Cartesian])
+V = sy.tensor.tensor.TensorHead("V", [Cartesian])
 
 check_tens_eq(
 	do_angular_integral( K(p)*K(q), K, delta),
+	4*sy.pi/3 * K(r)*K(-r) * delta(p,q)
+	)
+check_tens_eq(
+	do_angular_integral( K(p)*K(q) + K(p)*V(q), K, delta),
 	4*sy.pi/3 * K(r)*K(-r) * delta(p,q)
 	)
 check_tens_eq(
@@ -125,7 +130,6 @@ check_tens_eq(
 	)
 
 #Imposing zero-divergence
-V = sy.tensor.tensor.TensorHead("V", [Cartesian])
 dive_match = dive_matcher(K, V)
 
 check_tens_eq(

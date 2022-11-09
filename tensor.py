@@ -158,7 +158,7 @@ def do_angular_integral(Expr, wavevec, delta):
 		newargs = other + [ angint ]
 		return Expr.func(*newargs)
 	elif Expr.func == sympy.core.add.Add or sympy.core.mul.Mul or sympy.tensor.tensor.TensAdd:
-		return Expr.func(*[do_angular_integral(i) for i in Expr.args])
+		return Expr.func(*[do_angular_integral(i, wavevec) for i in Expr.args])
 	else:
 		return Expr
 
