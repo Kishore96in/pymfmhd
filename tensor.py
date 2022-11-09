@@ -255,7 +255,7 @@ class mul_matcher():
 			query = query.canon_bp()
 		
 		if hasattr(query, "get_free_indices"):
-			free_to_wilds_dict = self._free_indices_to_wilds(query.get_free_indices())
+			free_to_wilds_dict = self._free_indices_to_wilds(query.get_indices())
 			query = query.subs(free_to_wilds_dict)
 			replacement = replacement.subs(free_to_wilds_dict)
 		
@@ -308,7 +308,7 @@ class mul_matcher():
 		for arg in self.query.args:
 			if hasattr(arg, "get_free_indices"):
 				self.dprint(f"matcher: renaming free indices: {arg = }, {arg.get_free_indices() = }")
-				arg = arg.subs( self._free_indices_to_wilds(arg.get_free_indices()) )
+				arg = arg.subs( self._free_indices_to_wilds(arg.get_indices()) )
 			_, m = Expr.replace(arg, 1, map=True)
 			self.dprint(f"matcher: {Expr = }, {arg = }, {m = }")
 			
