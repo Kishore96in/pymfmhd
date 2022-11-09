@@ -248,13 +248,30 @@ class mul_matcher():
 	Given two TensMuls, check if one is a subset of the other.
 	"""
 	def __init__(self, query, replacement, debug=False):
+		query = sympy.core.sympify(query)
+		replacement = sympy.core.sympify(replacement)
+		
+		if hasattr(query, "canon_bp"):
+			query = query.canon_bp()
+		
+		if hasattr(query, "get_free_indices"):
+			free_to_wilds_dict = self._free_indices_to_wilds(query.get_free_indices())
+			query = query.subs(free_to_wilds_dict)
+			replacement = replacement.subs(free_to_wilds_dict)
+		
 		self.query = query
 		self.repl = replacement
 		self.r = len(query.args)
 		self.debug = debug
 		
-		if hasattr(self.query, "canon_bp"):
-			self.query = self.query.canon_bp()
+		try:
+			self.free_to_wilds_dict = free_to_wilds_dict
+			self.wilds_to_free_dict = self._invert_wild_dict(free_to_wilds_dict)
+		except NameError:
+			self.free_to_wilds_dict = {}
+			self.wilds_to_free_dict = {}
+		
+		self.dprint(f"init: {query = }, {replacement = }, {self.free_to_wilds_dict}")
 	
 	def dprint(self, *args, **kwargs):
 		"""
@@ -262,6 +279,24 @@ class mul_matcher():
 		"""
 		if self.debug:
 			print(*args, **kwargs)
+	
+	def _free_indices_to_wilds(self, free_indices):
+		"""
+		Given a list of free indices, return a dictionary such that the free indices are keys of this dictionary, with values given by Wilds
+		"""
+		ret = {}
+		for i in free_indices:
+			if i.is_up: #Preserve the information on co-/contra-variance.
+				ret[i] = sympy.core.Wild(i.name + "_wild")
+			else:
+				ret[i] = - sympy.core.Wild(i.name + "_wild")
+		return ret
+
+	def _invert_wild_dict(self, wild_dict):
+		"""
+		Invert the key-value association of a dictionary
+		"""
+		return {v: k for k, v in wild_dict.items()}
 	
 	def matcher(self, Expr):
 		"""
@@ -271,6 +306,9 @@ class mul_matcher():
 			Expr = Expr.canon_bp()
 		
 		for arg in self.query.args:
+			if hasattr(arg, "get_free_indices"):
+				self.dprint(f"matcher: renaming free indices: {arg = }, {arg.get_free_indices() = }")
+				arg = arg.subs( self._free_indices_to_wilds(arg.get_free_indices()) )
 			_, m = Expr.replace(arg, 1, map=True)
 			self.dprint(f"matcher: {Expr = }, {arg = }, {m = }")
 			
@@ -293,9 +331,9 @@ class mul_matcher():
 				
 				if len(rest_args) > 0:
 					rest = Expr.func(*rest_args) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
-					return Expr.func(replaced, self.replacer(rest)).doit()
+					return Expr.func(replaced, self.replacer(rest)).subs(self.wilds_to_free_dict).doit()
 				else:
-					return replaced
+					return replaced.subs(self.wilds_to_free_dict)
 				
 		
 		#If we reached here, no exact matches were found, so return the expression unchanged.
