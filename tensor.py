@@ -220,7 +220,7 @@ class dive_matcher():
 		velocity: sympy.tensor.tensor.TensorHead instance
 	"""
 	def __init__(self, wavevec, velocity):
-		warnings.warn("DEPRECATED: Use mul_matcher instead of dive_matcher")
+		warnings.warn("DEPRECATED: Use mul_matcher instead of dive_matcher", RuntimeWarning)
 		
 		self.wavevec = wavevec
 		self.velocity = velocity
