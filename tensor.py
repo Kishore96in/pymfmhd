@@ -255,7 +255,7 @@ class mul_matcher():
 			query = query.canon_bp()
 		
 		if hasattr(query, "get_free_indices"):
-			free_to_wilds_dict = self._free_indices_to_wilds(query.get_indices())
+			free_to_wilds_dict = self._indices_to_wilds(query.get_indices())
 			query = query.subs(free_to_wilds_dict)
 			replacement = replacement.subs(free_to_wilds_dict)
 		
@@ -266,7 +266,7 @@ class mul_matcher():
 		
 		try:
 			self.free_to_wilds_dict = free_to_wilds_dict
-			self.wilds_to_free_dict = self._invert_wild_dict(free_to_wilds_dict)
+			self.wilds_to_free_dict = self._invert_dict(free_to_wilds_dict)
 		except NameError:
 			self.free_to_wilds_dict = {}
 			self.wilds_to_free_dict = {}
@@ -280,7 +280,7 @@ class mul_matcher():
 		if self.debug:
 			print(*args, **kwargs)
 	
-	def _free_indices_to_wilds(self, free_indices):
+	def _indices_to_wilds(self, free_indices):
 		"""
 		Given a list of free indices, return a dictionary such that the free indices are keys of this dictionary, with values given by Wilds
 		"""
@@ -292,11 +292,11 @@ class mul_matcher():
 				ret[i] = - sympy.core.Wild(i.name + "_wild")
 		return ret
 
-	def _invert_wild_dict(self, wild_dict):
+	def _invert_dict(self, d):
 		"""
 		Invert the key-value association of a dictionary
 		"""
-		return {v: k for k, v in wild_dict.items()}
+		return {v: k for k, v in d.items()}
 	
 	def matcher(self, Expr):
 		"""
@@ -308,7 +308,7 @@ class mul_matcher():
 		for arg in self.query.args:
 			if hasattr(arg, "get_free_indices"):
 				self.dprint(f"matcher: renaming free indices: {arg = }, {arg.get_free_indices() = }")
-				arg = arg.subs( self._free_indices_to_wilds(arg.get_indices()) )
+				arg = arg.subs( self._indices_to_wilds(arg.get_indices()) )
 			_, m = Expr.replace(arg, 1, map=True)
 			self.dprint(f"matcher: {Expr = }, {arg = }, {m = }")
 			
