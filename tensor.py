@@ -304,5 +304,6 @@ if __name__ == "__main__":
 	k = sympy.symbols("K")
 	V = sy.tensor.tensor.TensorHead("V", [Cartesian])
 	
-	dive_match = mul_matcher( K(r)*V(-r), 0 )
-	print( ( - K(q) * K(-p) * V(p) ).replace( *dive_match ) )
+	print( ( - K(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ) )
+	print( ( - K(q) * K(-q) * V(p) + K(p) ).replace( *mul_matcher( K(r)*K(-r), k**2 ) ) )
+	print( ( 2 * K(q) * K(-q) * K(-r) * K(r) * V(p) + K(p) ).replace( *mul_matcher( K(r)*K(-r), k**2 ) ) )

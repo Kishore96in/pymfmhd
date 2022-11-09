@@ -2,7 +2,7 @@ import sympy as sy
 import sympy.tensor.tensor
 
 from average import average
-from tensor import do_epsilon_delta, do_angular_integral, partialdiff, dive_matcher
+from tensor import do_epsilon_delta, do_angular_integral, partialdiff, dive_matcher, mul_matcher
 
 x,y = sy.symbols("x y")
 
@@ -147,4 +147,18 @@ check_tens_eq(
 check_tens_eq(
 	( - K(p) * K(q) * V(r) + V(s) * K(-s) * K(p) * V(q) * V(r) ).replace(dive_match, lambda Expr: 0),
 	- K(p) * K(q) * V(r)
+	)
+
+#Check mul_matcher
+check_tens_eq(
+	( - K(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
+	0
+	)
+check_tens_eq(
+	( - K(q) * K(-q) * V(p) + K(p) ).replace( *mul_matcher( K(r)*K(-r), k**2 ) ),
+	- k**2 * V(p) + K(p)
+	)
+check_tens_eq(
+	( 2 * K(q) * K(-q) * K(-r) * K(r) * V(p) + K(p) ).replace( *mul_matcher( K(r)*K(-r), k**2 ) ),
+	2 * k**4 * V(p) + K(p)
 	)
