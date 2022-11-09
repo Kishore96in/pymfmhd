@@ -247,13 +247,13 @@ class mul_matcher():
 	"""
 	Given two TensMuls, check if one is a subset of the other.
 	"""
-	def __init__(self, matchmul, replacement):
-		self.matchmul = matchmul
+	def __init__(self, query, replacement):
+		self.query = query
 		self.repl = replacement
-		self.r = len(matchmul.args)
+		self.r = len(query.args)
 		
-		if hasattr(self.matchmul, "canon_bp"):
-			self.matchmul = self.matchmul.canon_bp()
+		if hasattr(self.query, "canon_bp"):
+			self.query = self.query.canon_bp()
 	
 	def matcher(self, Expr):
 		"""
@@ -262,13 +262,13 @@ class mul_matcher():
 		if hasattr(Expr, "canon_bp"):
 			Expr = Expr.canon_bp()
 		
-		for arg in self.matchmul.args:
+		for arg in self.query.args:
 			_, m = Expr.replace(arg, 1, map=True)
 			
 			if len(m) == 0: #TODO: Need to check if this handles wilds and dummies.
 				return False
 		
-		#If we have reached here, it means every element of matchmul is also in Expr
+		#If we have reached here, it means every element of query is also in Expr
 		return True
 	
 	def replacer(self, Expr):
@@ -276,7 +276,7 @@ class mul_matcher():
 			Expr = Expr.canon_bp()
 		
 		for subset in itertools.combinations(Expr.args, self.r):
-			replaced, m = Expr.func(*subset).replace(self.matchmul, self.repl, map=True)
+			replaced, m = Expr.func(*subset).replace(self.query, self.repl, map=True)
 			if len(m) > 0:
 				rest_args = [a for a in Expr.args if a not in subset]
 				
@@ -292,7 +292,7 @@ class mul_matcher():
 	
 	def __getitem__(self, key):
 		"""
-		To allow syntax like Expr.replace( *mul_matcher(matchmul, replacement) )
+		To allow syntax like Expr.replace( *mul_matcher(query, replacement) )
 		"""
 		if key == 0:
 			return self.matcher
