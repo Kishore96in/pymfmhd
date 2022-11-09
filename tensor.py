@@ -272,11 +272,14 @@ class mul_matcher():
 		
 		for arg in self.query.args:
 			_, m = Expr.replace(arg, 1, map=True)
+			self.dprint(f"matcher: {Expr = }, {arg = }, {m = }")
 			
 			if len(m) == 0: #TODO: Need to check if this handles wilds and dummies.
+				self.dprint(f"matcher: rejected {Expr}")
 				return False
 		
 		#If we have reached here, it means every element of query is also in Expr
+		self.dprint(f"matcher: accepted {Expr}")
 		return True
 	
 	def replacer(self, Expr):
