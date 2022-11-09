@@ -324,8 +324,11 @@ class mul_matcher():
 		if hasattr(Expr, "canon_bp"):
 			Expr = Expr.canon_bp()
 		
+		self.dprint(f"{self.query = }")
+		
 		for subset in itertools.combinations(Expr.args, self.r):
 			replaced, m = Expr.func(*subset).replace(self.query, self.repl, map=True)
+			self.dprint(f"replacer: {subset = }, {Expr.func(*subset).canon_bp() = }, {replaced = }, {m = }")
 			if len(m) > 0:
 				rest_args = [a for a in Expr.args if a not in subset]
 				
