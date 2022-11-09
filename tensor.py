@@ -312,7 +312,7 @@ class mul_matcher():
 			_, m = Expr.replace(arg, 1, map=True)
 			self.dprint(f"matcher: {Expr = }, {arg = }, {m = }")
 			
-			if len(m) == 0: #TODO: Need to check if this handles wilds and dummies.
+			if len(m) == 0:
 				self.dprint(f"matcher: rejected {Expr}")
 				return False
 		
