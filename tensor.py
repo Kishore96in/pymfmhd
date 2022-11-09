@@ -313,7 +313,6 @@ class mul_matcher():
 			self.dprint(f"matcher: {Expr = }, {arg = }, {m = }")
 			
 			if len(m) == 0:
-				self.dprint(f"matcher: rejected {Expr}")
 				return False
 		
 		#If we have reached here, it means every element of query is also in Expr
@@ -328,7 +327,7 @@ class mul_matcher():
 		
 		for subset in itertools.combinations(Expr.args, self.r):
 			replaced, m = Expr.func(*subset).replace(self.query, self.repl, map=True)
-			self.dprint(f"replacer: {subset = }, {Expr.func(*subset).canon_bp() = }, {replaced = }, {m = }")
+			self.dprint(f"replacer: {Expr.func(*subset).canon_bp() = }, {m = }")
 			if len(m) > 0:
 				rest_args = [a for a in Expr.args if a not in subset]
 				
