@@ -134,8 +134,9 @@ def do_angular_integral(Expr, wavevec, delta):
 				wavevecs.append(arg)
 			else:
 				other.append(arg)
-		
-		#TODO: Need to raise warning/error if any member of other depends on wavevec?
+				if arg.has(wavevec):
+					#TODO: Warning or error?
+					warnings.warn("Ignoring {} dependence in {}. Try expanding the input expression if this is not intended.".format(wavevec, arg), RuntimeWarning)
 		
 		prod_wavevecs = Expr.func(*wavevecs)
 		inds = prod_wavevecs.get_indices()
