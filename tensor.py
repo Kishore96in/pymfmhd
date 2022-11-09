@@ -223,6 +223,9 @@ class dive_matcher():
 	def __call__(self, Expr):
 		"""
 		Checks if Expr is a Mul which contains K(p)*V(-p)
+		
+		Arguments:
+			Expr: sympy.tensor.tensor.TensMul instance
 		"""
 		if isinstance(Expr, sympy.tensor.tensor.TensMul):
 			wavevecs = [ arg for arg in Expr.args if hasattr(arg, "component") and arg.component == self.wavevec ]
