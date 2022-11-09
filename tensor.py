@@ -247,13 +247,21 @@ class mul_matcher():
 	"""
 	Given two TensMuls, check if one is a subset of the other.
 	"""
-	def __init__(self, query, replacement):
+	def __init__(self, query, replacement, debug=False):
 		self.query = query
 		self.repl = replacement
 		self.r = len(query.args)
+		self.debug = debug
 		
 		if hasattr(self.query, "canon_bp"):
 			self.query = self.query.canon_bp()
+	
+	def dprint(self, *args, **kwargs):
+		"""
+		To print debug output
+		"""
+		if self.debug:
+			print(*args, **kwargs)
 	
 	def matcher(self, Expr):
 		"""
