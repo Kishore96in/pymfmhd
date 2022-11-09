@@ -208,6 +208,33 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 		
 		return ret
 
+class dive_matcher():
+	"""
+	Instantiates an object which, when called with an expression, returns True if the expression is a TensMul and it contains a wavevector dotted with a velocity.
+	
+	Arguments:
+		wavevec: sympy.tensor.tensor.TensorHead instance
+		velocity: sympy.tensor.tensor.TensorHead instance
+	"""
+	def __init__(self, wavevec, velocity):
+		self.wavevec = wavevec
+		self.velocity = velocity
+	
+	def __call__(self, Expr):
+		"""
+		Checks if Expr is a Mul which contains K(p)*V(-p)
+		"""
+		if isinstance(Expr, sympy.tensor.tensor.TensMul):
+			wavevecs = [ arg for arg in Expr.args if hasattr(arg, "component") and arg.component == self.wavevec ]
+			velocities = [ arg for arg in Expr.args if hasattr(arg, "component") and arg.component == self.velocity ]
+			
+			for v in velocities:
+				for w in wavevecs:
+					if w.get_indices()[0] == - v.get_indices()[0]:
+						return True
+		
+		return False
+
 if __name__ == "__main__":
 	sy = sympy
 	
@@ -218,5 +245,7 @@ if __name__ == "__main__":
 	
 	K = sy.tensor.tensor.TensorHead("K", [Cartesian])
 	k = sympy.symbols("K")
+	V = sy.tensor.tensor.TensorHead("V", [Cartesian])
 	
-	print( partialdiff( K(p) * K(q) * f(k) + Cartesian.delta(p,q) * g(k) , K(r), indextype=Cartesian, ampl=k ) )
+	dive_match = dive_matcher(K, V)
+	print( ( - K(q) * K(-p) * V(p) ).replace(dive_match, lambda Expr: 0) )

@@ -2,7 +2,7 @@ import sympy as sy
 import sympy.tensor.tensor
 
 from average import average
-from tensor import do_epsilon_delta, do_angular_integral, partialdiff
+from tensor import do_epsilon_delta, do_angular_integral, partialdiff, dive_matcher
 
 x,y = sy.symbols("x y")
 
@@ -122,4 +122,25 @@ check_tens_eq(
 check_tens_eq(
 	partialdiff( 1 / k**2 , K(p), indextype=Cartesian, ampl=k ),
 	-2 * K(-p)/k**4
+	)
+
+#Imposing zero-divergence
+V = sy.tensor.tensor.TensorHead("V", [Cartesian])
+dive_match = dive_matcher(K, V)
+
+check_tens_eq(
+	( - K(q) * K(-p) * V(p) ).replace(dive_match, lambda Expr: 0),
+	0
+	)
+check_tens_eq(
+	( - V(q) * K(-p) * V(p) ).replace(dive_match, lambda Expr: 0),
+	0
+	)
+check_tens_eq(
+	( K(p) * V(-p) ).replace(dive_match, lambda Expr: 0),
+	0
+	)
+check_tens_eq(
+	( - K(p) * K(q) * V(r) + V(s) * K(-s) * K(p) * V(q) * V(r) ).replace(dive_match, lambda Expr: 0),
+	- K(p) * K(q) * V(r)
 	)
