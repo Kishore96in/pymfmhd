@@ -211,6 +211,8 @@ def partialdiff(Expr, wavevec, ampl=None):
 
 class dive_matcher():
 	"""
+	DEPRECATED: use mul_matcher instead
+	
 	Instantiates an object which, when called with an expression, returns True if the expression is a TensMul and it contains a wavevector dotted with a velocity.
 	
 	Arguments:
@@ -218,6 +220,8 @@ class dive_matcher():
 		velocity: sympy.tensor.tensor.TensorHead instance
 	"""
 	def __init__(self, wavevec, velocity):
+		warnings.warn("DEPRECATED: Use mul_matcher instead of dive_matcher")
+		
 		self.wavevec = wavevec
 		self.velocity = velocity
 	
