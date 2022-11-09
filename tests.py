@@ -60,19 +60,19 @@ K = sy.tensor.tensor.TensorHead("K", [Cartesian])
 V = sy.tensor.tensor.TensorHead("V", [Cartesian])
 
 check_tens_eq(
-	do_angular_integral( K(p)*K(q), K, delta),
+	do_angular_integral( K(p)*K(q), K),
 	4*sy.pi/3 * K(r)*K(-r) * delta(p,q)
 	)
 check_tens_eq(
-	do_angular_integral( K(p)*K(q) + K(p)*V(q), K, delta),
+	do_angular_integral( K(p)*K(q) + K(p)*V(q), K),
 	4*sy.pi/3 * K(r)*K(-r) * delta(p,q)
 	)
 check_tens_eq(
-	do_angular_integral( K(p)*K(q)*K(r)*K(s), K, delta),
+	do_angular_integral( K(p)*K(q)*K(r)*K(s), K),
 	4*sy.pi/15 * K(t)*K(-t) * K(u)*K(-u) * ( delta(p,q) * delta(r,s) + delta(p,r) * delta(q,s) + delta(p,s) * delta(r,q) )
 	)
 check_tens_eq(
-	do_angular_integral( K(p)*K(q)*K(r)*K(s)*K(t)*K(u), K, delta),
+	do_angular_integral( K(p)*K(q)*K(r)*K(s)*K(t)*K(u), K),
 	4*sy.pi/105 * K(i)*K(-i) * K(j)*K(-j) * K(w)*K(-w) * (
 		delta(p,q) * delta(r,s) * delta(t,u)
 		+ delta(p,q) * delta(r,t) * delta(s,u)
@@ -92,7 +92,7 @@ check_tens_eq(
 		)
 	)
 check_tens_eq(
-	do_angular_integral( K(p)*K(-p), K, delta),
+	do_angular_integral( K(p)*K(-p), K),
 	4*sy.pi/3 * K(r)*K(-r) * delta(p,-p)
 	)
 
@@ -101,31 +101,31 @@ f, g = sympy.symbols('f g', cls=sympy.Function)
 k = sympy.symbols("K") #'amplitude' of K
 
 check_tens_eq(
-	partialdiff( K(p), K(q), Cartesian ),
+	partialdiff( K(p), K(q) ),
 	delta(p,-q)
 	)
 check_tens_eq(
-	partialdiff( K(p)*K(-p), K(q), Cartesian ),
+	partialdiff( K(p)*K(-p), K(q) ),
 	2*K(-q)
 	)
 check_tens_eq(
-	partialdiff( K(p)*K(r), K(q), Cartesian ),
+	partialdiff( K(p)*K(r), K(q) ),
 	K(p) * delta(r,-q) + K(r) * delta(p,-q)
 	)
 check_tens_eq(
-	partialdiff( K(p) * K(q) * f(k) , K(r), indextype=Cartesian, ampl=k ),
+	partialdiff( K(p) * K(q) * f(k) , K(r), ampl=k ),
 	f(k)*K(p)*delta(q, -r) + f(k)*K(q)*delta(p, -r) + 1/k * sympy.Derivative(f(k), k)*K(p)*K(q)*K(-r)
 	)
 check_tens_eq(
-	partialdiff( K(p) * K(q) * f(k) + Cartesian.delta(p,q) * g(k), K(r), indextype=Cartesian, ampl=k ),
+	partialdiff( K(p) * K(q) * f(k) + Cartesian.delta(p,q) * g(k), K(r), ampl=k ),
 	f(k)*K(p)*delta(q, -r) + f(k)*K(q)*delta(p, -r) + 1/k * sympy.Derivative(f(k), k)*K(p)*K(q)*K(-r) + 1/k*sympy.Derivative(g(k), k)*K(-r)*delta(p, q)
 	)
 check_tens_eq(
-	partialdiff( K(p) / k , K(q), indextype=Cartesian, ampl=k ),
+	partialdiff( K(p) / k , K(q), ampl=k ),
 	( delta(p, -q) - K(p)*K(-q)/k**2 )/k
 	)
 check_tens_eq(
-	partialdiff( 1 / k**2 , K(p), indextype=Cartesian, ampl=k ),
+	partialdiff( 1 / k**2 , K(p), ampl=k ),
 	-2 * K(-p)/k**4
 	)
 
