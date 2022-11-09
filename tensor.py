@@ -267,7 +267,7 @@ class mul_matcher():
 			if len(m) > 0:
 				rest = Expr.func(*[a for a in Expr.args if a not in subset]) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
 				rest_replaced = self.replacer(rest)
-				return Expr.func(replaced, rest_replaced)
+				return Expr.func(replaced, rest_replaced).doit()
 		
 		#If we reached here, no exact matches were found, so return the expression unchanged.
 		return Expr
