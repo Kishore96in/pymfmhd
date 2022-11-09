@@ -76,7 +76,7 @@ def do_epsilon_delta(Expr, eps, delta):
 	else:
 		return Expr
 
-def gen_ind_combs(inds):
+def _gen_ind_combs(inds):
 	"""
 	Given a list 'inds' such that len(inds)%2==0, construct permutations of the indices that appear in the corresponding angular integral over len(inds) instances of a unit vector. The number of combinations is listed as 'distinct FICTs' in table 1 of [Kearsley, Fong 1975 - Linearly Independent Sets of Isotropic Cartesian Tensors of Ranks up to Eight]. I believe the formula for the number of elements returned is len(ind_combs) = double_factorial(len(inds)-1).
 	
@@ -90,18 +90,18 @@ def gen_ind_combs(inds):
 			remaining_inds = [inds[i] for i in range(len(inds)) if (i != 0 and i != i2)]
 			
 			if len(remaining_inds) > 0:
-				for comb in gen_ind_combs(remaining_inds):
+				for comb in _gen_ind_combs(remaining_inds):
 					ind_combs.append( [(ind1,ind2)] + comb )
 			else:
 				ind_combs.append([(ind1,ind2)])
 	
 	return ind_combs
 
-def gen_delta_combs(inds, delta):
+def _gen_delta_combs(inds, delta):
 	"""
 	Used in do_angular_integral() to generate combinations of the Kronecker delta that appear in the angular integral over unit vectors.
 	"""
-	ind_combs = gen_ind_combs(inds)
+	ind_combs = _gen_ind_combs(inds)
 	
 	delta_combs = []
 	for comb in ind_combs:
@@ -145,7 +145,7 @@ def do_angular_integral(Expr, wavevec, delta):
 		if n % 2 == 1:
 			angint = 0
 		else:
-			delta_combs = gen_delta_combs(inds, delta)
+			delta_combs = _gen_delta_combs(inds, delta)
 			if n <= 6:
 				p = sympy.symbols("p")
 				prefactor = sympy.tensor.tensor.TensMul(*[ ( wavevec(p) * wavevec(-p) ).as_dummy()  for i in range(int(n/2))]) #multiply appropriate power of the wavenumber
