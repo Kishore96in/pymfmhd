@@ -156,7 +156,7 @@ def do_angular_integral(Expr, wavevec, delta):
 				angint = prod_wavevecs
 		
 		newargs = other + [ angint ]
-		return Expr.func(*newargs)
+		return Expr.func(*newargs).doit()
 	elif Expr.func == sympy.core.add.Add or sympy.core.mul.Mul or sympy.tensor.tensor.TensAdd:
 		return Expr.func(*[do_angular_integral(i, wavevec) for i in Expr.args])
 	else:
