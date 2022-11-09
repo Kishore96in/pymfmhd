@@ -281,11 +281,16 @@ class mul_matcher():
 		#If we reached here, no exact matches were found, so return the expression unchanged.
 		return Expr
 	
-	def replargs(self):
+	def __getitem__(self, key):
 		"""
-		Can use like Expr.replace( *mul_matcher(matchmul, replacement).replargs )
+		To allow syntax like Expr.replace( *mul_matcher(matchmul, replacement) )
 		"""
-		return self.matcher, self.replacer
+		if key == 0:
+			return self.matcher
+		elif key == 1:
+			return self.replacer
+		else:
+			raise IndexError
 
 if __name__ == "__main__":
 	sy = sympy
@@ -299,5 +304,5 @@ if __name__ == "__main__":
 	k = sympy.symbols("K")
 	V = sy.tensor.tensor.TensorHead("V", [Cartesian])
 	
-	dive_match = dive_matcher(K, V)
-	print( ( - K(q) * K(-p) * V(p) ).replace(dive_match, lambda Expr: 0) )
+	dive_match = mul_matcher( K(r)*V(-r), 0 )
+	print( ( - K(q) * K(-p) * V(p) ).replace( *dive_match ) )
