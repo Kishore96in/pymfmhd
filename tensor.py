@@ -120,6 +120,8 @@ def do_angular_integral(Expr, wavevec, delta=None):
 	Arguments:
 		Expr: sympy expression
 		wavevec: sympy.tensor.tensor.TensorHead instance
+	
+	Deprecated arguments:
 		delta: .delta method of a sympy.tensor.tensor.TensorIndexType instance. Currently ignored; only present for backwards-compatibility.
 	
 	Returns:
@@ -171,6 +173,8 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 		Expr: an instance of sympy.tensor.tensor.TensExpr
 		wavevec: an instance of sympy.tensor.tensor.Tensor
 		ampl: an instance of sympy.core.symbol.Symbol.
+	
+	Deprecated arguments:
 		indextype: an instance of sympy.tensor.tensor.TensorIndexType. Automatically detected from wavevec, and is only present as an arg for backwards-compatibility.
 	
 	Returns:
