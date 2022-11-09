@@ -278,9 +278,14 @@ class mul_matcher():
 		for subset in itertools.combinations(Expr.args, self.r):
 			replaced, m = Expr.func(*subset).replace(self.matchmul, self.repl, map=True)
 			if len(m) > 0:
-				rest = Expr.func(*[a for a in Expr.args if a not in subset]) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
-				rest_replaced = self.replacer(rest)
-				return Expr.func(replaced, rest_replaced).doit()
+				rest_args = [a for a in Expr.args if a not in subset]
+				
+				if len(rest_args) > 0:
+					rest = Expr.func(*rest_args) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
+					return Expr.func(replaced, self.replacer(rest)).doit()
+				else:
+					return replaced
+				
 		
 		#If we reached here, no exact matches were found, so return the expression unchanged.
 		return Expr
