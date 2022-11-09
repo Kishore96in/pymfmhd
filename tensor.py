@@ -247,11 +247,17 @@ class mul_matcher():
 		self.matchmul = matchmul
 		self.repl = replacement
 		self.r = len(matchmul.args)
+		
+		if hasattr(self.matchmul, "canon_bp"):
+			self.matchmul = self.matchmul.canon_bp()
 	
 	def matcher(self, Expr):
 		"""
 		Heuristic matcher. May give false positives, but should never give false negatives. This is useful if we expect self.replacer to be an expensive function.
 		"""
+		if hasattr(Expr, "canon_bp"):
+			Expr = Expr.canon_bp()
+		
 		for arg in self.matchmul.args:
 			_, m = Expr.replace(arg, 1, map=True)
 			
@@ -262,6 +268,9 @@ class mul_matcher():
 		return True
 	
 	def replacer(self, Expr):
+		if hasattr(Expr, "canon_bp"):
+			Expr = Expr.canon_bp()
+		
 		for subset in itertools.combinations(Expr.args, self.r):
 			replaced, m = Expr.func(*subset).replace(self.matchmul, self.repl, map=True)
 			if len(m) > 0:
