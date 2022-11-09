@@ -113,14 +113,14 @@ def _gen_delta_combs(inds, delta):
 	
 	return delta_combs
 
-def do_angular_integral(Expr, wavevec, delta):
+def do_angular_integral(Expr, wavevec, delta=None):
 	"""
 	Perform angular integrals over the vector wavevec.
 	
 	Arguments:
 		Expr: sympy expression
 		wavevec: sympy.tensor.tensor.TensorHead instance
-		delta: .delta method of a sympy.tensor.tensor.TensorIndexType instance
+		delta: .delta method of a sympy.tensor.tensor.TensorIndexType instance. Currently ignored; only present for backwards-compatibility.
 	
 	Returns:
 		A sympy expression
@@ -141,6 +141,7 @@ def do_angular_integral(Expr, wavevec, delta):
 		prod_wavevecs = Expr.func(*wavevecs)
 		inds = prod_wavevecs.get_indices()
 		n = len(inds)
+		delta = wavevec.index_types[0].delta #This is the Kronecker delta
 		
 		if n % 2 == 1:
 			angint = 0
@@ -169,12 +170,14 @@ def partialdiff(Expr, wavevec, indextype=None, ampl=None):
 	Arguments:
 		Expr: an instance of sympy.tensor.tensor.TensExpr
 		wavevec: an instance of sympy.tensor.tensor.Tensor
-		ampl: an instance of sympy.core.symbol.Symbol. Requires indextype to be specified.
-		indextype: an instance of sympy.tensor.tensor.TensorIndexType
+		ampl: an instance of sympy.core.symbol.Symbol.
+		indextype: an instance of sympy.tensor.tensor.TensorIndexType. Automatically detected from wavevec, and is only present as an arg for backwards-compatibility.
 	
 	Returns:
 		ret: an instance of sympy.tensor.tensor.TensExpr
 	"""
+	indextype = wavevec.index_types[0]
+	
 	if isinstance(Expr, sympy.tensor.tensor.TensAdd) or isinstance(Expr, sympy.core.add.Add):
 		return Expr.func(*[ partialdiff(arg, wavevec, indextype=indextype, ampl=ampl) for arg in Expr.args ])
 	else:
