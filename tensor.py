@@ -239,6 +239,44 @@ class dive_matcher():
 		
 		return False
 
+class mul_matcher():
+	"""
+	Given two TensMuls, check if one is a subset of the other.
+	"""
+	def __init__(self, matchmul, replacement):
+		self.matchmul = matchmul
+		self.repl = replacement
+		self.r = len(matchmul.args)
+	
+	def matcher(self, Expr):
+		"""
+		Heuristic matcher. May give false positives, but should never give false negatives. This is useful if we expect self.replacer to be an expensive function.
+		"""
+		for arg in self.matchmul.args:
+			m  = Expr.match(arg)
+			if m is None: #TODO: Need to check if this handles wilds and dummies.
+				return False
+		
+		#If we have reached here, it means every element of matchmul is also in Expr
+		return True
+	
+	def replacer(self, Expr):
+		for subset in itertools.combinations(Expr.args, self.r):
+			replaced, m = Expr.func(*subset).replace(self.matchmul, self.repl, map=True)
+			if len(m) > 0:
+				rest = Expr.func(*[a for a in Expr.args if a not in subset]) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
+				rest_replaced = self(rest)
+				return Expr.func(replaced, rest_replaced)
+		
+		#If we reached here, no exact matches were found, so return the expression unchanged.
+		return Expr
+	
+	def replargs(self):
+		"""
+		Can use like Expr.replace( *mul_matcher(matchmul, replacement).replargs )
+		"""
+		return self.matcher, self.replacer
+
 if __name__ == "__main__":
 	sy = sympy
 	
