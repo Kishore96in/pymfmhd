@@ -159,6 +159,10 @@ check_tens_eq(
 	0
 	)
 check_tens_eq(
+	( - V(s)*V(-s) *  K(r) * K(-r) * V(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
+	0
+	)
+check_tens_eq(
 	( K(p) * V(-p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
 	0
 	)
