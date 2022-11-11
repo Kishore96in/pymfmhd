@@ -253,12 +253,6 @@ def get_symmetries(tens):
 	Returns:
 		List of sympy.tensor.tensor.Tensor instances
 	"""
-	def apply_perm(tens, perm):
-		indstr = sympy.tensor.tensor._IndexStructure.from_indices(*tens.get_indices())
-		newindstr = indstr.perm2tensor(perm)
-		sign = (-1)**perm[-1]
-		return sign * tens._set_new_index_structure(newindstr)
-	
 	def perm_once(tens):
 		n = tens.rank
 		gens = tens.components[0].symmetry.generators #Assuming that if this is a TensMul, it has at most one tensor.
@@ -268,7 +262,7 @@ def get_symmetries(tens):
 		for gen in gens:
 			perms.append([ gen.apply(i) for i in range(n) ] + [gen.apply(n) - n])
 		
-		return [apply_perm(tens, perm) for perm in perms]
+		return [sympy.tensor.tensor.perm2tensor(tens, perm, is_canon_bp=True) for perm in perms]
 	
 	old_perms = None
 	new_perms = set([tens])
