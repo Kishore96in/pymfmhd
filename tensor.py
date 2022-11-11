@@ -255,14 +255,18 @@ def get_symmetries(tens):
 	"""
 	def perm_once(tens):
 		n = tens.rank
-		gens = tens.components[0].symmetry.generators #Assuming that if this is a TensMul, it has at most one tensor.
+		comp = tens.components[0]
+		gens = comp.symmetry.generators #Assuming that if this is a TensMul, it has at most one tensor.
 		#TODO: Will I need the base for anything?
+		inds = tens.get_indices()
 		
-		perms = []
+		tens_perms = []
 		for gen in gens:
-			perms.append([ gen.apply(i) for i in range(n) ] + [gen.apply(n) - n])
+			perm = [ gen.apply(i) for i in range(n) ]
+			sign = (-1)**(gen.apply(n) - n)
+			tens_perms.append( sign * tens.coeff * comp(*[inds[i] for i in perm]) )
 		
-		return [sympy.tensor.tensor.perm2tensor(tens, perm, is_canon_bp=True) for perm in perms]
+		return tens_perms
 	
 	old_perms = None
 	new_perms = set([tens])
