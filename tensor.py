@@ -253,25 +253,33 @@ def get_symmetries(tens):
 	Returns:
 		List of sympy.tensor.tensor.Tensor instances
 	"""
-	n = tens.rank
-	gens = tens.component.symmetry.generators
-	#TODO: Will I need the base for anything?
-	#TODO: Difference between tens.component and tens.components?
-	
 	def apply_perm(tens, perm):
-		inds = tens.get_indices()
-		indstr = sympy.tensor.tensor._IndexStructure.from_indices(*inds)
+		indstr = sympy.tensor.tensor._IndexStructure.from_indices(*tens.get_indices())
 		newindstr = indstr.perm2tensor(perm)
 		sign = (-1)**perm[-1]
 		return sign * tens._set_new_index_structure(newindstr)
 	
-	perms = []
-	for gen in gens:
-		perms.append([ gen.apply(i) for i in range(n) ] + [gen.apply(n) - n])
+	def perm_once(tens):
+		n = tens.rank
+		gens = tens.components[0].symmetry.generators #Assuming that if this is a TensMul, it has at most one tensor.
+		#TODO: Will I need the base for anything?
+		
+		perms = []
+		for gen in gens:
+			perms.append([ gen.apply(i) for i in range(n) ] + [gen.apply(n) - n])
+		
+		return [apply_perm(tens, perm) for perm in perms]
 	
-	#TODO: Actually, permutations may need to be applied multiple times to generate all possible variants. But need to check if there is a clever way of getting the multiplicity as well.
+	old_perms = None
+	new_perms = set([tens])
+	while new_perms != old_perms:
+		#TODO: Need to put a hard upper limit on the number of times this loop runs?
+		old_perms = new_perms.copy()
+		for te in old_perms:
+			for perm in perm_once(te):
+				new_perms.add(perm)
 	
-	return set([apply_perm(tens, perm) for perm in perms])
+	return new_perms
 
 class mul_matcher():
 	"""
