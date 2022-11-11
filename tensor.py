@@ -243,6 +243,36 @@ class dive_matcher():
 		
 		return False
 
+def get_symmetries(tens):
+	"""
+	Given a tensor, return a list giving all its index-permuted forms that are compatible with its symmetries.
+	
+	Arguments:
+		tens: sympy.tensor.tensor.Tensor instance
+	
+	Returns:
+		List of sympy.tensor.tensor.Tensor instances
+	"""
+	n = tens.rank
+	gens = tens.component.symmetry.generators
+	#TODO: Will I need the base for anything?
+	#TODO: Difference between tens.component and tens.components?
+	
+	def apply_perm(tens, perm):
+		inds = tens.get_indices()
+		indstr = sympy.tensor.tensor._IndexStructure.from_indices(*inds)
+		newindstr = indstr.perm2tensor(perm)
+		sign = (-1)**perm[-1]
+		return sign * tens._set_new_index_structure(newindstr)
+	
+	perms = []
+	for gen in gens:
+		perms.append([ gen.apply(i) for i in range(n) ] + [gen.apply(n) - n])
+	
+	#TODO: Actually, permutations may need to be applied multiple times to generate all possible variants. But need to check if there is a clever way of getting the multiplicity as well.
+	
+	return set([apply_perm(tens, perm) for perm in perms])
+
 class mul_matcher():
 	"""
 	Given two TensMuls, check if one is a subset of the other.
