@@ -257,7 +257,6 @@ def get_symmetries(tens):
 		n = tens.rank
 		comp = tens.components[0]
 		gens = comp.symmetry.generators #Assuming that if this is a TensMul, it has at most one tensor.
-		#TODO: Will I need the base for anything?
 		inds = tens.get_indices()
 		
 		tens_perms = []
@@ -271,7 +270,6 @@ def get_symmetries(tens):
 	old_perms = None
 	new_perms = set([tens])
 	while new_perms != old_perms:
-		#TODO: Need to put a hard upper limit on the number of times this loop runs?
 		old_perms = new_perms.copy()
 		for te in old_perms:
 			for perm in perm_once(te):
