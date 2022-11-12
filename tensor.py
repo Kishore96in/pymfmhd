@@ -343,7 +343,7 @@ class mul_matcher():
 	
 	def _indices_to_wilds(self, indices):
 		"""
-		Given a list of free indices, return a dictionary such that the free indices are keys of this dictionary, with values given by Wilds
+		Given a list of indices, return a dictionary such that the indices are keys of this dictionary, with values given by Wilds
 		"""
 		ret = {}
 		for i in indices:
