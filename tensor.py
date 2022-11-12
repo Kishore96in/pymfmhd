@@ -360,10 +360,9 @@ class mul_matcher():
 			return True
 	
 	def replacer(self, Expr):
-		if hasattr(Expr, "canon_bp"):
+		self.dprint(f"{Expr = }, {self.query = }")
+		if hasattr(Expr, "canon_bp") and len(Expr.components) > 0:
 			Expr = Expr.canon_bp()
-		
-		self.dprint(f"{self.query = }")
 		
 		for subset in itertools.combinations(Expr.args, self.r):
 			for query in self.query_permutations:
