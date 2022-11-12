@@ -305,6 +305,38 @@ def flip_dummies(*args, **kwargs):
 	
 	return flipped
 
+def pull_out_metric(Expr):
+	"""
+	Given a TensMul, construct all possible TensMuls with the metric pulled out using the dummy indices. E.g. K(p) * V(-p) -> K(p) * V(q) * metric(-p,-q)
+	"""
+	inds = Expr.get_indices()
+	dummy_pairs = []
+	for i1, ind1 in enumerate(inds):
+		for i2, ind2 in enumerate(inds[i1+1:], i1+1):
+			if ind1 == - ind2:
+				dummy_pairs.append((i1, i2))
+	
+	pulled_out = []
+	for seq in itertools.product(*[(0,1)]*len(dummy_pairs)):
+		new_inds = inds.copy()
+		new_Expr = Expr.copy()
+		metrics = 1
+		for i, pair in enumerate(dummy_pairs):
+			if seq[i] == 1:
+				ind = inds[pair[0]]
+				if ind.is_up:
+					newdum = ind.func( ind.name + "_dum", ind.tensor_index_type )
+					new_inds[pair[0]] = newdum
+					metrics *= ind.tensor_index_type.metric(ind, -newdum)
+				else:
+					newdum = ind.func( ind.name + "_dum", ind.tensor_index_type )
+					new_inds[pair[0]] = - newdum
+					metrics *= ind.tensor_index_type.metric(ind, newdum)
+		
+		pulled_out.append( metrics * Expr._set_indices(*new_inds) )
+	
+	return pulled_out
+
 class mul_matcher():
 	"""
 	Given two TensMuls, check if one is a subset of the other.
