@@ -280,6 +280,12 @@ def get_symmetries(tens):
 def flip_dummies(*args, **kwargs):
 	"""
 	Given the arguments of a TensMul, construct all possible TensMuls with dummies flipped e.g. K(p) * V(-p) -> K(-p) * V(p)
+	
+	TODO: In mul_matcher.replacer, might do
+	for Ex in flip_dummies(Expr):
+		for subset in itertools.combinations(Ex.args, self.r):
+			...
+	but I don't see any benefit. Need to find a test case that will benefit from this before actually doing it. RN, only seems to be needed if I don't do Expr.canon_bp() in replacer
 	"""
 	Expr = sympy.tensor.tensor.TensMul(*args, **kwargs)
 	inds = Expr.get_indices()
