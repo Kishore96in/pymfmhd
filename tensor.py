@@ -315,11 +315,14 @@ class mul_matcher():
 		tensors_perm_list = [ get_symmetries(tens) for tens in tensors_list ]
 		for tensor_perms in itertools.product(tensors_perm_list):
 			d = {}
+			self.dprint(f"init: {tensor_perms = }")
 			for i,j in zip(tensors_list, tensor_perms):
+				self.dprint(f"init: {i = }, {j =}")
 				if i.coeff.could_extract_minus_sign():
 					d[-i] = -j
 				else:
 					d[i] = j
+			self.dprint(f"init: {d = }")
 			self.query_permutations.append( query.xreplace(d) ) #TODO: subs or replace? Need to worry about whether the permutations have a minus sign? I guess sympy.tensor.tensor.Tensor can never contain a minus (only TensMul can), so I may as well remove the if above.
 	
 	def dprint(self, *args, **kwargs):
