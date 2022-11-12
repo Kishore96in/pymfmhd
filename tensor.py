@@ -306,6 +306,21 @@ class mul_matcher():
 			self.wilds_to_free_dict = {}
 		
 		self.dprint(f"init: {query = }, {replacement = }, {self.free_to_wilds_dict}")
+		
+		#Generate every permutation of query (that is allowed by its index symmetries) and store it as a list.
+		self.query_permutations = []
+		tensors_list = [] #List of tensors in the query
+		query.replace(sympy.tensor.tensor.Tensor, lambda *x: tensors_list.append(sympy.tensor.tensor.Tensor(*x)))
+		
+		tensors_perm_list = [ get_symmetries(tens) for tens in tensors_list ]
+		for tensor_perms in itertools.product(tensors_perm_list):
+			d = {}
+			for i,j in zip(tensors_list, tensor_perms):
+				if i.coeff.could_extract_minus_sign():
+					d[-i] = -j
+				else:
+					d[i] = j
+			self.query_permutations.append( query.xreplace(d) ) #TODO: subs or replace? Need to worry about whether the permutations have a minus sign? I guess sympy.tensor.tensor.Tensor can never contain a minus (only TensMul can), so I may as well remove the if above.
 	
 	def dprint(self, *args, **kwargs):
 		"""
