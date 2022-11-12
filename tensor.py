@@ -280,6 +280,11 @@ def get_symmetries(tens):
 class mul_matcher():
 	"""
 	Given two TensMuls, check if one is a subset of the other.
+	
+	Arguments:
+		query: sympy.tensor.tensor.TensMul instance
+		replacement: any sympy object.
+		debug: bool. Whether to print any debug output (Default: False)
 	"""
 	def __init__(self, query, replacement, debug=False):
 		query = sympy.core.sympify(query)
