@@ -369,6 +369,7 @@ class mul_matcher():
 				replaced, m = Expr.func(*subset).replace(query, self.repl, map=True)
 				if len(m) > 0:
 					self.dprint(f"replacer: {Expr.func(*subset).canon_bp() = }, {m = }")
+					
 					rest_args = [a for a in Expr.args if a not in subset]
 					
 					if len(rest_args) > 0:
