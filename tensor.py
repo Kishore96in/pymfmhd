@@ -341,12 +341,12 @@ class mul_matcher():
 		if self.debug:
 			print(*args, **kwargs)
 	
-	def _indices_to_wilds(self, free_indices):
+	def _indices_to_wilds(self, indices):
 		"""
 		Given a list of free indices, return a dictionary such that the free indices are keys of this dictionary, with values given by Wilds
 		"""
 		ret = {}
-		for i in free_indices:
+		for i in indices:
 			if i.is_up: #Preserve the information on co-/contra-variance.
 				ret[i] = sympy.core.Wild(i.name + "_wild")
 			else:
