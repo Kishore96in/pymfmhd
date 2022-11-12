@@ -21,6 +21,12 @@ assert average(sy.sin(y) + sy.cos(x), set([x])).simplify() == sy.sin(y) + averag
 #Test epsilon-delta identity
 Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
 p, q, r, s, t, u, w, i, j = sy.tensor.tensor.tensor_indices("p q r s t u w i j", Cartesian)
+p_1 = sy.Wild("p_1")
+q_1 = sy.Wild("q_1")
+r_1 = sy.Wild("r_1")
+s_1 = sy.Wild("s_1")
+t_1 = sy.Wild("t_1")
+u_1 = sy.Wild("u_1")
 delta = Cartesian.delta
 eps = Cartesian.epsilon
 
@@ -150,6 +156,34 @@ check_tens_eq(
 	)
 
 #Check mul_matcher
+check_tens_eq(
+	( eps(r,p,q) * eps(-r, -p, -q) ).replace(
+		*mul_matcher(
+			eps(r_1, p_1, q_1) * eps(-r_1, -s_1, -t_1),
+			delta(p_1, -s_1)*delta(q_1, -t_1) - delta(p_1, -t_1)*delta(q_1, -s_1),
+			# debug = True
+			)
+		).contract_delta(delta),
+	6,
+	)
+check_tens_eq(
+	( eps(r,p,q) * eps(-r, s, t) ).replace(
+			*mul_matcher(
+				eps(p_1, q_1, r_1) * eps(s_1, t_1, -r_1),
+				delta(p_1, s_1)*delta(q_1, t_1) - delta(p_1, t_1)*delta(q_1, s_1),
+			)
+		),
+	delta(p,s)*delta(q,t) - delta(p,t)*delta(q,s),
+	)
+check_tens_eq(
+	( eps(r,p,q) * eps(s, -r, t) ).replace(
+			*mul_matcher(
+				eps(p_1, q_1, r_1) * eps(s_1, t_1, -r_1),
+				delta(p_1, s_1)*delta(q_1, t_1) - delta(p_1, t_1)*delta(q_1, s_1),
+			)
+		),
+	- delta(p,s)*delta(q,t) + delta(p,t)*delta(q,s),
+	)
 check_tens_eq(
 	( - K(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
 	0
