@@ -356,24 +356,8 @@ class mul_matcher():
 		"""
 		if not isinstance(Expr, (sympy.tensor.tensor.TensMul, sympy.tensor.tensor.Tensor)):
 			return False
-		
-		if hasattr(Expr, "canon_bp"):
-			Expr = Expr.canon_bp()
-		
-		#TODO: Probably should check over all permutations of query. Ugh. I can see how to do it, but I don't see it being much cheaper than replacer itself.
-		for arg in self.query.args:
-			if hasattr(arg, "get_free_indices"):
-				self.dprint(f"matcher: renaming free indices: {arg = }, {arg.get_free_indices() = }")
-				arg = arg.subs( self._indices_to_wilds(arg.get_indices()) )
-			_, m = Expr.replace(arg, 1, map=True)
-			self.dprint(f"matcher: {Expr = }, {arg = }, {m = }")
-			
-			if len(m) == 0:
-				return False
-		
-		#If we have reached here, it means every element of query is also in Expr
-		self.dprint(f"matcher: accepted {Expr}")
-		return True
+		else:
+			return True
 	
 	def replacer(self, Expr):
 		if hasattr(Expr, "canon_bp"):
