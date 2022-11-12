@@ -381,17 +381,17 @@ class mul_matcher():
 		self.dprint(f"{self.query = }")
 		
 		for subset in itertools.combinations(Expr.args, self.r):
-			replaced, m = Expr.func(*subset).replace(self.query, self.repl, map=True)
-			self.dprint(f"replacer: {Expr.func(*subset).canon_bp() = }, {m = }")
-			if len(m) > 0:
-				rest_args = [a for a in Expr.args if a not in subset]
-				
-				if len(rest_args) > 0:
-					rest = Expr.func(*rest_args) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
-					return Expr.func(replaced, self.replacer(rest)).subs(self.wilds_to_free_dict).doit()
-				else:
-					return replaced.subs(self.wilds_to_free_dict)
-				
+			for query in self.query_permutations:
+				replaced, m = Expr.func(*subset).replace(query, self.repl, map=True)
+				if len(m) > 0:
+					self.dprint(f"replacer: {Expr.func(*subset).canon_bp() = }, {m = }")
+					rest_args = [a for a in Expr.args if a not in subset]
+					
+					if len(rest_args) > 0:
+						rest = Expr.func(*rest_args) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
+						return Expr.func(replaced, self.replacer(rest)).subs(self.wilds_to_free_dict).doit()
+					else:
+						return replaced.subs(self.wilds_to_free_dict)
 		
 		#If we reached here, no exact matches were found, so return the expression unchanged.
 		return Expr
