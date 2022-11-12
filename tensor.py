@@ -277,6 +277,28 @@ def get_symmetries(tens):
 	
 	return new_perms
 
+def flip_dummies(*args, **kwargs):
+	"""
+	Given the arguments of a TensMul, construct all possible TensMuls with dummies flipped e.g. K(p) * V(-p) -> K(-p) * V(p)
+	"""
+	Expr = sympy.tensor.tensor.TensMul(*args, **kwargs)
+	inds = Expr.get_indices()
+	dummy_pairs = []
+	for i1, ind1 in enumerate(inds):
+		for i2, ind2 in enumerate(inds[i1+1:], i1+1):
+			if ind1 == - ind2:
+				dummy_pairs.append((i1, i2))
+	
+	flipped = []
+	for seq in itertools.product(*[(0,1)]*len(dummy_pairs)):
+		new_inds = inds.copy()
+		for i, pair in enumerate(dummy_pairs):
+			if seq[i] == 1:
+				new_inds[pair[0]], new_inds[pair[1]] = new_inds[pair[1]], new_inds[pair[0]]
+		flipped.append( Expr._set_indices(*new_inds) )
+	
+	return flipped
+
 class mul_matcher():
 	"""
 	Given two TensMuls, check if one is a subset of the other.
