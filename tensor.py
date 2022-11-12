@@ -285,6 +285,10 @@ class mul_matcher():
 		query = sympy.core.sympify(query)
 		replacement = sympy.core.sympify(replacement)
 		
+		if not isinstance(query, sympy.tensor.tensor.TensMul):
+			#At least self.r assumes we are given a TensMul
+			raise TypeError("query is not a TensMul instance.")
+		
 		if hasattr(query, "canon_bp"):
 			query = query.canon_bp()
 		
