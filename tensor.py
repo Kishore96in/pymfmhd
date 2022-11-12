@@ -253,7 +253,7 @@ def get_symmetries(tens):
 	Returns:
 		List of sympy.tensor.tensor.Tensor instances
 	"""
-	def perm_once(tens):
+	def permute(tens):
 		n = tens.rank
 		comp = tens.components[0]
 		gens = comp.symmetry.generators #Assuming that if this is a TensMul, it has at most one tensor.
@@ -272,7 +272,7 @@ def get_symmetries(tens):
 	while new_perms != old_perms:
 		old_perms = new_perms.copy()
 		for te in old_perms:
-			for perm in perm_once(te):
+			for perm in permute(te):
 				new_perms.add(perm)
 	
 	return new_perms
