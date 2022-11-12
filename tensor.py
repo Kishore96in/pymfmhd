@@ -360,6 +360,7 @@ class mul_matcher():
 		if hasattr(Expr, "canon_bp"):
 			Expr = Expr.canon_bp()
 		
+		#TODO: Probably should check over all permutations of query. Ugh. I can see how to do it, but I don't see it being much cheaper than replacer itself.
 		for arg in self.query.args:
 			if hasattr(arg, "get_free_indices"):
 				self.dprint(f"matcher: renaming free indices: {arg = }, {arg.get_free_indices() = }")
