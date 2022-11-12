@@ -307,35 +307,32 @@ def flip_dummies(*args, **kwargs):
 
 def pull_out_metric(Expr):
 	"""
-	Given a TensMul, construct all possible TensMuls with the metric pulled out using the dummy indices. E.g. K(p) * V(-p) -> K(p) * V(q) * metric(-p,-q)
+	Given a TensMul, construct a TensMul with the free indices pulled out using the metric. E.g. K(p) * V(q) -> K(p_1) * V(q_1) * metric(p,-p_1) * metric(q, -q_1)
 	"""
 	inds = Expr.get_indices()
-	dummy_pairs = []
+	
+	dummies = []
 	for i1, ind1 in enumerate(inds):
 		for i2, ind2 in enumerate(inds[i1+1:], i1+1):
 			if ind1 == - ind2:
-				dummy_pairs.append((i1, i2))
+				dummies.append(i1)
+				dummies.append(i2)
 	
-	pulled_out = []
-	for seq in itertools.product(*[(0,1)]*len(dummy_pairs)):
-		new_inds = inds.copy()
-		new_Expr = Expr.copy()
-		metrics = 1
-		for i, pair in enumerate(dummy_pairs):
-			if seq[i] == 1:
-				ind = inds[pair[0]]
-				if ind.is_up:
-					newdum = ind.func( ind.name + "_dum", ind.tensor_index_type )
-					new_inds[pair[0]] = newdum
-					metrics *= ind.tensor_index_type.metric(ind, -newdum)
-				else:
-					newdum = ind.func( ind.name + "_dum", ind.tensor_index_type )
-					new_inds[pair[0]] = - newdum
-					metrics *= ind.tensor_index_type.metric(ind, newdum)
-		
-		pulled_out.append( metrics * Expr._set_indices(*new_inds) )
+	new_inds = inds.copy()
+	metrics = 1
+	for i in range(len(inds)):
+		if i not in dummies:
+			ind = inds[i]
+			if ind.is_up:
+				newdum = ind.func( ind.name + "_dum", ind.tensor_index_type )
+				new_inds[i] = newdum
+				metrics *= ind.tensor_index_type.metric(ind, -newdum)
+			else:
+				newdum = ind.func( ind.name + "_dum_2", ind.tensor_index_type )
+				new_inds[i] = - newdum
+				metrics *= ind.tensor_index_type.metric(ind, newdum)
 	
-	return pulled_out
+	return metrics * Expr._set_indices(*new_inds)
 
 class mul_matcher():
 	"""
