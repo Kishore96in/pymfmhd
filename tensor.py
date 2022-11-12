@@ -317,7 +317,7 @@ class mul_matcher():
 			d = {}
 			self.dprint(f"init: {tensor_perms = }")
 			for i,j in zip(tensors_list, tensor_perms):
-				self.dprint(f"init: {i = }, {j =}")
+				self.dprint(f"init: {i = }, {j = }")
 				if i.coeff.could_extract_minus_sign():
 					d[-i] = -j
 				else:
