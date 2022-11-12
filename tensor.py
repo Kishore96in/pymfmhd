@@ -313,7 +313,7 @@ class mul_matcher():
 		query.replace(sympy.tensor.tensor.Tensor, lambda *x: tensors_list.append(sympy.tensor.tensor.Tensor(*x)))
 		
 		tensors_perm_list = [ get_symmetries(tens) for tens in tensors_list ]
-		for tensor_perms in itertools.product(tensors_perm_list):
+		for tensor_perms in itertools.product(*tensors_perm_list):
 			d = {}
 			self.dprint(f"init: {tensor_perms = }")
 			for i,j in zip(tensors_list, tensor_perms):
