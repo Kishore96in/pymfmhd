@@ -354,6 +354,9 @@ class mul_matcher():
 		"""
 		Heuristic matcher. May give false positives, but should never give false negatives. This is useful if we expect self.replacer to be an expensive function.
 		"""
+		if not isinstance(Expr, (sympy.tensor.tensor.TensMul, sympy.tensor.tensor.Tensor)):
+			return False
+		
 		if hasattr(Expr, "canon_bp"):
 			Expr = Expr.canon_bp()
 		
