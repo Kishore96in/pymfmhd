@@ -374,10 +374,11 @@ class mul_matcher():
 			Expr = Expr.canon_bp()
 		
 		for subset in itertools.combinations(Expr.args, self.r):
+			sub_expr = Expr.func(*subset)
 			for query in self.query_permutations:
-				replaced, m = Expr.func(*subset).replace(query, self.repl, map=True)
+				replaced, m = sub_expr.replace(query, self.repl, map=True)
 				if len(m) > 0:
-					self.dprint(f"replacer: {Expr.func(*subset).canon_bp() = }, {m = }")
+					self.dprint(f"replacer: {sub_expr.canon_bp() = }, {m = }")
 					
 					rest_args = [a for a in Expr.args if a not in subset]
 					
