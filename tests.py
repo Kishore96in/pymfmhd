@@ -27,6 +27,13 @@ r_1 = sy.Wild("r_1")
 s_1 = sy.Wild("s_1")
 t_1 = sy.Wild("t_1")
 u_1 = sy.Wild("u_1")
+p_2 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian, ignore_updown=True)
+q_2 = sy.tensor.tensor.WildTensorIndex("q_2", Cartesian, ignore_updown=True)
+r_2 = sy.tensor.tensor.WildTensorIndex("r_2", Cartesian, ignore_updown=True)
+s_2 = sy.tensor.tensor.WildTensorIndex("s_2", Cartesian, ignore_updown=True)
+t_2 = sy.tensor.tensor.WildTensorIndex("t_2", Cartesian, ignore_updown=True)
+u_2 = sy.tensor.tensor.WildTensorIndex("u_2", Cartesian, ignore_updown=True)
+p_3 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian)
 delta = Cartesian.delta
 eps = Cartesian.epsilon
 
@@ -155,60 +162,59 @@ check_tens_eq(
 	- K(p) * K(q) * V(r)
 	)
 
-#Check mul_matcher
-check_tens_eq(
-	( eps(r,p,q) * eps(-r, -p, -q) ).replace(
-		*mul_matcher(
-			eps(r_1, p_1, q_1) * eps(-r_1, -s_1, -t_1),
-			delta(p_1, -s_1)*delta(q_1, -t_1) - delta(p_1, -t_1)*delta(q_1, -s_1),
-			# debug = True
-			)
-		).contract_delta(delta),
-	6,
+#replace tests, sympy.tensor.tensor
+W = sympy.tensor.tensor.WildTensorHead('W')
+
+assert (
+	W().matches( K(p)*V(q) )
+	== {W(): K(p) * V(q)}
+	)
+assert (
+	W(p,q).matches( K(p)*V(q) )
+	== {W(p,q): K(p) * V(q)}
 	)
 check_tens_eq(
-	( eps(r,p,q) * eps(-r, s, t) ).replace(
-			*mul_matcher(
-				eps(p_1, q_1, r_1) * eps(s_1, t_1, -r_1),
-				delta(p_1, s_1)*delta(q_1, t_1) - delta(p_1, t_1)*delta(q_1, s_1),
-			)
+	(K(p) * V(-p)).replace( W(q) * V(-q), 1),
+	1
+	)
+check_tens_eq(
+	(K(q) * K(p) ).replace( W(q,p), 1),
+	1
+	)
+check_tens_eq(
+	( K(q) * K(p) * V(-p) ).replace( W(q,p) * V(-p), 1),
+	1
+	)
+
+assert (
+	p_2.matches(q)
+	== {p_2:q}
+	)
+assert (
+	p_2.matches(-q)
+	== {p_2:-q}
+	)
+assert (
+	p_3.matches(-q)
+	== None
+	)
+assert (
+	p_3.matches(q)
+	== {p_3:q}
+	)
+
+check_tens_eq(
+	eps(p,-q,r).replace(
+		eps(p_2,s_2,t_2), 1
 		),
-	delta(p,s)*delta(q,t) - delta(p,t)*delta(q,s),
+	1
 	)
-check_tens_eq(
-	( eps(r,p,q) * eps(s, -r, t) ).replace(
-			*mul_matcher(
-				eps(p_1, q_1, r_1) * eps(s_1, t_1, -r_1),
-				delta(p_1, s_1)*delta(q_1, t_1) - delta(p_1, t_1)*delta(q_1, s_1),
-			)
-		),
-	- delta(p,s)*delta(q,t) + delta(p,t)*delta(q,s),
-	)
-check_tens_eq(
-	( - K(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
-	0
-	)
-check_tens_eq(
-	( - V(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
-	0
-	)
-check_tens_eq(
-	( - V(s)*V(-s) *  K(r) * K(-r) * V(q) * K(-p) * V(p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
-	0
-	)
-check_tens_eq(
-	( K(p) * V(-p) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
-	0
-	)
-check_tens_eq(
-	( - K(p) * K(q) * V(r) + V(s) * K(-s) * K(p) * V(q) * V(r) ).replace( *mul_matcher( K(r)*V(-r), 0 ) ),
-	- K(p) * K(q) * V(r)
-	)
-check_tens_eq(
-	( - K(q) * K(-q) * V(p) + K(p) ).replace( *mul_matcher( K(r)*K(-r), k**2 ) ),
-	- k**2 * V(p) + K(p)
-	)
-check_tens_eq(
-	( 2 * K(q) * K(-q) * K(-r) * K(r) * V(p) + K(p) ).replace( *mul_matcher( K(r)*K(-r), k**2 ) ),
-	2 * k**4 * V(p) + K(p)
-	)
+
+# 
+# check_tens_eq(
+# 	( eps(r,p,q) * eps(-r, -p, -q) ).replace(
+# 		eps(r_1, p_1, q_1) * eps(-r_1, -s_1, -t_1),
+# 		delta(p_1, -s_1)*delta(q_1, -t_1) - delta(p_1, -t_1)*delta(q_1, -s_1),
+# 		).contract_delta(delta),
+# 	6,
+# 	)
