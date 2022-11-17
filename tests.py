@@ -186,6 +186,11 @@ check_tens_eq(
 	1
 	)
 
+check_tens_eq(
+	( K(p) * V(-p) ).replace( K(-p)* V(p), 1 ),
+	1
+	)
+
 assert (
 	p_2.matches(q)
 	== {p_2:q}
@@ -210,11 +215,17 @@ check_tens_eq(
 	1
 	)
 
-# 
-# check_tens_eq(
-# 	( eps(r,p,q) * eps(-r, -p, -q) ).replace(
-# 		eps(r_1, p_1, q_1) * eps(-r_1, -s_1, -t_1),
-# 		delta(p_1, -s_1)*delta(q_1, -t_1) - delta(p_1, -t_1)*delta(q_1, -s_1),
-# 		).contract_delta(delta),
-# 	6,
-# 	)
+check_tens_eq(
+	( eps(r,p,q) * eps(-r, -s, -t) ).replace(
+		eps(r, p_2, q_2) * eps(-r, s_2, t_2),
+		delta(p_2, s_2)*delta(q_2, t_2) - delta(p_2, t_2)*delta(q_2, s_2),
+		),
+	delta(p,-s)*delta(q,-t) - delta(p,-t)*delta(q,-s)
+	)
+check_tens_eq(
+	( eps(r,p,q) * eps(-r, -p, -q) ).replace(
+		eps(r_2, p_2, q_2) * eps(-r_2, s_2, t_2),
+		delta(p_2, s_2)*delta(q_2, t_2) - delta(p_2, t_2)*delta(q_2, s_2),
+		).contract_delta(delta),
+	6,
+	)
