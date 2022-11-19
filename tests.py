@@ -164,6 +164,8 @@ check_tens_eq(
 
 #replace tests, sympy.tensor.tensor
 W = sympy.tensor.tensor.WildTensorHead('W')
+U = sympy.tensor.tensor.WildTensorHead('U')
+_WildTensExpr = sy.tensor.tensor._WildTensExpr
 
 assert (
 	W().matches( K(p)*V(q) )
@@ -196,6 +198,17 @@ check_tens_eq(
 	( K(p) * V(-p) ).replace( K(-p)* V(p), 1 ),
 	1
 	)
+check_tens_eq(
+	( K(q) * K(p) * V(-p) ).replace( W(q)* U(p) * V(-p), 1),
+	1
+	)
+check_tens_eq(
+	(K(p)*V(q)).replace(
+		W()*K(p)*V(q),
+		W()*V(p)*V(q),
+		),
+	V(p)*V(q)
+	)
 
 assert (
 	p_2.matches(q)
@@ -212,6 +225,10 @@ assert (
 assert (
 	p_3.matches(q)
 	== {p_3:q}
+	)
+assert(
+	( p_1*K(p) ).matches( K(p) )
+	== {p_1: 1}
 	)
 
 check_tens_eq(
@@ -234,4 +251,24 @@ check_tens_eq(
 		delta(p_2, s_2)*delta(q_2, t_2) - delta(p_2, t_2)*delta(q_2, s_2),
 		).contract_delta(delta),
 	6,
+	)
+
+# #Multiple occurrence of WildTensor in value
+check_tens_eq(
+	( K(p)*V(q) ).replace(W(q)*K(p), W(p)*W(q)),
+	V(p)*V(q)
+	)
+check_tens_eq(
+	( K(p)*V(q)*V(r) ).replace(W(q,r)*K(p), W(p,r)*W(q,s)*V(-s) ),
+	V(p)*V(r)*V(q)*V(s)*V(-s)
+	)
+
+#Replace over TensAdd
+check_tens_eq(
+	( K(p) + V(p) ).replace(K(p), V(p)),
+	2*V(p)
+	)
+check_tens_eq(
+	( K(p)*V(q) + V(p)*V(q) ).replace(K(p), V(p)),
+	2*V(p)*V(q)
 	)
