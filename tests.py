@@ -170,14 +170,12 @@ _WildTensExpr = sy.tensor.tensor._WildTensExpr
 assert (
 	W().matches( K(p)*V(q) )
 	== {
-		W(): K(p) * V(q),
-		W: _WildTensExpr(K(p)*V(q)),
+		W(): K(p)*V(q),
 		}
 	)
 assert (
 	W(p,q).matches( K(p)*V(q) )
 	== {
-		W(p,q): K(p) * V(q),
 		W(p,q).head: _WildTensExpr(K(p)*V(q))
 		}
 	)
