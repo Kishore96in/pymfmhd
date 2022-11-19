@@ -167,11 +167,17 @@ W = sympy.tensor.tensor.WildTensorHead('W')
 
 assert (
 	W().matches( K(p)*V(q) )
-	== {W(): K(p) * V(q)}
+	== {
+		W(): K(p) * V(q),
+		W: _WildTensExpr(K(p)*V(q)),
+		}
 	)
 assert (
 	W(p,q).matches( K(p)*V(q) )
-	== {W(p,q): K(p) * V(q)}
+	== {
+		W(p,q): K(p) * V(q),
+		W(p,q).head: _WildTensExpr(K(p)*V(q))
+		}
 	)
 check_tens_eq(
 	(K(p) * V(-p)).replace( W(q) * V(-q), 1),
