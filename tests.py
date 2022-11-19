@@ -270,3 +270,7 @@ check_tens_eq(
 	( K(p)*V(q) + V(p)*V(q) ).replace(K(p), V(p)),
 	2*V(p)*V(q)
 	)
+check_tens_eq(
+	( K(p)*K(q) ).replace( W(p,q), W(p,-r)*W(q,r) ),
+	K(p)*K(q)*K(r)*K(-r)
+	)
