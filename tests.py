@@ -27,6 +27,7 @@ r_1 = sy.Wild("r_1")
 s_1 = sy.Wild("s_1")
 t_1 = sy.Wild("t_1")
 u_1 = sy.Wild("u_1")
+wi = sy.Wild("wi")
 p_2 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian, ignore_updown=True)
 q_2 = sy.tensor.tensor.WildTensorIndex("q_2", Cartesian, ignore_updown=True)
 r_2 = sy.tensor.tensor.WildTensorIndex("r_2", Cartesian, ignore_updown=True)
@@ -225,8 +226,8 @@ assert (
 	== {p_3:q}
 	)
 assert(
-	( p_1*K(p) ).matches( K(p) )
-	== {p_1: 1}
+	( wi*K(p) ).matches( K(p) )
+	== {wi: 1}
 	)
 
 check_tens_eq(
