@@ -245,6 +245,20 @@ check_tens_eq(
 		).contract_delta(delta),
 	6,
 	)
+check_tens_eq(
+	( eps(r,p,q) * eps(-p, -r, -q) ).replace(
+			wi * W() * eps(r, p_2, q_2) * eps(-r, s_2, t_2),
+			wi * W() *( delta(p_2, s_2)*delta(q_2, t_2) - delta(p_2, t_2)*delta(q_2, s_2) ),
+			).contract_delta(delta),
+	- 6
+	)
+check_tens_eq(
+	( eps(r,p,s) * eps(-p, -r, -q) ).replace(
+			wi * W() * eps(r, p_2, q_2) * eps(-r, s_2, t_2),
+			wi * W() *( delta(p_2, s_2)*delta(q_2, t_2) - delta(p_2, t_2)*delta(q_2, s_2) ),
+			).contract_delta(delta),
+	- 2*delta(-q, s)
+	)
 
 # #Multiple occurrence of WildTensor in value
 check_tens_eq(
