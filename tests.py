@@ -21,12 +21,6 @@ assert average(sy.sin(y) + sy.cos(x), set([x])).simplify() == sy.sin(y) + averag
 #Test epsilon-delta identity
 Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
 p, q, r, s, t, u, w, i, j = sy.tensor.tensor.tensor_indices("p q r s t u w i j", Cartesian)
-p_1 = sy.Wild("p_1")
-q_1 = sy.Wild("q_1")
-r_1 = sy.Wild("r_1")
-s_1 = sy.Wild("s_1")
-t_1 = sy.Wild("t_1")
-u_1 = sy.Wild("u_1")
 wi = sy.Wild("wi")
 p_2 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian, ignore_updown=True)
 q_2 = sy.tensor.tensor.WildTensorIndex("q_2", Cartesian, ignore_updown=True)
