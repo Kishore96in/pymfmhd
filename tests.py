@@ -288,14 +288,6 @@ check_tens_eq(
 	2*V(p)*V(q)
 	)
 check_tens_eq(
-	( K(p)*K(q) ).replace( W(p,q), W(p,-r)*W(q,r) ),
-	K(p)*K(q)*K(r)*K(-r)
-	)
-check_tens_eq(
-	( K(p)*V(q)*V(r) ).replace(W(q,r)*K(p), W(p,r)*W(q,s)*V(-s) ),
-	V(p)*V(r)*V(q)*V(s)*V(-s)
-	)
-check_tens_eq(
 	( K(p)*V(q) + K(p)*K(q) + K(q)*V(p) + V(q)*V(p) ).replace(
 		W(p,q) + K(p)*K(q) + K(q)*V(p),
 		5*K(p)*K(q) + W(p,q)
@@ -303,3 +295,11 @@ check_tens_eq(
 	K(p)*V(q) + V(q)*V(p) + 5*K(p)*K(q)
 	)
 
+check_tens_eq(
+	( K(p)*K(q) ).replace( W(p,q), W(p,-r)*W(q,r) ),
+	K(p)*K(q)*K(r)*K(-r)
+	)
+check_tens_eq(
+	( K(p)*V(q)*V(r) ).replace(W(q,r)*K(p), W(p,r)*W(q,s)*V(-s) ),
+	V(p)*V(r)*V(q)*V(s)*V(-s)
+	)
