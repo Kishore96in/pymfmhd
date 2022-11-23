@@ -1,3 +1,5 @@
+from termcolor import cprint #for bold terminal output
+
 import sympy as sy
 import sympy.tensor.tensor
 
@@ -303,3 +305,6 @@ check_tens_eq(
 	( K(p)*V(q)*V(r) ).replace(W(q,r)*K(p), W(p,r)*W(q,s)*V(-s) ),
 	V(p)*V(r)*V(q)*V(s)*V(-s)
 	)
+
+#################
+cprint("All tests passed", attrs=['bold'])
