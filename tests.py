@@ -158,7 +158,7 @@ check_tens_eq(
 	)
 
 #replace tests, sympy.tensor.tensor
-W = sympy.tensor.tensor.WildTensorHead('W')
+W = sympy.tensor.tensor.WildTensorHead('W', unordered_indices=True)
 U = sympy.tensor.tensor.WildTensorHead('U')
 _WildTensExpr = sy.tensor.tensor._WildTensExpr
 
@@ -222,6 +222,14 @@ assert (
 assert(
 	( wi*K(p) ).matches( K(p) )
 	== {wi: 1}
+	)
+assert (
+	eps(p,-p_2,p_2).matches( eps(p,q,r) )
+	== None
+	)
+assert(
+	eps(p,-q_2,p_2).matches( eps(p,q,r) )
+	== {p_2: r, -q_2: q}
 	)
 
 check_tens_eq(
@@ -287,3 +295,11 @@ check_tens_eq(
 	( K(p)*V(q)*V(r) ).replace(W(q,r)*K(p), W(p,r)*W(q,s)*V(-s) ),
 	V(p)*V(r)*V(q)*V(s)*V(-s)
 	)
+check_tens_eq(
+	( K(p)*V(q) + K(p)*K(q) + K(q)*V(p) + V(q)*V(p) ).replace(
+		W(p,q) + K(p)*K(q) + K(q)*V(p),
+		5*K(p)*K(q) + W(p,q)
+		),
+	K(p)*V(q) + V(q)*V(p) + 5*K(p)*K(q)
+	)
+
