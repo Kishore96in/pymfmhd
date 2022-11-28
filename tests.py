@@ -305,6 +305,20 @@ check_tens_eq(
 	( K(p)*V(q)*V(r) ).replace(W(q,r)*K(p), W(p,r)*W(q,s)*V(-s) ),
 	V(p)*V(r)*V(q)*V(s)*V(-s)
 	)
+check_tens_eq(
+	( K(p)*( 2 + V(q)*V(-q) )*K(-p) ).replace(V(q_2)*V(-q_2), K(q)*K(-q)),
+	K(p)*(2 + K(q)*K(-q))*K(-p)
+	)
+
+#Tests for repeat functionality in replace
+check_tens_eq( #TODO: Make this test cheaper/smaller
+	( eps(s,p,t) * eps(-t,-p,u) * eps(-q,w,-u) * eps(-j,i,q) * eps(-i,-s,r) * eps(j,-w,-r) ).replace(
+		wi * W() * eps(r, p_2, q_2) * eps(-r, s_2, t_2),
+		wi * W() *( delta(p_2, s_2)*delta(q_2, t_2) - delta(p_2, t_2)*delta(q_2, s_2) ),
+		repeat=True
+		).contract_delta(delta),
+	-12
+	)
 
 #################
 cprint("All tests passed", attrs=['bold'])
