@@ -4,7 +4,7 @@ from sympy import Basic, Symbol, Tuple, S
 from sympy.tensor.tensor import TensorHead, Tensor, TensorSymmetry, TensorManager, _IndexStructure
 
 class TensorFieldHead(TensorHead):
-	def __new__(cls, name, index_types, position, symmetry=None, comm=0):
+	def __new__(cls, name, index_types, positions, symmetry=None, comm=0):
 		if isinstance(name, str):
 			name_symbol = Symbol(name)
 		elif isinstance(name, Symbol):
@@ -17,24 +17,24 @@ class TensorFieldHead(TensorHead):
 		else:
 			assert symmetry.rank == len(index_types)
 
-		obj = Basic.__new__(cls, name_symbol, Tuple(*index_types), symmetry, position)
+		obj = Basic.__new__(cls, name_symbol, Tuple(*index_types), symmetry, Tuple(*positions))
 		obj.comm = TensorManager.comm_symbols2i(comm)
 		return obj
 	
 	@property
-	def position(self):
+	def positions(self):
 		return self.args[3]
 	
 	def _print(self):
-		return '%s(%s;%s)' %(self.name, ','.join([str(x) for x in self.index_types]), self.position)
+		return '%s(%s;%s)' %(self.name, ','.join([str(x) for x in self.index_types]), ','.join([str(x) for x in self.positions]))
 	
 	def __call__(self, *indices, **kw_args):
-		return TensorField(self, indices, self.position, **kw_args)
+		return TensorField(self, indices, self.positions, **kw_args)
 
 class TensorField(Tensor):
-	def __new__(cls, tensor_head, indices, position, *, is_canon_bp=False, **kw_args):
+	def __new__(cls, tensor_head, indices, positions, *, is_canon_bp=False, **kw_args):
 		indices = cls._parse_indices(tensor_head, indices)
-		obj = Basic.__new__(cls, tensor_head, Tuple(*indices), position, **kw_args)
+		obj = Basic.__new__(cls, tensor_head, Tuple(*indices), Tuple(*positions), **kw_args)
 		obj._index_structure = _IndexStructure.from_indices(*indices)
 		obj._free = obj._index_structure.free[:]
 		obj._dum = obj._index_structure.dum[:]
@@ -50,11 +50,11 @@ class TensorField(Tensor):
 		return obj
 	
 	@property
-	def position(self):
+	def positions(self):
 		return self.args[2]
 	
 	def _print(self):
-		return '%s(%s;%s)' %(self.component.name, ','.join([str(x) for x in self.indices]), self.position)
+		return '%s(%s;%s)' %(self.component.name, ','.join([str(x) for x in self.indices]), ','.join([str(x) for x in self.positions]))
 
 if __name__ == "__main__":
 	from sympy.tensor.tensor import TensorIndexType, WildTensorIndex, TensorIndex
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 	p_2, q_2, r_2, s_2, t_2, u_2 = symbols("p_2 q_2 r_2 s_2 t_2 u_2", cls=WildTensorIndex, tensor_index_type=R3, ignore_updown=True)
 	
 	K = TensorHead("K", [R3])
-	B = TensorFieldHead("B", [R3], position=K)
+	B = TensorFieldHead("B", [R3], positions=[K])
 	
 	print(B)
 	print( B(p) )
