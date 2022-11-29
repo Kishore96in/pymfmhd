@@ -134,8 +134,7 @@ def do_angular_integral(Expr, wavevec):
 			else:
 				other.append(arg)
 				if arg.has(wavevec):
-					#TODO: Warning or error?
-					warnings.warn("Ignoring {} dependence in {}. Try expanding the input expression if this is not intended.".format(wavevec, arg), RuntimeWarning)
+					raise RuntimeError("Please expand the input expression.")
 		
 		prod_wavevecs = Expr.func(*wavevecs)
 		inds = prod_wavevecs.get_indices()
