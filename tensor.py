@@ -134,7 +134,7 @@ def do_angular_integral(Expr, wavevec):
 			else:
 				other.append(arg)
 				if arg.has(wavevec):
-					raise RuntimeError("Please expand the input expression.")
+					raise RuntimeError("Please expand the input expression. Input was {}".format(Expr))
 		
 		prod_wavevecs = Expr.func(*wavevecs)
 		inds = prod_wavevecs.get_indices()
