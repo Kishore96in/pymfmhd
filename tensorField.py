@@ -67,10 +67,8 @@ if __name__ == "__main__":
 	
 	p, q, r, s, t, u = symbols("p q r s t u", cls=TensorIndex, tensor_index_type=R3)
 	a,b,c,d,e,f = symbols("a b c d e f", cls = WildTensorIndex, tensor_index_type=R3, ignore_updown=True)
-	p_2, q_2, r_2, s_2, t_2, u_2 = symbols("p_2 q_2 r_2 s_2 t_2 u_2", cls=WildTensorIndex, tensor_index_type=R3, ignore_updown=True)
 	
 	K = TensorHead("K", [R3])
 	B = TensorFieldHead("B", [R3], positions=[K])
 	
-	print(B)
 	print( B(p) )
