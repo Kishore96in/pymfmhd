@@ -124,7 +124,7 @@ def do_angular_integral(Expr, wavevec):
 	Returns:
 		A sympy expression
 	"""
-	if Expr.func == sympy.tensor.tensor.TensMul:
+	if isinstance(Expr, sympy.tensor.tensor.TensMul):
 		wavevecs = []
 		other = []
 		
@@ -157,7 +157,7 @@ def do_angular_integral(Expr, wavevec):
 		
 		newargs = other + [ angint ]
 		return Expr.func(*newargs).doit()
-	elif Expr.func == sympy.core.add.Add or sympy.core.mul.Mul or sympy.tensor.tensor.TensAdd:
+	elif isinstance(Expr, (sympy.core.add.Add, sympy.core.mul.Mul, sympy.tensor.tensor.TensAdd)):
 		return Expr.func(*[do_angular_integral(i, wavevec) for i in Expr.args])
 	else:
 		return Expr
