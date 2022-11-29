@@ -160,7 +160,7 @@ def do_angular_integral(Expr, wavevec):
 	elif isinstance(Expr, (sympy.core.add.Add, sympy.core.mul.Mul, sympy.tensor.tensor.TensAdd)):
 		return Expr.func(*[do_angular_integral(i, wavevec) for i in Expr.args])
 	else:
-		return Expr
+		return 4*sympy.pi*Expr
 
 def partialdiff(Expr, wavevec, ampl=None):
 	"""

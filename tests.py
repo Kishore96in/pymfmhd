@@ -105,6 +105,10 @@ check_tens_eq(
 	do_angular_integral( K(p)*K(-p), K),
 	4*sy.pi/3 * K(r)*K(-r) * delta(p,-p)
 	)
+check_tens_eq(
+	do_angular_integral( delta(p,q), K ),
+	4*sy.pi*delta(p,q)
+	)
 
 #Test partial derivatives
 f, g = sympy.symbols('f g', cls=sympy.Function)
