@@ -57,7 +57,7 @@ class TensorField(Tensor):
 		return '%s(%s;%s)' %(self.component.name, ','.join([str(x) for x in self.indices]), self.position)
 
 if __name__ == "__main__":
-	from sympy.tensor.tensor import TensorIndexType, tensor_indices, WildTensorIndex, TensorIndex
+	from sympy.tensor.tensor import TensorIndexType, WildTensorIndex, TensorIndex
 	from sympy import symbols
 	
 	R3 = TensorIndexType('R3', dim=3)
