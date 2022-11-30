@@ -64,6 +64,7 @@ def create_scalar_integral(expr, var):
 	>>> create_scalar_integral( f(x)*K(p), x )
 	Integral(f(x), x) * K(p)
 	"""
+	expr = sympy.expand(expr)
 	if isinstance(expr, (sympy.tensor.tensor.TensMul, sympy.tensor.tensor.Tensor)):
 		if var in expr.nocoeff.atoms():
 			raise ValueError("The tensor part is dependent on the integration variables. Perhaps try expanding expr.")
