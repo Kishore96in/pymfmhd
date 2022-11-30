@@ -163,9 +163,15 @@ class UnevaluatedAngularIntegral(sympy.tensor.tensor.TensExpr):
 		if isinstance(expr, sympy.tensor.tensor.TensExpr):
 			expr = expr.expand()
 		
-		return do_angular_integral(expr, self.wavevec)
+		return _do_angular_integral(expr, self.wavevec)
 
 def do_angular_integral(Expr, wavevec):
+	"""
+	DEPRECATED
+	"""
+	return UnevaluatedAngularIntegral(Expr, wavevec).doit()
+
+def _do_angular_integral(Expr, wavevec):
 	"""
 	Perform angular integrals over the vector wavevec.
 	
