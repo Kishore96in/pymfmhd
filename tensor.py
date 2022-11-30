@@ -114,6 +114,34 @@ def _gen_delta_combs(inds, delta):
 	
 	return delta_combs
 
+class UnevaluatedAngularIntegral(sympy.tensor.tensor.TensExpr):
+	def __new__(cls, expr, wavevec):
+		"""
+		expr: TensExpr
+		wavevec: TensorHead, vector with respect to which the angular integral was done.
+		"""
+		obj = sympy.tensor.tensor.Basic.__new__(cls, expr, wavevec)
+		obj.expr = expr
+		obj.wavevec = wavevec
+		return obj
+	
+	@property
+	def coeff(self):
+		return S.One
+
+	@property
+	def nocoeff(self):
+		return self
+	
+	def get_indices(self):
+		return self.expr.get_indices()
+	
+	def get_free_indices(self):
+		return self.expr.get_free_indices()
+	
+	def _replace_indices(self, repl):
+		return self.func(self.expr._replace_indices(repl), self.wavevec)
+
 def do_angular_integral(Expr, wavevec):
 	"""
 	Perform angular integrals over the vector wavevec.
@@ -155,7 +183,7 @@ def do_angular_integral(Expr, wavevec):
 			else:
 				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
 				warnings.warn("Integral over {} wavevectors not implemented.".format(n), RuntimeWarning)
-				angint = prod_wavevecs
+				angint = UnevaluatedAngularIntegral(prod_wavevecs, wavevec)
 		
 		newargs = other + [ angint ]
 		return Expr.func(*newargs).doit()
