@@ -115,6 +115,12 @@ def _gen_delta_combs(inds, delta):
 	return delta_combs
 
 class UnevaluatedAngularIntegral(sympy.tensor.tensor.TensExpr):
+	"""
+	UnevaluatedAngularIntegral(expr, wavevec): angular integral wrt wavevec over expr
+	
+	expr: TensExpr
+	wavevec: TensorHead
+	"""
 	def __new__(cls, expr, wavevec):
 		"""
 		expr: TensExpr
