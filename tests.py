@@ -4,7 +4,7 @@ import sympy as sy
 import sympy.tensor.tensor
 
 from average import average
-from tensor import do_epsilon_delta, do_angular_integral, partialdiff, dive_matcher, mul_matcher
+from tensor import do_epsilon_delta, do_angular_integral, partialdiff, dive_matcher, mul_matcher, UnevaluatedAngularIntegral
 
 x,y = sy.symbols("x y")
 
@@ -112,6 +112,14 @@ check_tens_eq(
 check_tens_eq(
 	do_angular_integral( V(p)*V(q), K ),
 	4*sy.pi*V(p)*V(q)
+	)
+assert(
+	do_angular_integral(K(p)*K(q)*K(r)*K(s)*K(t)*K(u)*K(i)*K(j), K)
+	== UnevaluatedAngularIntegral(K(p)*K(q)*K(r)*K(s)*K(t)*K(u)*K(i)*K(j), K)
+	)
+check_tens_eq(
+	UnevaluatedAngularIntegral( K(p)*K(q), K).doit(),
+	4*sy.pi/3 * K(r)*K(-r) * delta(p,q)
 	)
 
 #Test partial derivatives
