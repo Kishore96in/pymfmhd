@@ -141,6 +141,11 @@ class UnevaluatedAngularIntegral(sympy.tensor.tensor.TensExpr):
 	
 	def _replace_indices(self, repl):
 		return self.func(self.expr._replace_indices(repl), self.wavevec)
+	
+	def _latex(self, printer):
+		expr = printer._print(self.args[0])
+		wavevec = self.args[1].name
+		return r"\int\mathrm{d}\Omega_{%s} \left(%s\right)" % (wavevec, expr)
 
 def do_angular_integral(Expr, wavevec):
 	"""
