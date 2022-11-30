@@ -4,7 +4,7 @@ import sympy as sy
 import sympy.tensor.tensor
 
 from average import average
-from tensor import do_epsilon_delta, partialdiff, dive_matcher, mul_matcher
+from tensor import do_epsilon_delta, partialdiff
 from integral import do_angular_integral, AngularIntegral, create_scalar_integral
 
 x,y = sy.symbols("x y")
