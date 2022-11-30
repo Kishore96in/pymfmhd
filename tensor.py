@@ -174,7 +174,7 @@ def do_angular_integral(Expr, wavevec):
 
 def _do_angular_integral(Expr, wavevec):
 	"""
-	Perform angular integrals over the vector wavevec.
+	This is the meat of AngularIntegral.doit().
 	
 	Arguments:
 		Expr: sympy expression
