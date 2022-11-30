@@ -114,9 +114,9 @@ def _gen_delta_combs(inds, delta):
 	
 	return delta_combs
 
-class UnevaluatedAngularIntegral(sympy.tensor.tensor.TensExpr):
+class AngularIntegral(sympy.tensor.tensor.TensExpr):
 	"""
-	UnevaluatedAngularIntegral(expr, wavevec): angular integral wrt wavevec over expr
+	AngularIntegral(expr, wavevec): angular integral wrt wavevec over expr
 	
 	expr: TensExpr
 	wavevec: TensorHead
@@ -169,7 +169,7 @@ def do_angular_integral(Expr, wavevec):
 	"""
 	DEPRECATED
 	"""
-	return UnevaluatedAngularIntegral(Expr, wavevec).doit()
+	return AngularIntegral(Expr, wavevec).doit()
 
 def _do_angular_integral(Expr, wavevec):
 	"""
@@ -211,7 +211,7 @@ def _do_angular_integral(Expr, wavevec):
 				angint = 4*sympy.pi/int(scipy.special.factorial2(n+1)) * prefactor * sympy.tensor.tensor.TensAdd(*delta_combs)
 			else:
 				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
-				angint = UnevaluatedAngularIntegral(prod_wavevecs, wavevec)
+				angint = AngularIntegral(prod_wavevecs, wavevec)
 		
 		newargs = other + [ angint ]
 		return Expr.func(*newargs).doit(deep=False)
