@@ -26,6 +26,7 @@ import scipy
 def do_epsilon_delta(Expr, eps, delta):
 	"""
 	DEPRECATED: use replace
+	
 	Performs the replacement corresponding to the epsilon-delta identity.
 	
 	Arguments:
