@@ -152,6 +152,18 @@ class UnevaluatedAngularIntegral(sympy.tensor.tensor.TensExpr):
 		expr = printer._print(self.expr)
 		wavevec = self.wavevec.name
 		return r"\int\mathrm{d}\Omega_{%s} \left(%s\right)" % (wavevec, expr)
+	
+	def doit(self, **hints):
+		deep = hints.get('deep', True)
+		if deep:
+			expr = self.expr.doit(**hints)
+		else:
+			expr = self.expr
+		
+		if isinstance(expr, sympy.tensor.tensor.TensExpr):
+			expr = expr.expand()
+		
+		return do_angular_integral(expr, self.wavevec)
 
 def do_angular_integral(Expr, wavevec):
 	"""
@@ -196,7 +208,7 @@ def do_angular_integral(Expr, wavevec):
 				angint = UnevaluatedAngularIntegral(prod_wavevecs, wavevec)
 		
 		newargs = other + [ angint ]
-		return Expr.func(*newargs).doit()
+		return Expr.func(*newargs).doit(deep=False)
 	elif isinstance(Expr, (sympy.core.add.Add, sympy.tensor.tensor.TensAdd)):
 		return Expr.func(*[do_angular_integral(i, wavevec) for i in Expr.args])
 	else:
