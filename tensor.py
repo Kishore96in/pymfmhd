@@ -25,6 +25,7 @@ import scipy
 
 def do_epsilon_delta(Expr, eps, delta):
 	"""
+	DEPRECATED: use replace
 	Performs the replacement corresponding to the epsilon-delta identity.
 	
 	Arguments:
@@ -212,7 +213,7 @@ def partialdiff(Expr, wavevec, ampl=None):
 
 class dive_matcher():
 	"""
-	DEPRECATED: use mul_matcher instead
+	DEPRECATED: use replace
 	
 	Instantiates an object which, when called with an expression, returns True if the expression is a TensMul and it contains a wavevector dotted with a velocity.
 	
@@ -280,6 +281,7 @@ def get_symmetries(tens):
 
 def flip_dummies(*args, **kwargs):
 	"""
+	DEPRECATED: no longer needed, I think.
 	Given the arguments of a TensMul, construct all possible TensMuls with dummies flipped e.g. K(p) * V(-p) -> K(-p) * V(p)
 	
 	TODO: In mul_matcher.replacer, might do
@@ -337,6 +339,7 @@ def pull_out_metric(Expr):
 
 class mul_matcher():
 	"""
+	DEPRECATED: use replace
 	Given two TensMuls, check if one is a subset of the other.
 	
 	Arguments:
