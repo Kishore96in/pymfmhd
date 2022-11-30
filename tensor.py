@@ -250,6 +250,35 @@ def pull_out_metric(Expr):
 	
 	return metrics * Expr._set_indices(*new_inds)
 
+def contravariantify_free_indices(Expr):
+	"""
+	DEPRECATED: I think this is not needed any more.
+	
+	Given a TensMul, if any of the free indices is covariant, use the metric to make it contravariant. E.g. K(-p)*K(q) -> K(p_1) * K(q) * metric(-p_1, -p)
+	
+	TODO: Check if this works.
+	"""
+	inds = Expr.get_indices()
+	
+	dummies = []
+	for i1, ind1 in enumerate(inds):
+		for i2, ind2 in enumerate(inds[i1+1:], i1+1):
+			if ind1 == - ind2:
+				dummies.append(i1)
+				dummies.append(i2)
+	
+	new_inds = inds.copy()
+	metrics = 1
+	for i in range(len(inds)):
+		if i not in dummies:
+			ind = inds[i]
+			if not ind.is_up:
+				newdum = ind.func( ind.name + "_dum_2", ind.tensor_index_type )
+				new_inds[i] = newdum
+				metrics *= ind.tensor_index_type.metric(ind, -newdum)
+	
+	return metrics * Expr._set_indices(*new_inds)
+
 class mul_matcher():
 	"""
 	DEPRECATED: use replace
@@ -375,6 +404,41 @@ class mul_matcher():
 			return self.replacer
 		else:
 			raise IndexError
+
+class mul_matcher_v2(mul_matcher):
+	"""
+	DEPRECATED: use replace
+	"""
+	def replacer(self, Expr):
+		self.dprint(f"replacer: {Expr = }, {self.query = }")
+		if hasattr(Expr, "canon_bp") and len(Expr.components) > 0:
+			Expr = Expr.canon_bp()
+		
+		for subset in itertools.combinations(Expr.args, self.r):
+			sub_expr_forms = flip_dummies(pull_out_metric(Expr.func(*subset)))
+			sub_expr_forms = set([ ex.as_dummy() for ex in sub_expr_forms ])
+			self.dprint(f"replacer: {len(sub_expr_forms) = }")
+			#TODO: Instead of iterating over both query_permutations and sub_expr_forms, would it be enough to operate pull_out_metric on both query and sub_expr, and run canon-bp on both?
+			for sub_expr in sub_expr_forms:
+				#TODO: Iterating over all sub_expr_forms is very slow (length of the list is 2^{number of free indices}), so I really need to figure out a way of canonicalizing things or somehow speeding up the computation. One simple way might be to count functions of different types (but how fast is that?). Can I impose a convention that all free indices in the match expression should be contravariant, then define a 'contravariantify_free_indices' function that operates on subexpr?
+				self.dprint(f"replacer: {sub_expr = }")
+				for query in self.query_permutations:
+					w = sympy.core.Wild('w')
+					replaced, m = sub_expr.replace(w*query, self.repl, map=True)
+					if len(m) > 0:
+						rest_args = [a for a in Expr.args if a not in subset]
+						
+						self.dprint(f"replacer: {sub_expr.canon_bp() = }, {m = }, {rest_args = }")
+						
+						if len(rest_args) > 0:
+							rest = Expr.func(*rest_args) #We assume the same argument cannot appear twice (I think sympy consolidates them and makes sure that they are not repeated).
+							return Expr.func(replaced, self.replacer(rest)).subs(self.wilds_to_free_dict).doit()
+						else:
+							return replaced.subs(self.wilds_to_free_dict)
+		
+		#If we reached here, no exact matches were found, so return the expression unchanged.
+		self.dprint(f"replacer: REJECTED {Expr = }")
+		return Expr
 
 if __name__ == "__main__":
 	sy = sympy
