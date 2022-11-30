@@ -182,7 +182,6 @@ def do_angular_integral(Expr, wavevec):
 				angint = 4*sympy.pi/int(scipy.special.factorial2(n+1)) * prefactor * sympy.tensor.tensor.TensAdd(*delta_combs)
 			else:
 				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
-				warnings.warn("Integral over {} wavevectors not implemented.".format(n), RuntimeWarning)
 				angint = UnevaluatedAngularIntegral(prod_wavevecs, wavevec)
 		
 		newargs = other + [ angint ]
