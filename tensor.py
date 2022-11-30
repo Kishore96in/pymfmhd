@@ -114,6 +114,36 @@ def _gen_delta_combs(inds, delta):
 	
 	return delta_combs
 
+def create_scalar_integral(expr, var):
+	"""
+	If isinstance(expr, TensExpr), Integral(expr, var) fails because it tries to convert the tensor to a polynomial and fails. This is a wrapper to take care of that issue.
+	
+	Arguments
+	=========
+	expr: TensExpr
+	var: Symbol
+	
+	Examples
+	========
+	>>> from sympy.tensor.tensor import TensorIndexType, TensorIndex, TensorHead
+	>>> from sympy import Function, Symbol
+	>>> R3 = TensorIndexType('R3', dim=3)
+	>>> p = TensorIndex("p", R3)
+	>>> K = TensorHead("K", [R3])
+	>>> f = Function('f')
+	>>> x = Symbol('x)
+	>>> create_scalar_integral( f(x)*K(p), x )
+	Integral(f(x), x) * K(p)
+	"""
+	if isinstance(expr, (sympy.tensor.tensor.TensMul, sympy.tensor.tensor.Tensor)):
+		if var in expr.nocoeff.atoms():
+			raise ValueError("The tensor part is dependent on the integration variables. Perhaps try expanding expr.")
+		return sympy.Integral(expr.coeff, var)*expr.nocoeff
+	elif isinstance(expr, sympy.tensor.tensor.TensAdd):
+		return expr.func(*[create_scalar_integral(arg, var) for arg in expr.args])
+	else:
+		return sympy.Integral(expr, var)
+
 class AngularIntegral(sympy.tensor.tensor.TensExpr):
 	"""
 	AngularIntegral(expr, wavevec): angular integral wrt wavevec over expr
