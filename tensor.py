@@ -150,6 +150,7 @@ class AngularIntegral(sympy.tensor.tensor.TensExpr):
 	
 	def _latex(self, printer):
 		expr = printer._print(self.expr)
+		# wavevec = printer._print(self.args[1].name) is not good because it just falls back to emptyPrinter (\mathtt{\text{name}})
 		wavevec = self.wavevec.name
 		return r"\int\mathrm{d}\Omega_{%s} \left(%s\right)" % (wavevec, expr)
 	
