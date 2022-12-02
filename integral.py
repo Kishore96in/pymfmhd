@@ -181,16 +181,32 @@ def _do_angular_integral(Expr, wavevec):
 	else:
 		return 4*sympy.pi*Expr
 
-def do_wave_integral(expr, wavevec, ampl):
+def do_wave_integral(expr, wavevec, ampl, debug=True, simp=None):
 	"""
 	expr: TensExpr
 	wavevec: TensorHead
 	ampl: Symbol
+	simp: simplifying function to be applied to the Angular integral before performing the scalar integral. Needs to have signature simp(TensExpr) -> TensExpr
+	debug: whether to print debug output.
 	"""
+	if debug:
+		import time
+		tstart = time.time()
+		print(f"do_wave_integral: started @{time.time()-tstart:.2f}s")
+	
 	ret = AngularIntegral(expr, wavevec).doit().expand()
 	
 	if len(ret.atoms(AngularIntegral)) > 0:
 		raise RuntimeError("Could not do some angular integrals")
+	
+	if debug:
+		print(f"do_wave_integral: AngularIntegral done @{time.time()-tstart:.2f}s")
+	
+	if simp is not None:
+		ret = simp(ret)
+		
+		if debug:
+			print(f"do_wave_integral: applied simplifying function @{time.time()-tstart:.2f}s")
 	
 	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
 	w = sympy.Wild('w')
