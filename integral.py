@@ -180,3 +180,23 @@ def _do_angular_integral(Expr, wavevec):
 		return Expr.func(*[do_angular_integral(i, wavevec) for i in Expr.args])
 	else:
 		return 4*sympy.pi*Expr
+
+def do_wave_integral(expr, wavevec, ampl):
+	"""
+	expr: TensExpr
+	wavevec: TensorHead
+	ampl: Symbol
+	"""
+	ret = AngularIntegral(expr, wavevec).doit().expand()
+	
+	if len(ret.atoms(AngularIntegral)) > 0:
+		raise RuntimeError("Could not do some angular integrals")
+	
+	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+	w = sympy.Wild('w')
+	W = sympy.tensor.tensor.WildTensorHead('W')
+	ret = ret.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
+	
+	ret = create_scalar_integral( ampl**2 * ret, ampl)
+	
+	return ret
