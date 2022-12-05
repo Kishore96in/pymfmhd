@@ -202,6 +202,10 @@ def do_wave_integral(expr, wavevec, ampl, debug=True, simp=None):
 		print(f"do_wave_integral: started @{time.time()-tstart:.2f}s")
 	
 	ret = expr
+	
+	if simp is not None:
+		ret = simp(ret)
+	
 	ret = replace_by_ampl(ret, wavevec, ampl)
 	
 	if debug:
