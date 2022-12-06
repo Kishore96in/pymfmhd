@@ -181,7 +181,7 @@ def _do_angular_integral(Expr, wavevec):
 	else:
 		return 4*sympy.pi*Expr
 
-def do_wave_integral(expr, wavevec, ampl, debug=True, simp=None):
+def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	"""
 	expr: TensExpr
 	wavevec: TensorHead
