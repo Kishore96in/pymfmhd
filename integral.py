@@ -181,6 +181,13 @@ def _do_angular_integral(Expr, wavevec):
 	else:
 		return 4*sympy.pi*Expr
 
+def _replace_by_ampl(expr, wavevec, ampl):
+	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+	w = sympy.Wild('w')
+	W = sympy.tensor.tensor.WildTensorHead('W')
+	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
+	return expr
+
 def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	"""
 	expr: TensExpr
@@ -189,13 +196,6 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	simp: simplifying function to be applied to the Angular integral before performing the scalar integral. Needs to have signature simp(TensExpr) -> TensExpr
 	debug: whether to print debug output.
 	"""
-	def replace_by_ampl(expr, wavevec, ampl):
-		a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
-		w = sympy.Wild('w')
-		W = sympy.tensor.tensor.WildTensorHead('W')
-		expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
-		return expr
-	
 	if debug:
 		import time
 		tstart = time.time()
@@ -206,7 +206,7 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	if simp is not None:
 		ret = simp(ret)
 	
-	ret = replace_by_ampl(ret, wavevec, ampl)
+	ret = _replace_by_ampl(ret, wavevec, ampl)
 	
 	if debug:
 		print(f"do_wave_integral: replacement done @{time.time()-tstart:.2f}s")
@@ -225,7 +225,7 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 		if debug:
 			print(f"do_wave_integral: applied simplifying function @{time.time()-tstart:.2f}s")
 	
-	ret = replace_by_ampl(ret, wavevec, ampl)
+	ret = _replace_by_ampl(ret, wavevec, ampl)
 	
 	if debug:
 		print(f"do_wave_integral: replacement done @{time.time()-tstart:.2f}s")
