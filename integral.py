@@ -188,6 +188,26 @@ def _replace_by_ampl(expr, wavevec, ampl):
 	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
 	return expr
 
+def _replace_by_ampl_for_mul(args, wavevec, ampl):
+	"""
+	args: list, args of a TensMul
+	wavevec: TensorHead
+	ampl: Symbol
+	
+	To be used as (...).replace(TensMul, lambda *args: _replace_by_ampl_for_mul(args, wavevec, ampl))
+	
+	The hope is that this will be more efficient than _replace_by_ampl for huge expressions (it seems that _replace_by_ampl is very slow on TensAdd instances which have many terms).
+	"""
+	expr = sympy.tensor.tensor.TensMul(*args).doit(deep=False)
+	if wavevec not in expr.atoms(sympy.tensor.tensor.TensorHead):
+		return expr
+	
+	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+	w = sympy.Wild('w')
+	W = sympy.tensor.tensor.WildTensorHead('W')
+	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
+	return expr
+
 def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	"""
 	expr: TensExpr
