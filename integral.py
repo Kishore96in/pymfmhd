@@ -211,7 +211,7 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	if debug:
 		print(f"do_wave_integral: replacement done @{time.time()-tstart:.2f}s")
 	
-	ret = AngularIntegral(ret, wavevec).doit().expand()
+	ret = AngularIntegral(ret, wavevec).doit(deep=False).expand()
 	
 	if len(ret.atoms(AngularIntegral)) > 0:
 		raise RuntimeError("Could not do some angular integrals")
