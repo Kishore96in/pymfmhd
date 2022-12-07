@@ -223,12 +223,6 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	
 	ret = expr
 	
-	if simp is not None:
-		ret = simp(ret)
-		
-		if debug:
-			print(f"do_wave_integral: applied simplifying function @{time.time()-tstart:.2f}s")
-	
 	ret = ret.replace(sympy.tensor.tensor.TensMul, lambda *args: _replace_by_ampl_for_mul(args, wavevec, ampl))
 	
 	if debug:
