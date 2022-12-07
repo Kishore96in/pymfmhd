@@ -130,7 +130,7 @@ def do_angular_integral(Expr, wavevec):
 	"""
 	DEPRECATED
 	"""
-	return AngularIntegral(Expr, wavevec).doit()
+	return AngularIntegral(Expr, wavevec).doit(deep=False)
 
 def _do_angular_integral(Expr, wavevec):
 	"""
