@@ -6,6 +6,8 @@ import warnings
 import itertools
 import scipy
 
+from tensor import replace_by_ampl_optimized as replace_by_ampl
+
 def _gen_ind_combs(inds):
 	"""
 	Given a list 'inds' such that len(inds)%2==0, construct permutations of the indices that appear in the corresponding angular integral over len(inds) instances of a unit vector. The number of combinations is listed as 'distinct FICTs' in table 1 of [Kearsley, Fong 1975 - Linearly Independent Sets of Isotropic Cartesian Tensors of Ranks up to Eight]. I believe the formula for the number of elements returned is len(ind_combs) = double_factorial(len(inds)-1).
@@ -181,33 +183,6 @@ def _do_angular_integral(Expr, wavevec):
 	else:
 		return 4*sympy.pi*Expr
 
-def _replace_by_ampl(expr, wavevec, ampl):
-	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
-	w = sympy.Wild('w')
-	W = sympy.tensor.tensor.WildTensorHead('W')
-	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
-	return expr
-
-def _replace_by_ampl_for_mul(args, wavevec, ampl):
-	"""
-	args: list, args of a TensMul
-	wavevec: TensorHead
-	ampl: Symbol
-	
-	To be used as (...).replace(TensMul, lambda *args: _replace_by_ampl_for_mul(args, wavevec, ampl))
-	
-	The hope is that this will be more efficient than _replace_by_ampl for huge expressions (it seems that _replace_by_ampl is very slow on TensAdd instances which have many terms).
-	"""
-	expr = sympy.tensor.tensor.TensMul(*args).doit(deep=False)
-	if wavevec not in expr.atoms(sympy.tensor.tensor.TensorHead):
-		return expr
-	
-	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
-	w = sympy.Wild('w')
-	W = sympy.tensor.tensor.WildTensorHead('W')
-	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
-	return expr
-
 def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	"""
 	expr: TensExpr
@@ -223,7 +198,7 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	
 	ret = expr
 	
-	ret = ret.replace(sympy.tensor.tensor.TensMul, lambda *args: _replace_by_ampl_for_mul(args, wavevec, ampl))
+	ret = replace_by_ampl(ret, wavevec, ampl)
 	
 	if debug:
 		print(f"do_wave_integral: replacement done @{time.time()-tstart:.2f}s")
@@ -242,7 +217,7 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 		if debug:
 			print(f"do_wave_integral: applied simplifying function @{time.time()-tstart:.2f}s")
 	
-	ret = ret.replace(sympy.tensor.tensor.TensMul, lambda *args: _replace_by_ampl_for_mul(args, wavevec, ampl))
+	ret = replace_by_ampl(ret, wavevec, ampl)
 	
 	if debug:
 		print(f"do_wave_integral: replacement done @{time.time()-tstart:.2f}s")

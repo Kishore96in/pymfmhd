@@ -23,6 +23,53 @@ import warnings
 import itertools
 import scipy
 
+def replace_by_ampl(expr, wavevec, ampl):
+	"""
+	expr: TensExpr
+	wavevec: TensorHead
+	ampl: Symbol
+	
+	Helper to call replace on expr and replace wavevec(p)*wavevec(-p) by ampl**2
+	
+	Also see replace_by_ampl_optimized
+	"""
+	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+	w = sympy.Wild('w')
+	W = sympy.tensor.tensor.WildTensorHead('W')
+	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
+	return expr
+
+def replace_by_ampl_optimized(expr, wavevec, amp):
+	"""
+	expr: TensExpr
+	wavevec: TensorHead
+	ampl: Symbol
+	
+	Optimized version of replace_by_ampl (helper to call replace on expr and replace wavevec(p)*wavevec(-p) by ampl**2)
+	"""
+	return expr.replace(sympy.tensor.tensor.TensMul, lambda *args: _replace_by_ampl_for_mul(args, wavevec, ampl))
+
+def _replace_by_ampl_for_mul(args, wavevec, ampl):
+	"""
+	args: list, args of a TensMul
+	wavevec: TensorHead
+	ampl: Symbol
+	
+	To be used as (...).replace(TensMul, lambda *args: _replace_by_ampl_for_mul(args, wavevec, ampl))
+	See replace_by_ampl_optimized for a wrapper.
+	
+	The hope is that by reducing unnecessary walking of the expression tree, this will be more efficient than replace_by_ampl for huge expressions (it seems that replace_by_ampl is very slow on TensAdd instances which have many terms).
+	"""
+	expr = sympy.tensor.tensor.TensMul(*args).doit(deep=False)
+	if wavevec not in expr.atoms(sympy.tensor.tensor.TensorHead):
+		return expr
+	
+	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+	w = sympy.Wild('w')
+	W = sympy.tensor.tensor.WildTensorHead('W')
+	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
+	return expr
+
 def do_epsilon_delta(Expr, eps, delta):
 	"""
 	DEPRECATED: use replace
