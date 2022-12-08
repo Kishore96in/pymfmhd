@@ -70,6 +70,36 @@ def _replace_by_ampl_for_mul(args, wavevec, ampl):
 	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
 	return expr
 
+def do_epsilon_delta(expr, eps, delta):
+	"""
+	expr: TensExpr
+	eps: TensorHead, TensorIndexType.epsilon
+	delta: TensorHead, , TensorIndexType.delta
+	
+	Perform epsilon-delta replacement by using expr.replace.
+	"""
+	def _eps_delta_for_mul(args, eps, delta):
+		"""
+		args: list, args of a TensMul
+		eps: TensorHead
+		delta: TensorHead
+		"""
+		expr = sympy.tensor.tensor.TensMul(*args).doit(deep=False)
+		if eps not in expr.atoms(sympy.tensor.tensor.TensorHead):
+			return expr
+		
+		_a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+		_b = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+		_c = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+		_d = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+		_e = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+		w = sympy.Wild('w')
+		W = sympy.tensor.tensor.WildTensorHead('W')
+		expr = expr.replace( w*W()*eps(_a, _b, _c)*eps(-_a, _d, _e), w*W()*(delta(_b,_d)*delta(_c,_e) - delta(_b,_e)*delta(_d,_c)), repeat=True )
+		return expr
+	
+	return expr.replace(sympy.tensor.tensor.TensMul, lambda *args: _eps_delta_for_mul(args, eps, delta))
+
 def _do_epsilon_delta(Expr, eps, delta):
 	"""
 	DEPRECATED: use replace
