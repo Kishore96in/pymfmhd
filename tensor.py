@@ -70,7 +70,7 @@ def _replace_by_ampl_for_mul(args, wavevec, ampl):
 	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
 	return expr
 
-def do_epsilon_delta(Expr, eps, delta):
+def _do_epsilon_delta(Expr, eps, delta):
 	"""
 	DEPRECATED: use replace
 	
