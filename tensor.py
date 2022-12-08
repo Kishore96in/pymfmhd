@@ -39,7 +39,7 @@ def replace_by_ampl(expr, wavevec, ampl):
 	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
 	return expr
 
-def replace_by_ampl_optimized(expr, wavevec, amp):
+def replace_by_ampl_optimized(expr, wavevec, ampl):
 	"""
 	expr: TensExpr
 	wavevec: TensorHead
