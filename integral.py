@@ -177,7 +177,7 @@ def _do_angular_integral(Expr, wavevec):
 		newargs = other + [ angint ]
 		return Expr.func(*newargs).doit(deep=False)
 	elif isinstance(Expr, (sympy.core.add.Add, sympy.tensor.tensor.TensAdd)):
-		return Expr.func(*[do_angular_integral(i, wavevec) for i in Expr.args])
+		return Expr.func(*[_do_angular_integral(i, wavevec) for i in Expr.args])
 	else:
 		return 4*sympy.pi*Expr
 
