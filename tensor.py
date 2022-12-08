@@ -88,11 +88,12 @@ def do_epsilon_delta(expr, eps, delta):
 		if eps not in expr.atoms(sympy.tensor.tensor.TensorHead):
 			return expr
 		
-		_a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
-		_b = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
-		_c = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
-		_d = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
-		_e = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+		index_type = eps.index_types[0]
+		_a = sympy.tensor.tensor.WildTensorIndex(True, index_type)
+		_b = sympy.tensor.tensor.WildTensorIndex(True, index_type)
+		_c = sympy.tensor.tensor.WildTensorIndex(True, index_type)
+		_d = sympy.tensor.tensor.WildTensorIndex(True, index_type)
+		_e = sympy.tensor.tensor.WildTensorIndex(True, index_type)
 		w = sympy.Wild('w')
 		W = sympy.tensor.tensor.WildTensorHead('W')
 		expr = expr.replace( w*W()*eps(_a, _b, _c)*eps(-_a, _d, _e), w*W()*(delta(_b,_d)*delta(_c,_e) - delta(_b,_e)*delta(_d,_c)), repeat=True )
