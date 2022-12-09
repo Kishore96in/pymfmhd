@@ -228,7 +228,7 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	if debug:
 		print(f"do_wave_integral: replacement done @{time.time()-tstart:.2f}s")
 	
-	ret = create_scalar_integral( ampl**2 * ret, ampl)
+	ret = create_scalar_integral( ampl**2 * ret, ampl, limits=(0,sympy.oo))
 	
 	if debug:
 		print(f"do_wave_integral: scalar integral created @{time.time()-tstart:.2f}s")
