@@ -33,7 +33,7 @@ def replace_by_ampl(expr, wavevec, ampl):
 	
 	Also see replace_by_ampl_optimized
 	"""
-	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0], ignore_updown=True)
 	w = sympy.Wild('w')
 	W = sympy.tensor.tensor.WildTensorHead('W')
 	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
@@ -64,7 +64,7 @@ def _replace_by_ampl_for_mul(args, wavevec, ampl):
 	if wavevec not in expr.atoms(sympy.tensor.tensor.TensorHead):
 		return expr
 	
-	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0])
+	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0], ignore_updown=True)
 	w = sympy.Wild('w')
 	W = sympy.tensor.tensor.WildTensorHead('W')
 	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
@@ -89,11 +89,11 @@ def do_epsilon_delta(expr, eps, delta):
 			return expr
 		
 		index_type = eps.index_types[0]
-		_a = sympy.tensor.tensor.WildTensorIndex(True, index_type)
-		_b = sympy.tensor.tensor.WildTensorIndex(True, index_type)
-		_c = sympy.tensor.tensor.WildTensorIndex(True, index_type)
-		_d = sympy.tensor.tensor.WildTensorIndex(True, index_type)
-		_e = sympy.tensor.tensor.WildTensorIndex(True, index_type)
+		_a = sympy.tensor.tensor.WildTensorIndex(True, index_type, ignore_updown=True)
+		_b = sympy.tensor.tensor.WildTensorIndex(True, index_type, ignore_updown=True)
+		_c = sympy.tensor.tensor.WildTensorIndex(True, index_type, ignore_updown=True)
+		_d = sympy.tensor.tensor.WildTensorIndex(True, index_type, ignore_updown=True)
+		_e = sympy.tensor.tensor.WildTensorIndex(True, index_type, ignore_updown=True)
 		w = sympy.Wild('w')
 		W = sympy.tensor.tensor.WildTensorHead('W')
 		expr = expr.replace( w*W()*eps(_a, _b, _c)*eps(-_a, _d, _e), w*W()*(delta(_b,_d)*delta(_c,_e) - delta(_b,_e)*delta(_d,_c)), repeat=True )
