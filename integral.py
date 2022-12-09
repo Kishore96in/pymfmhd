@@ -45,7 +45,7 @@ def _gen_delta_combs(inds, delta):
 	
 	return delta_combs
 
-def create_scalar_integral(expr, var):
+def create_scalar_integral(expr, var, limits=None):
 	"""
 	If isinstance(expr, TensExpr), Integral(expr, var) fails because it tries to convert the tensor to a polynomial and fails. This is a wrapper to take care of that issue.
 	
@@ -66,15 +66,21 @@ def create_scalar_integral(expr, var):
 	>>> create_scalar_integral( f(x)*K(p), x )
 	Integral(f(x), x) * K(p)
 	"""
+	if limits is not None:
+		#intvar is the second argument of Integral
+		intvar = (var, *limits)
+	else:
+		intvar = var
+	
 	expr = sympy.expand(expr)
 	if isinstance(expr, (sympy.tensor.tensor.TensMul, sympy.tensor.tensor.Tensor)):
 		if var in expr.nocoeff.atoms():
 			raise ValueError("The tensor part is dependent on the integration variables. Perhaps try expanding expr.")
-		return sympy.Integral(expr.coeff, var)*expr.nocoeff
+		return sympy.Integral(expr.coeff, intvar)*expr.nocoeff
 	elif isinstance(expr, sympy.tensor.tensor.TensAdd):
-		return expr.func(*[create_scalar_integral(arg, var) for arg in expr.args])
+		return expr.func(*[create_scalar_integral(arg, var, limits=limits) for arg in expr.args])
 	else:
-		return sympy.Integral(expr, var)
+		return sympy.Integral(expr, intvar)
 
 class AngularIntegral(sympy.tensor.tensor.TensExpr):
 	"""
