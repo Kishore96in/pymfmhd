@@ -6,6 +6,7 @@ import sympy.tensor.tensor
 from average import average
 from tensor import do_epsilon_delta, partialdiff
 from integral import do_angular_integral, AngularIntegral, create_scalar_integral
+from tensorField import TensorFieldHead
 
 x,y = sy.symbols("x y")
 
@@ -160,6 +161,11 @@ check_tens_eq(
 assert create_scalar_integral(K(p)*K(q)*g(x), x) == sy.Integral(g(x), x)*K(p)*K(q)
 assert create_scalar_integral(K(q)*g(x) + V(q)*f(x), x) == sy.Integral(g(x), x)*K(q) + sy.Integral(f(x), x)*V(q)
 
+#Tests for TensorField etc.
+T = TensorFieldHead("T", [Cartesian], positions=[K])
+assert T(p).component.name == "T"
+assert T(p).positions == (K,)
+assert T(p).get_indices() == [p]
 
 #################
 cprint("All tests passed", attrs=['bold'])
