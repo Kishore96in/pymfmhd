@@ -29,10 +29,12 @@ class TensorFieldHead(TensorHead):
 		return '%s(%s;%s)' %(self.name, ','.join([str(x) for x in self.index_types]), ','.join([str(x) for x in self.positions]))
 	
 	def __call__(self, *indices, **kw_args):
-		return TensorField(self, indices, self.positions, **kw_args)
+		pos = kw_args.pop("pos", self.positions)
+		return TensorField(self, indices, pos=pos, **kw_args)
 
 class TensorField(Tensor):
-	def __new__(cls, tensor_head, indices, positions, *, is_canon_bp=False, **kw_args):
+	def __new__(cls, tensor_head, indices, *, is_canon_bp=False, **kw_args):
+		positions = kw_args.pop("pos")
 		indices = cls._parse_indices(tensor_head, indices)
 		obj = Basic.__new__(cls, tensor_head, Tuple(*indices), Tuple(*positions), **kw_args)
 		obj._index_structure = _IndexStructure.from_indices(*indices)
