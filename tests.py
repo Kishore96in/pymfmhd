@@ -166,6 +166,7 @@ T = TensorFieldHead("T", [Cartesian], positions=[K])
 assert T(p).component.name == "T"
 assert T(p).positions == (K,)
 assert T(p).get_indices() == [p]
+assert T(p, pos=[V]).positions == (V,)
 
 #################
 cprint("All tests passed", attrs=['bold'])
