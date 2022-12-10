@@ -6,7 +6,10 @@ import warnings
 import itertools
 import scipy
 
-from .tensor import replace_by_ampl_optimized as replace_by_ampl
+try:
+	from .tensor import replace_by_ampl_optimized as replace_by_ampl
+except ImportError:
+	from tensor import replace_by_ampl_optimized as replace_by_ampl
 
 def _gen_ind_combs(inds):
 	"""
