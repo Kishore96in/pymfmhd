@@ -4,6 +4,11 @@ from sympy import Basic, Symbol, Tuple, S
 from sympy.tensor.tensor import TensorHead, Tensor, TensorSymmetry, TensorManager, _IndexStructure
 
 class TensorFieldHead(TensorHead):
+	"""
+	name: str
+	index_types: list of TensorIndexType
+	positions: list
+	"""
 	def __new__(cls, name, index_types, positions, symmetry=None, comm=0):
 		if isinstance(name, str):
 			name_symbol = Symbol(name)
@@ -29,6 +34,10 @@ class TensorFieldHead(TensorHead):
 		return '%s(%s;%s)' %(self.name, ','.join([str(x) for x in self.index_types]), ','.join([str(x) for x in self.positions]))
 	
 	def __call__(self, *indices, **kw_args):
+		"""
+		indices: list of TensorIndex
+		pos (kwarg): override positions set in TensorFieldHead
+		"""
 		pos = kw_args.pop("pos", self.positions)
 		return TensorField(self, indices, pos=pos, **kw_args)
 
