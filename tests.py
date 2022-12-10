@@ -161,7 +161,7 @@ check_tens_eq(
 assert create_scalar_integral(K(p)*K(q)*g(x), x) == sy.Integral(g(x), x)*K(p)*K(q)
 assert create_scalar_integral(K(q)*g(x) + V(q)*f(x), x) == sy.Integral(g(x), x)*K(q) + sy.Integral(f(x), x)*V(q)
 
-#Tests for TensorField etc.
+#Tests for TensorField
 T = TensorFieldHead("T", [Cartesian], positions=[K])
 assert T(p).component.name == "T"
 assert T(p).positions == (K,)
