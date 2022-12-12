@@ -231,6 +231,9 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	if debug:
 		print(f"do_wave_integral: replacement done @{time.time()-tstart:.2f}s")
 	
+	if wavevec in ret.atoms(sympy.tensor.tensor.TensorHead):
+		raise RuntimeError(f"Could not eliminate {wavevec} by doing angular integrals")
+	
 	ret = create_scalar_integral( ampl**2 * ret, ampl, limits=(0,sympy.oo))
 	
 	if debug:
