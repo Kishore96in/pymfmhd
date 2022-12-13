@@ -169,6 +169,7 @@ def partialdiff(Expr, wavevec, ampl=None):
 		ret: an instance of sympy.tensor.tensor.TensExpr
 	"""
 	indextype = wavevec.index_types[0]
+	Expr = Expr.expand()
 	
 	if isinstance(Expr, sympy.tensor.tensor.TensAdd) or isinstance(Expr, sympy.core.add.Add):
 		return Expr.func(*[ partialdiff(arg, wavevec, ampl=ampl) for arg in Expr.args ])
@@ -196,6 +197,9 @@ def partialdiff(Expr, wavevec, ampl=None):
 				warnings.warn("Ignoring {} dependence in {}".format(wavevec, scalarpart), RuntimeWarning)
 			
 			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl)
+			
+			if tensorpart.has(ampl):
+				raise RuntimeError(f"Expanding the given expression failed; the non-coeff part depends on {ampl}.")
 		
 		if indextype is not None:
 			#NOTE: a separate call to contract_metric does not seem to be needed when we have already set the metric of the TensorIndexType to delta
