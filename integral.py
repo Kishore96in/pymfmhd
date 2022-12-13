@@ -192,13 +192,14 @@ def _do_angular_integral(Expr, wavevec):
 	else:
 		return 4*sympy.pi*Expr
 
-def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
+def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None, limits=(0,sympy.oo)):
 	"""
 	expr: TensExpr
 	wavevec: TensorHead
 	ampl: Symbol
 	simp: simplifying function to be applied to the Angular integral before performing the scalar integral. Needs to have signature simp(TensExpr) -> TensExpr
 	debug: whether to print debug output.
+	limits: limits for the integral over the magnitude of the wavevector.
 	"""
 	if debug:
 		import time
@@ -237,7 +238,7 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	if wavevec in ret.atoms(sympy.tensor.tensor.TensorHead):
 		raise RuntimeError(f"Could not eliminate {wavevec} by doing angular integrals")
 	
-	ret = create_scalar_integral( ampl**2 * ret, ampl, limits=(0,sympy.oo))
+	ret = create_scalar_integral( ampl**2 * ret, ampl, limits=limits)
 	
 	if debug:
 		print(f"do_wave_integral: scalar integral created @{time.time()-tstart:.2f}s")
