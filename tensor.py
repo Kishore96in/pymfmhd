@@ -191,7 +191,7 @@ def partialdiff(Expr, wavevec, ampl=None):
 			else:
 				warnings.warn("Could not find any tensor part of {}. Is this correct?".format(Expr), RuntimeWarning)
 				scalarpart = Expr
-				tensorpart = 1
+				tensorpart = sympy.S(1)
 			
 			if scalarpart.has(wavevec.head):
 				warnings.warn("Ignoring {} dependence in {}".format(wavevec, scalarpart), RuntimeWarning)
