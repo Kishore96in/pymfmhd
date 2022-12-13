@@ -126,7 +126,7 @@ check_tens_eq(
 
 #Test partial derivatives
 f, g = sympy.symbols('f g', cls=sympy.Function)
-k = sympy.symbols("K") #'amplitude' of K
+k = sympy.symbols("k") #'amplitude' of K
 
 check_tens_eq(
 	partialdiff( K(p), K(q) ),
