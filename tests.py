@@ -156,6 +156,12 @@ check_tens_eq(
 	partialdiff( 1 / k**2 , K(p), ampl=k ),
 	-2 * K(-p)/k**4
 	)
+check_tens_eq(
+	partialdiff(
+		f(k)*( delta(p,q) - K(p)*K(q)/k**2 ), K(q), k
+		),
+	sympy.Derivative(f(k),k)*K(p)/k - 4/k**2 * f(k)*K(p) + sympy.Derivative(-f(k)/k**2,k)/k * K(p)*K(q)*K(-q)
+	)
 
 #Tests for create_scalar_integral
 assert create_scalar_integral(K(p)*K(q)*g(x), x) == sy.Integral(g(x), x)*K(p)*K(q)
