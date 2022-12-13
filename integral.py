@@ -220,6 +220,9 @@ def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None):
 	if debug:
 		print(f"do_wave_integral: AngularIntegral done @{time.time()-tstart:.2f}s")
 	
+	if ret == 0:
+		return ret
+	
 	if simp is not None:
 		ret = simp(ret)
 		
