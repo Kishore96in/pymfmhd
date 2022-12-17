@@ -59,6 +59,11 @@ class TensorField(Tensor):
 		obj._index_map = Tensor._build_index_map(indices, obj._index_structure)
 		return obj
 	
+	def _set_indices(self, *indices, is_canon_bp=False, **kw_args):
+		if len(indices) != self.ext_rank:
+			raise ValueError("indices length mismatch")
+		return self.func(self.args[0], indices, self.positions is_canon_bp=is_canon_bp).doit()
+	
 	@property
 	def positions(self):
 		return self.args[2]
