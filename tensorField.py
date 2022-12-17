@@ -62,7 +62,7 @@ class TensorField(Tensor):
 	def _set_indices(self, *indices, is_canon_bp=False, **kw_args):
 		if len(indices) != self.ext_rank:
 			raise ValueError("indices length mismatch")
-		return self.func(self.args[0], indices, self.positions is_canon_bp=is_canon_bp).doit()
+		return self.func(self.args[0], indices, self.positions, is_canon_bp=is_canon_bp).doit()
 	
 	@property
 	def positions(self):
