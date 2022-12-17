@@ -39,13 +39,12 @@ class TensorFieldHead(TensorHead):
 		pos (kwarg): override positions set in TensorFieldHead
 		"""
 		pos = kw_args.pop("pos", self.positions)
-		return TensorField(self, indices, pos=pos, **kw_args)
+		return TensorField(self, indices, pos, **kw_args)
 
 class TensorField(Tensor):
-	def __new__(cls, tensor_head, indices, *, is_canon_bp=False, **kw_args):
-		positions = kw_args.pop("pos")
+	def __new__(cls, tensor_head, indices, positions, is_canon_bp=False, **kw_args):
 		indices = cls._parse_indices(tensor_head, indices)
-		obj = Basic.__new__(cls, tensor_head, Tuple(*indices), Tuple(*positions), **kw_args)
+		obj = Basic.__new__(cls, tensor_head, Tuple(*indices), Tuple(*positions))
 		obj._index_structure = _IndexStructure.from_indices(*indices)
 		obj._free = obj._index_structure.free[:]
 		obj._dum = obj._index_structure.dum[:]
