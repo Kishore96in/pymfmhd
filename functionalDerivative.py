@@ -47,7 +47,8 @@ class funDer(PartialDerivative):
 	def _perform_derivative(self):
 		return self
 	
-	def _latex(self, printer):
+	@staticmethod
+	def funDer_to_latex(self, printer):
 		if len(self.variables) == 1:
 			return r"\frac{\delta}{\delta {%s}}{%s}" % (
 				printer._print(self.variables[0]),
@@ -59,6 +60,9 @@ class funDer(PartialDerivative):
 				" ".join([r"\delta {%s}" % printer._print(i) for i in self.variables]),
 				printer.parenthesize(self.expr, PRECEDENCE["Mul"], False)
 			)
+	
+	def _latex(self, printer):
+		return funDer.funDer_to_latex(self, printer)
 
 class averagedFunDer(funDer):
 	"""
