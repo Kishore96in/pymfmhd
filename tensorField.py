@@ -22,13 +22,17 @@ class TensorFieldHead(TensorHead):
 		else:
 			assert symmetry.rank == len(index_types)
 
-		obj = Basic.__new__(cls, name_symbol, Tuple(*index_types), symmetry, Tuple(*positions))
+		obj = Basic.__new__(cls, name_symbol, Tuple(*index_types), Tuple(*positions), symmetry)
 		obj.comm = TensorManager.comm_symbols2i(comm)
 		return obj
 	
 	@property
+	def symmetry(self):
+			return self.args[3]
+	
+	@property
 	def positions(self):
-		return self.args[3]
+		return self.args[2]
 	
 	def _print(self):
 		return '%s(%s;%s)' %(self.name, ','.join([str(x) for x in self.index_types]), ','.join([str(x) for x in self.positions]))
