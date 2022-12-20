@@ -3,6 +3,11 @@ from sympy.tensor.toperators import PartialDerivative
 from sympy import S, Basic
 from sympy.printing.precedence import PRECEDENCE
 
+try:
+	from .average import average
+except ImportError:
+	from average import average
+
 class funDer(PartialDerivative):
 	def __new__(cls, expr, *variables, **kwargs):
 		"""
@@ -83,7 +88,7 @@ class averagedFunDer(funDer):
 			expr = expr.expr
 		
 		if len(variables) == 0:
-			return expr
+			return average(expr, wrt)
 		
 		args, indices, free, dum = cls._contract_indices_for_derivative(
 			S(expr), variables)
@@ -93,6 +98,7 @@ class averagedFunDer(funDer):
 		obj._free = free
 		obj._dum = dum
 		obj.wrt = wrt
+		obj.average = average
 		return obj
 	
 	@property
@@ -105,7 +111,7 @@ class averagedFunDer(funDer):
 		variables = [i.xreplace(mirrored) for i in self.variables]
 		return self.func(expr, variables, self.wrt)
 	
-	def _apply_recursion_relation(self, corr, average):
+	def _apply_recursion_relation(self, corr):
 		return NotImplementedError
 	
 	def _latex(self, printer):
@@ -113,11 +119,11 @@ class averagedFunDer(funDer):
 		wrt = printer._print(self.wrt)
 		return r"\left< %s \right>_{%s}" % (ret, wrt)
 
-def recurse(expr, corr, average, n=1):
+def recurse(expr, corr, n=1):
 	for _ in range(n):
 		expr = expr.replace(
 			lambda a: isinstance(a, averagedFunDer),
-			lambda a: a._apply_recursion_relation(corr, average)
+			lambda a: a._apply_recursion_relation(corr)
 			)
 	return expr
 
