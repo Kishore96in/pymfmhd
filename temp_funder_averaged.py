@@ -1,4 +1,4 @@
-from sympy import Basic
+from sympy import S, Basic, Function, Heaviside
 from sympy.tensor.tensor import TensorIndex, TensExpr, get_indices
 from sympy.tensor.toperators import PartialDerivative
 
