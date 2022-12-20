@@ -49,6 +49,9 @@ class Integ(TensExpr):
 		variables = ",\, ".join(variables)
 		return r"\int_{%s} \left(%s\right)" % (variables, expr)
 
+class dirac(Function):
+	pass
+
 class averagedFunDer(funDer):
 	def __new__(cls, expr, *variables, **kwargs):
 		obj = funDer.__new__(cls, expr, *variables)
