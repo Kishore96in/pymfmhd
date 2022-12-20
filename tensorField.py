@@ -78,6 +78,7 @@ class TensorField(Tensor):
 	
 	def _latex(self, printer):
 		name = self.head.name
+		name_str = printer._print(Symbol(name))
 		
 		indices = self.get_indices()
 		ind_str =  printer._printer_tensor_indices("", indices, {})
@@ -100,7 +101,7 @@ class TensorField(Tensor):
 		
 		pos_str = ", ".join([ pos_time_to_str(p) for p in self.positions])
 		
-		return f"{name}{ind_str}({pos_str})"
+		return f"{name_str}{ind_str}({pos_str})"
 
 if __name__ == "__main__":
 	from sympy.tensor.tensor import TensorIndexType, WildTensorIndex, TensorIndex
