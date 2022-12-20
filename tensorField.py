@@ -28,7 +28,7 @@ class TensorFieldHead(TensorHead):
 	
 	@property
 	def symmetry(self):
-			return self.args[3]
+		return self.args[3]
 	
 	@property
 	def positions(self):
