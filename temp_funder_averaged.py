@@ -54,7 +54,12 @@ class dirac(Function):
 	pass
 
 class averagedFunDer(funDer):
-	def __new__(cls, expr, variables, wrt, aver):
+	def __new__(cls, expr, variables, wrt):
+		"""
+		expr: TensExpr
+		variables: list of TensorField
+		wrt: Symbol (used to distinguish different kinds of averages)
+		"""
 		
 		# Flatten:
 		if isinstance(expr, averagedFunDer):
@@ -74,7 +79,6 @@ class averagedFunDer(funDer):
 		obj._free = free
 		obj._dum = dum
 		obj.wrt = wrt
-		obj.average = aver
 		return obj
 	
 	@property
@@ -85,9 +89,9 @@ class averagedFunDer(funDer):
 		expr = self.expr.xreplace(repl)
 		mirrored = {-k: -v for k, v in repl.items()}
 		variables = [i.xreplace(mirrored) for i in self.variables]
-		return self.func(expr, variables, self.wrt, self.average)
+		return self.func(expr, variables, self.wrt)
 	
-	def _apply_recursion_relation(self, corr):
+	def _apply_recursion_relation(self, corr, average):
 		assert len(self.expr.positions) > 2 #NOTE: I am allowing for >2 since I will need to have a wrt variable for the average
 		head = self.variables[0].head
 		assert len(head.positions) > 2 #NOTE: I am allowing for >2 since I will need to have a wrt variable for the average
@@ -113,11 +117,11 @@ class averagedFunDer(funDer):
 		
 		ret = 0
 		ret += Integ(
-			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), self.variables, self.wrt, self.average ) * self.average( head(i0, pos=[y0, tau0]) , self.wrt) ,
+			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), self.variables, self.wrt) * average( head(i0, pos=[y0, tau0]) , self.wrt) ,
 			y0, tau0
 			)
 		ret += Integ(
-			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), self.variables + [head(i1, pos=[y1,tau1])], self.wrt, self.average ) * corr(i0, i1, pos=[(y0,tau0), (y1, tau1)]),
+			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), self.variables + [head(i1, pos=[y1,tau1])], self.wrt) * corr(i0, i1, pos=[(y0,tau0), (y1, tau1)]),
 			y0, tau0,
 			y1, tau1
 			)
@@ -127,7 +131,7 @@ class averagedFunDer(funDer):
 			y_a = self.variables[alpha].positions[0]
 			tau_a = self.variables[alpha].positions[1]
 			
-			ret += PartialDerivative(dirac(x(i2)-y_a(i2)), y_a(i_a) ) * Heaviside(t-tau_a) * self.func( self.expr.xreplace({x:y_a, t:tau_a}), other_vars, self.wrt, self.average )
+			ret += PartialDerivative(dirac(x(i2)-y_a(i2)), y_a(i_a) ) * Heaviside(t-tau_a) * self.func( self.expr.xreplace({x:y_a, t:tau_a}), other_vars, self.wrt)
 		
 		return ret
 
@@ -162,6 +166,6 @@ if __name__ == "__main__":
 	print(
 		expr.replace(
 			lambda a: isinstance(a, averagedFunDer),
-			lambda a: a._apply_recursion_relation(corr)
+			lambda a: a._apply_recursion_relation(corr, average)
 			)
 		)
