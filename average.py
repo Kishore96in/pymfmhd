@@ -1,20 +1,60 @@
 import sympy
+import sympy.tensor.tensor
 
-class average(sympy.Function):
+from sympy import Basic
+from sympy.tensor.tensor import TensExpr, get_indices, get_free_indices
+from collections.abc import Iterable
+
+class average(TensExpr):
 	"""
 	Represents a Reynolds average. First argument is the expression averaged, second argument is the set of symbols over which the average is done.
 	TODO: Actually, the need to specify 'wrt' makes this unable to represent an ensemble average, I think! Problem? Or does that just mean we need to add a dummy 'realization label' to each stochastic field?
 	"""
-	nargs=2
+	def __new__(cls, expr, wrt):
+		"""
+		expr: TensExpr
+		wrt: set
+		"""
+		if isinstance(wrt, set):
+			wrt = tuple(wrt)
+		if isinstance(wrt, Iterable):
+			wrt = tuple(set(wrt))
+		else:
+			wrt = tuple(set([wrt]))
+		
+		obj = Basic.__new__(cls, expr, wrt)
+		obj.expr = expr
+		obj.wrt = wrt
+		
+		obj._indices = get_indices(expr)
+		obj._free = get_free_indices(expr)
+		return obj
 	
-	def _latex(self, printer=None):
-		args = "\,".join([ printer.doprint(i) for i in self.args])
-		return r"\left<{%s}\right>" % (args)
+	@property
+	def nocoeff(self):
+		return self
+
+	@property
+	def coeff(self):
+		return S.One
+
+	def get_indices(self):
+		return self._indices
+
+	def get_free_indices(self):
+		return self._free
+
+	def _replace_indices(self, repl):
+		return self.xreplace(repl)
+	
+	def _latex(self, printer):
+		expr = printer._print(self.expr)
+		return r"\left<{%s}\right>" % (expr)
 	
 	@property
 	def free_symbols(self):
-		wrt = set(self.args[1]) #Make sure this is a set. For some reason, sympy seems to instantiate it as a finiteset. Not sure if that is a sympy bug.
-		sym = self.args[0].free_symbols
+		wrt = set(self.wrt) #Make sure this is a set. For some reason, sympy seems to instantiate it as a finiteset. Not sure if that is a sympy bug.
+		sym = self.expr.free_symbols
 		return {s for s in sym if s not in wrt}
 	
 	def _eval_simplify(self, **kwargs):
