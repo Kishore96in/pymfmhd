@@ -81,6 +81,12 @@ class averagedFunDer(funDer):
 	@property
 	def variables(self):
 		return self.args[3:]
+	
+	def _replace_indices(self, repl):
+		expr = self.expr.xreplace(repl)
+		mirrored = {-k: -v for k, v in repl.items()}
+		variables = [i.xreplace(mirrored) for i in self.variables]
+		return self.func(expr, *variables, wrt=self.wrt, average=self.average)
 
 if __name__ == "__main__":
 	from tensorField import TensorFieldHead
