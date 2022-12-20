@@ -4,6 +4,7 @@ from sympy.tensor.toperators import PartialDerivative
 
 #Stuff from pymfmhd
 from functionalDerivative import funDer
+from functionalDerivative import averagedFunDer as avFunDer
 from average import average
 from tensorField import TensorFieldHead
 
@@ -53,44 +54,7 @@ class Integ(TensExpr):
 class dirac(Function):
 	pass
 
-class averagedFunDer(funDer):
-	def __new__(cls, expr, variables, wrt):
-		"""
-		expr: TensExpr
-		variables: list of TensorField
-		wrt: Symbol (used to distinguish different kinds of averages)
-		"""
-		
-		# Flatten:
-		if isinstance(expr, averagedFunDer):
-			raise NotImplementedError
-		elif isinstance(expr, funDer):
-			variables = expr.variables + variables
-			expr = expr.expr
-		
-		if len(variables) == 0:
-			return expr
-		
-		args, indices, free, dum = cls._contract_indices_for_derivative(
-			S(expr), variables)
-		
-		obj = Basic.__new__(cls, args[0], tuple(args[1:]), wrt)
-		obj._indices = indices
-		obj._free = free
-		obj._dum = dum
-		obj.wrt = wrt
-		return obj
-	
-	@property
-	def variables(self):
-		return list(self.args[1])
-	
-	def _replace_indices(self, repl):
-		expr = self.expr.xreplace(repl)
-		mirrored = {-k: -v for k, v in repl.items()}
-		variables = [i.xreplace(mirrored) for i in self.variables]
-		return self.func(expr, variables, self.wrt)
-	
+class averagedFunDer(avFunDer):
 	def _apply_recursion_relation(self, corr, average):
 		assert len(self.expr.positions) > 2 #NOTE: I am allowing for >2 since I will need to have a wrt variable for the average
 		head = self.variables[0].head
