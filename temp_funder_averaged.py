@@ -1,5 +1,5 @@
 from sympy import Basic
-from sympy.tensor.tensor import TensorIndex, TensExpr
+from sympy.tensor.tensor import TensorIndex, TensExpr, get_indices
 from sympy.tensor.toperators import PartialDerivative
 
 #Stuff from pymfmhd
@@ -7,7 +7,7 @@ from functionalDerivative import funDer
 from average import average
 
 class Integ(TensExpr):
-	def __new__(expr, *variables):
+	def __new__(cls, expr, *variables):
 		"""
 		expr: TensExpr
 		variables: Any sympy objects
@@ -15,7 +15,33 @@ class Integ(TensExpr):
 		obj = Basic.__new__(cls, expr, tuple(variables))
 		obj.expr = expr
 		obj.variables = variables
+		
+		indices = []
+		indices.extend(get_indices(expr))
+		for v in variables:
+			indices.extend(get_indices(v))
+		
+		obj._indices = indices
+		obj._free = [i for i in indices if -i not in indices]
+		
 		return obj
+	
+	@property
+	def nocoeff(self):
+		return self
+
+	@property
+	def coeff(self):
+		return S.One
+
+	def get_indices(self):
+		return self._indices
+
+	def get_free_indices(self):
+		return self._free
+
+	def _replace_indices(self, repl):
+		return self.xreplace(repl)
 	
 	def _latex(self, printer):
 		expr = printer._print(self.expr)
