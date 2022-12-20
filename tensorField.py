@@ -2,6 +2,7 @@ import sympy
 import sympy.tensor.tensor
 from sympy import Basic, Symbol, Tuple, S
 from sympy.tensor.tensor import TensorHead, Tensor, TensorSymmetry, TensorManager, _IndexStructure
+from collections.abc import Iterable
 
 class TensorFieldHead(TensorHead):
 	"""
@@ -74,6 +75,32 @@ class TensorField(Tensor):
 	
 	def _print(self):
 		return '%s(%s;%s)' %(self.component.name, ','.join([str(x) for x in self.indices]), ','.join([str(x) for x in self.positions]))
+	
+	def _latex(self, printer):
+		name = self.head.name
+		
+		indices = self.get_indices()
+		ind_str =  printer._printer_tensor_indices("", indices, {})
+		
+		def getname(v):
+			if hasattr(v, "name"):
+				return v.name
+			elif hasattr(v, "head"):
+				return v.head.name
+			else:
+				raise NotImplementedError(f"{v = }")
+		
+		def pos_time_to_str(tup):
+			if (not isinstance(tup, Iterable)) or isinstance(tup, (TensorHead, Tensor)):
+				tup = [tup]
+			ret = []
+			for p in tup:
+				ret.append( printer._print(Symbol(getname(p))) )
+			return ", ".join(ret)
+		
+		pos_str = ", ".join([ pos_time_to_str(p) for p in self.positions])
+		
+		return f"{name}{ind_str}({pos_str})"
 
 if __name__ == "__main__":
 	from sympy.tensor.tensor import TensorIndexType, WildTensorIndex, TensorIndex
