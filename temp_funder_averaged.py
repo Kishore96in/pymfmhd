@@ -56,7 +56,7 @@ class dirac(Function):
 class averagedFunDer(funDer):
 	def __new__(cls, expr, *variables, **kwargs):
 		wrt = kwargs.pop("wrt")
-		av = kwargs.pop("average", average)
+		av = kwargs.pop("average")
 		
 		# Flatten:
 		if isinstance(expr, averagedFunDer):
@@ -71,7 +71,7 @@ class averagedFunDer(funDer):
 		args, indices, free, dum = cls._contract_indices_for_derivative(
 			S(expr), variables)
 		
-		obj = Basic.__new__(cls, args[0], wrt, av, *args[1:])
+		obj = Basic.__new__(cls, args[0], wrt, *args[1:])
 		obj._indices = indices
 		obj._free = free
 		obj._dum = dum
@@ -81,7 +81,7 @@ class averagedFunDer(funDer):
 	
 	@property
 	def variables(self):
-		return self.args[3:]
+		return self.args[2:]
 	
 	def _replace_indices(self, repl):
 		expr = self.expr.xreplace(repl)
@@ -115,11 +115,11 @@ class averagedFunDer(funDer):
 		
 		ret = 0
 		ret += Integ(
-			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), *self.variables, wrt=self.wrt ) * self.average( head(i0, pos=[y0, tau0]) , self.wrt) ,
+			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), *self.variables, wrt=self.wrt, average=self.average ) * self.average( head(i0, pos=[y0, tau0]) , self.wrt) ,
 			y0, tau0
 			)
 		ret += Integ(
-			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), *self.variables, head(i1, pos=[y1,tau1]), wrt=self.wrt ) * corr(i0, i1, pos=[(y0,tau0), (y1, tau1)]),
+			PartialDerivative(dirac(x(i2)-y0(i2)), y0(i0) ) * Heaviside(t-tau0) * self.func( self.expr.xreplace({x:y0, t:tau0}), *self.variables, head(i1, pos=[y1,tau1]), wrt=self.wrt, average=self.average ) * corr(i0, i1, pos=[(y0,tau0), (y1, tau1)]),
 			y0, tau0,
 			y1, tau1
 			)
@@ -129,7 +129,7 @@ class averagedFunDer(funDer):
 			y_a = self.variables[alpha].positions[0]
 			tau_a = self.variables[alpha].positions[1]
 			
-			ret += PartialDerivative(dirac(x(i2)-y_a(i2)), y_a(i_a) ) * Heaviside(t-tau_a) * self.func( self.expr.xreplace({x:y_a, t:tau_a}), *other_vars, wrt=self.wrt )
+			ret += PartialDerivative(dirac(x(i2)-y_a(i2)), y_a(i_a) ) * Heaviside(t-tau_a) * self.func( self.expr.xreplace({x:y_a, t:tau_a}), *other_vars, wrt=self.wrt, average=self.average )
 		
 		return ret
 
