@@ -1,8 +1,8 @@
 import sympy
 import sympy.tensor.tensor
 
-from sympy import Basic
-from sympy.tensor.tensor import TensExpr, get_indices, get_free_indices
+from sympy import Basic, Add, Mul, S
+from sympy.tensor.tensor import TensExpr, get_indices, get_free_indices, TensAdd, TensMul
 from collections.abc import Iterable
 
 class average(TensExpr):
@@ -65,12 +65,12 @@ class average(TensExpr):
 		* implement commutation with derivatives and integrals over independent variables.
 		"""
 		#TODO: Support a 'deep' argument like powsimp does.
-		arg = self.args[0]
-		wrt = self.args[1]
+		arg = self.expr
+		wrt = self.wrt
 		
-		if arg.func == sympy.core.add.Add:
-			return sympy.core.add.Add(*[ simplify( average(i,wrt), **kwargs) for i in arg.args])
-		elif arg.func == sympy.core.mul.Mul:
+		if isinstance(arg, (Add, TensAdd)):
+			return TensAdd(*[ simplify( average(i,wrt), **kwargs) for i in arg.args]).doit(deep=False)
+		elif isinstance(arg, (Mul, TensMul)):
 			inside = []
 			outside = []
 			for a in arg.args:
@@ -79,12 +79,12 @@ class average(TensExpr):
 				#TODO: Do I need to worry about the case of bound symbols? check for that is any([ s in  a.atoms(sympy.Symbol) for s in wrt ])
 				else:
 					outside.append(a)
-			outmulsimp = simplify(sympy.core.mul.Mul(*outside), **kwargs)
+			outmulsimp = simplify(arg.func(*outside).doit(deep=False), **kwargs)
 			if len(inside) > 0:
-				return sympy.core.mul.Mul(outmulsimp, average(simplify(sympy.core.mul.Mul(*inside), **kwargs), wrt) )
+				return TensMul(outmulsimp, average(simplify(arg.func(*inside).doit(deep=False), **kwargs), wrt) ).doit(deep=False)
 			else:
 				return outmulsimp
-		elif arg.func == average:
+		elif isinstance(arg, average):
 			new_wrt = wrt.union(arg.args[1])
 			return average(arg.args[0].simplify(), new_wrt)
 		else:
