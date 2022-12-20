@@ -89,7 +89,7 @@ class averagedFunDer(funDer):
 		variables = [i.xreplace(mirrored) for i in self.variables]
 		return self.func(expr, *variables, wrt=self.wrt, average=self.average)
 	
-	def _apply_recursion_relation(self):
+	def _apply_recursion_relation(self, corr):
 		assert len(self.expr.positions) > 2 #NOTE: I am allowing for >2 since I will need to have a wrt variable for the average
 		head = self.variables[0].head
 		assert len(head.positions) > 2 #NOTE: I am allowing for >2 since I will need to have a wrt variable for the average
@@ -112,8 +112,6 @@ class averagedFunDer(funDer):
 		i0, y0, tau0 = make_dummies()
 		i1, y1, tau1 = make_dummies()
 		i2, _, _ = make_dummies()
-		
-		corr = TensorFieldHead("Q", [head.index_types[0], head.index_types[0]], positions=[None, None])
 		
 		ret = 0
 		ret += Integ(
@@ -153,16 +151,19 @@ if __name__ == "__main__":
 	V = TensorFieldHead("V", [R3], positions=[X,t,up])
 	rho = TensorFieldHead("rho", [], positions=[X,t,up])
 	
-	print(
-		averagedFunDer(rho(pos=[X,t,up]), wrt=up)
+	corr = TensorFieldHead("Q", [R3,R3], positions=[None, None]) #Symbol for the velocity correlation
+	
+	expr = averagedFunDer(
+		rho(pos=[X,t,up]),
+		V(p, pos=[Y,tau,up]),
+		V(q, pos=[Y,tau,up]),
+		wrt=up,
+		average=average
 		)
 	
 	print(
-		averagedFunDer(
-			rho(pos=[X,t,up]),
-			V(p, pos=[Y,tau,up]),
-			V(q, pos=[Y,tau,up]),
-			wrt=up
+		expr.replace(
+			lambda a: isinstance(a, averagedFunDer),
+			lambda a: a._apply_recursion_relation(corr)
 			)
 		)
-	
