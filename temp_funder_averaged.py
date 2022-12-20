@@ -131,7 +131,7 @@ class averagedFunDer(funDer):
 			y_a = self.variables[alpha].positions[0]
 			tau_a = self.variables[alpha].positions[1]
 			
-			ret += PartialDerivative(dirac(x(i2)-y_a(i2)), ya(i_a) ) * Heaviside(t-tau_a) * self.func( self.expr.xreplace({x:y_alpha, t:tau_alpha}), *other_vars )
+			ret += PartialDerivative(dirac(x(i2)-y_a(i2)), y_a(i_a) ) * Heaviside(t-tau_a) * self.func( self.expr.xreplace({x:y_a, t:tau_a}), *other_vars, wrt=self.wrt )
 		
 		return ret
 
