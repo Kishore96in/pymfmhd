@@ -54,10 +54,33 @@ class dirac(Function):
 
 class averagedFunDer(funDer):
 	def __new__(cls, expr, *variables, **kwargs):
-		obj = funDer.__new__(cls, expr, *variables)
-		obj.wrt = kwargs.pop("wrt")
-		obj.average = kwargs.pop("average", average)
+		wrt = kwargs.pop("wrt")
+		av = kwargs.pop("average", average)
+		
+		# Flatten:
+		if isinstance(expr, averagedFunDer):
+			raise NotImplementedError
+		elif isinstance(expr, funDer):
+			variables = expr.variables + variables
+			expr = expr.expr
+		
+		if len(variables) == 0:
+			return expr
+		
+		args, indices, free, dum = cls._contract_indices_for_derivative(
+			S(expr), variables)
+		
+		obj = Basic.__new__(cls, args[0], wrt, av, *args[1:])
+		obj._indices = indices
+		obj._free = free
+		obj._dum = dum
+		obj.wrt = wrt
+		obj.average = av
 		return obj
+	
+	@property
+	def variables(self):
+		return self.args[3:]
 
 if __name__ == "__main__":
 	from tensorField import TensorFieldHead
