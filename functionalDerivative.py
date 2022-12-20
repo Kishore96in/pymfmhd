@@ -107,6 +107,11 @@ class averagedFunDer(funDer):
 	
 	def _apply_recursion_relation(self, corr, average):
 		return NotImplementedError
+	
+	def _latex(self, printer):
+		ret = funDer.funDer_to_latex(self, printer)
+		wrt = printer._print(self.wrt)
+		return r"\left< %s \right>_{%s}" % (ret, wrt)
 
 def recurse(expr, corr, average, n=1):
 	for _ in range(n):
