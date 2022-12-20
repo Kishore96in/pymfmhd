@@ -90,6 +90,14 @@ class averagedFunDer(funDer):
 	def _apply_recursion_relation(self, corr, average):
 		return NotImplementedError
 
+def recurse(expr, corr, average, n=1):
+	for _ in range(n):
+		expr = expr.replace(
+			lambda a: isinstance(a, averagedFunDer),
+			lambda a: a._apply_recursion_relation(corr, average)
+			)
+	return expr
+
 if __name__ == "__main__":
 	from tensorField import TensorFieldHead
 	from sympy.tensor.tensor import TensorIndexType, TensorIndex, TensorHead

@@ -3,7 +3,7 @@ from sympy.tensor.tensor import TensorIndex, TensExpr, get_indices
 from sympy.tensor.toperators import PartialDerivative
 
 #Stuff from pymfmhd
-from functionalDerivative import funDer
+from functionalDerivative import recurse
 from functionalDerivative import averagedFunDer as avFunDer
 from average import average
 from tensorField import TensorFieldHead
@@ -126,8 +126,5 @@ if __name__ == "__main__":
 		)
 	
 	print(
-		expr.replace(
-			lambda a: isinstance(a, averagedFunDer),
-			lambda a: a._apply_recursion_relation(corr, average)
-			)
+		recurse(expr, corr, average, n=2)
 		)
