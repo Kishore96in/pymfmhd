@@ -98,6 +98,21 @@ def recurse(expr, corr, average, n=1):
 			)
 	return expr
 
+def filter_by_order(expr, n=1):
+	"""
+	Given expr, keep only terms whose averagedFunDer has order<n
+	"""
+	def set_higher_zero(a):
+		if a.order < n:
+			return a
+		else:
+			return 0
+	
+	return expr.replace(
+		lambda a: isinstance(a, averagedFunDer),
+		set_higher_zero
+		)
+
 if __name__ == "__main__":
 	from tensorField import TensorFieldHead
 	from sympy.tensor.tensor import TensorIndexType, TensorIndex, TensorHead
