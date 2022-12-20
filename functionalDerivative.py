@@ -1,6 +1,7 @@
 from sympy.tensor.tensor import TensExpr
 from sympy.tensor.toperators import PartialDerivative
 from sympy import S, Basic
+from sympy.printing.precedence import PRECEDENCE
 
 class funDer(PartialDerivative):
 	def __new__(cls, expr, *variables, **kwargs):
@@ -45,6 +46,19 @@ class funDer(PartialDerivative):
 	
 	def _perform_derivative(self):
 		return self
+	
+	def _latex(self, printer):
+		if len(self.variables) == 1:
+			return r"\frac{\delta}{\delta {%s}}{%s}" % (
+				printer._print(self.variables[0]),
+				printer.parenthesize(self.expr, PRECEDENCE["Mul"], False)
+			)
+		else:
+			return r"\frac{\delta^{%s}}{%s}{%s}" % (
+				len(self.variables),
+				" ".join([r"\delta {%s}" % printer._print(i) for i in self.variables]),
+				printer.parenthesize(self.expr, PRECEDENCE["Mul"], False)
+			)
 
 class averagedFunDer(funDer):
 	"""
