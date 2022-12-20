@@ -157,10 +157,8 @@ if __name__ == "__main__":
 	
 	expr = averagedFunDer(
 		rho(pos=[X,t,up]),
-		V(p, pos=[Y,tau,up]),
-		V(q, pos=[Y,tau,up]),
-		wrt=up,
-		average=average
+		[V(p, pos=[Y,tau,up]), V(q, pos=[Y,tau,up])],
+		up,
 		)
 	
 	print(
