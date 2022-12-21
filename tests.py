@@ -7,6 +7,7 @@ from average import average
 from tensor import do_epsilon_delta, partialdiff
 from integral import do_angular_integral, AngularIntegral, create_scalar_integral
 from tensorField import TensorFieldHead
+from functionalDerivative import funDer, averagedFunDer
 
 if __name__ == "__main__":
 	x,y = sy.symbols("x y")
@@ -174,6 +175,18 @@ if __name__ == "__main__":
 	assert T(p).positions == (K,)
 	assert T(p).get_indices() == [p]
 	assert T(p, pos=[V]).positions == (V,)
+	
+	#Tests for functionalDerivative
+	up = sy.symbols("↑") #Used to denote the average we are taking
+	t, tau = sy.symbols("t tau")
+	X = sy.tensor.tensor.TensorHead("X", [Cartesian])
+	Y = sy.tensor.tensor.TensorHead("Y", [Cartesian])
+	V = TensorFieldHead("V", [Cartesian], positions=[X,t,up])
+	rho = TensorFieldHead("rho", [], positions=[X,t,up])
+	
+	assert funDer(rho(pos=[X,t,up])) == rho(pos=[X,t,up])
+	assert funDer(rho(pos=[X,t,up]), V(p, pos=[Y,tau,up]))._replace_indices({-p:-q}) == funDer(rho(pos=[X,t,up]), V(q, pos=[Y,tau,up]))
+	assert averagedFunDer(rho(pos=[X,t,up]), [V(p, pos=[Y,tau,up])], up)._replace_indices({-p:-q}) == averagedFunDer(rho(pos=[X,t,up]), [V(q, pos=[Y,tau,up])], up)
 	
 	#################
 	cprint("All tests passed", attrs=['bold'])
