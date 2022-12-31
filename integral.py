@@ -17,6 +17,9 @@ def _gen_ind_combs(inds):
 	
 	For our purposes, we do not care about linear independence (see https://mathematica.stackexchange.com/questions/77855/finding-basis-of-isotropic-tensors-of-rank-n for the more complicated approach required in that case)
 	"""
+	if len(inds)%2 != 0:
+		raise ValueError("Number of indices should be even")
+	
 	ind_combs = []
 	
 	if len(inds) > 0:
@@ -29,6 +32,10 @@ def _gen_ind_combs(inds):
 					ind_combs.append( [(ind1,ind2)] + comb )
 			else:
 				ind_combs.append([(ind1,ind2)])
+	
+	#Sanity checks
+	if len(ind_combs) != sympy.factorial2(len(inds)-1):
+		raise RuntimeError(f"Unexpected number of index combinations was generated. Generated: {len(ind_combs)}; expected: {sympy.factorial2(len(inds)-1)}")
 	
 	return ind_combs
 
