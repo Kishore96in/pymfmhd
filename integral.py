@@ -4,7 +4,6 @@ import sympy.tensor.toperators
 
 import warnings
 import itertools
-import scipy
 
 from sympy import factorial2
 
