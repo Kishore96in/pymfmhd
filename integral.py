@@ -6,7 +6,7 @@ import warnings
 import itertools
 import scipy
 
-from scipy.special import factorial2
+from sympy import factorial2
 
 try:
 	from .tensor import replace_by_ampl_optimized as replace_by_ampl
@@ -37,7 +37,7 @@ def _gen_ind_combs(inds):
 	
 	#Sanity checks
 	if len(ind_combs) != factorial2(len(inds)-1):
-		raise RuntimeError(f"Unexpected number of index combinations was generated. Generated: {len(ind_combs)}; expected: {sympy.factorial2(len(inds)-1)}")
+		raise RuntimeError(f"Unexpected number of index combinations was generated. Generated: {len(ind_combs)}; expected: {factorial2(len(inds)-1)}")
 	
 	return ind_combs
 
@@ -189,7 +189,7 @@ def _do_angular_integral(Expr, wavevec):
 				p = sympy.symbols("p")
 				prefactor = sympy.tensor.tensor.TensMul(*[ ( wavevec(p) * wavevec(-p) ).as_dummy()  for i in range(int(n/2))]) #multiply appropriate power of the wavenumber
 				delta_combs = _gen_delta_combs(inds, delta)
-				angint = 4*sympy.pi/int(factorial2(n+1)) * prefactor * sympy.tensor.tensor.TensAdd(*delta_combs)
+				angint = 4*sympy.pi/factorial2(n+1) * prefactor * sympy.tensor.tensor.TensAdd(*delta_combs)
 			else:
 				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
 				angint = AngularIntegral(prod_wavevecs, wavevec)
