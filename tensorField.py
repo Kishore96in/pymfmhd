@@ -77,11 +77,8 @@ class TensorField(Tensor):
 		return '%s(%s;%s)' %(self.component.name, ','.join([str(x) for x in self.indices]), ','.join([str(x) for x in self.positions]))
 	
 	def _latex(self, printer):
-		name = self.head.name
-		name_str = printer._print(Symbol(name))
-		
 		indices = self.get_indices()
-		ind_str =  printer._printer_tensor_indices("", indices, {})
+		ind_str =  printer._printer_tensor_indices(Symbol(self.head.name), indices, {})
 		
 		def getname(v):
 			if hasattr(v, "name"):
@@ -101,7 +98,7 @@ class TensorField(Tensor):
 		
 		pos_str = ", ".join([ pos_time_to_str(p) for p in self.positions])
 		
-		return f"{name_str}{ind_str}({pos_str})"
+		return f"{ind_str}({pos_str})"
 
 if __name__ == "__main__":
 	from sympy.tensor.tensor import TensorIndexType, WildTensorIndex, TensorIndex
