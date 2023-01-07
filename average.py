@@ -1,7 +1,7 @@
 import sympy
 import sympy.tensor.tensor
 
-from sympy import Basic, Add, Mul, S
+from sympy import Basic, Add, Mul, S, Tuple
 from sympy.tensor.tensor import TensExpr, get_indices, get_free_indices, TensAdd, TensMul
 from collections.abc import Iterable
 
@@ -16,11 +16,11 @@ class average(TensExpr):
 		wrt: set
 		"""
 		if isinstance(wrt, set):
-			wrt = tuple(wrt)
+			wrt = Tuple(*wrt)
 		if isinstance(wrt, Iterable):
-			wrt = tuple(set(wrt))
+			wrt = Tuple(*set(wrt))
 		else:
-			wrt = tuple(set([wrt]))
+			wrt = Tuple(*set([wrt]))
 		
 		obj = Basic.__new__(cls, expr, wrt)
 		obj.expr = expr
