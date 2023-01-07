@@ -132,7 +132,7 @@ class averagedFunDer(funDer):
 		obj._indices = indices
 		obj._free = free
 		obj._dum = dum
-
+		
 		return obj
 
 def recurse(expr, corr, n=1):
