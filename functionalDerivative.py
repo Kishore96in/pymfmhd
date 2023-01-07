@@ -1,6 +1,6 @@
 from sympy.tensor.tensor import TensExpr
 from sympy.tensor.toperators import PartialDerivative
-from sympy import S, Basic
+from sympy import S, Basic, Tuple
 from sympy.printing.precedence import PRECEDENCE
 
 try:
@@ -84,7 +84,7 @@ class averagedFunDer(funDer):
 		if isinstance(expr, averagedFunDer):
 			raise NotImplementedError
 		elif isinstance(expr, funDer):
-			variables = expr.variables + variables
+			variables = expr.variables + tuple(variables)
 			expr = expr.expr
 		
 		if len(variables) == 0:
@@ -93,7 +93,7 @@ class averagedFunDer(funDer):
 		args, indices, free, dum = cls._contract_indices_for_derivative(
 			S(expr), variables)
 		
-		obj = Basic.__new__(cls, args[0], tuple(args[1:]), wrt)
+		obj = Basic.__new__(cls, args[0], Tuple(*args[1:]), wrt)
 		obj._indices = indices
 		obj._free = free
 		obj._dum = dum
@@ -128,7 +128,7 @@ class averagedFunDer(funDer):
 		
 		args, indices, free, dum = self._contract_indices_for_derivative(expr, self.variables)
 		
-		obj = self.func(args[0], tuple(args[1:]), self.wrt)
+		obj = self.func(args[0], args[1:], self.wrt)
 		obj._indices = indices
 		obj._free = free
 		obj._dum = dum
