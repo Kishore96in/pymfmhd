@@ -118,6 +118,22 @@ class averagedFunDer(funDer):
 		ret = funDer.funDer_to_latex(self, printer)
 		wrt = printer._print(self.wrt)
 		return r"\left< %s \right>_{%s}" % (ret, wrt)
+	
+	def doit(self, **hints):
+		deep = hints.get('deep', True)
+		if deep:
+			expr = self.expr.doit(**hints)
+		else:
+			expr = self.expr
+		
+		args, indices, free, dum = self._contract_indices_for_derivative(expr, self.variables)
+		
+		obj = self.func(args[0], tuple(args[1:]), self.wrt)
+		obj._indices = indices
+		obj._free = free
+		obj._dum = dum
+
+		return obj
 
 def recurse(expr, corr, n=1):
 	for _ in range(n):
