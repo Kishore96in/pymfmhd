@@ -103,7 +103,7 @@ class averagedFunDer(funDer):
 	
 	@property
 	def variables(self):
-		return list(self.args[1])
+		return self.args[1]
 	
 	def _replace_indices(self, repl):
 		expr = self.expr.xreplace(repl)
