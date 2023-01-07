@@ -45,7 +45,8 @@ if __name__ == "__main__":
 		try:
 			diff = expr1 - expr2
 			if diff != 0:
-				diff = diff.canon_bp().simplify()
+				#doit is required to simplify partial derivatives
+				diff = diff.doit().canon_bp().simplify()
 			assert diff == 0
 		except:
 			print("Something went wrong.")
