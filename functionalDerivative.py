@@ -153,10 +153,13 @@ def filter_by_order(expr, n=1):
 		else:
 			return 0
 	
-	return expr.replace(
+	expr = expr.replace(
 		lambda a: isinstance(a, averagedFunDer),
 		set_higher_zero
 		)
+	
+	#Simplify is needed to make sure things that are zero are set to zero (e.g. integrals where the integrand is 0).
+	return expr.simplify()
 
 if __name__ == "__main__":
 	from tensorField import TensorFieldHead
