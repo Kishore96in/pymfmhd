@@ -117,9 +117,9 @@ if __name__ == "__main__":
 		do_angular_integral( V(p)*V(q), K ),
 		4*sy.pi*V(p)*V(q)
 		)
-	assert(
-		do_angular_integral(K(p)*K(q)*K(r)*K(s)*K(t)*K(u)*K(i)*K(j), K)
-		== AngularIntegral(K(p)*K(q)*K(r)*K(s)*K(t)*K(u)*K(i)*K(j), K)
+	check_tens_eq(
+		do_angular_integral(K(p)*K(q)*K(r)*K(s)*K(t)*K(u)*K(i)*K(-p), K).contract_delta(delta),
+		K(p)*K(-p)*do_angular_integral(K(q)*K(r)*K(s)*K(t)*K(u)*K(i), K)
 		)
 	check_tens_eq(
 		AngularIntegral( K(p)*K(q), K).doit(),

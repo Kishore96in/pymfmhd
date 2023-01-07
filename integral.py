@@ -184,14 +184,11 @@ def _do_angular_integral(Expr, wavevec):
 		else:
 			if n == 0:
 				angint = 4*sympy.pi
-			elif n <= 6:
+			else:
 				p = sympy.symbols("p")
 				prefactor = sympy.tensor.tensor.TensMul(*[ ( wavevec(p) * wavevec(-p) ).as_dummy()  for i in range(int(n/2))]) #multiply appropriate power of the wavenumber
 				delta_combs = _gen_delta_combs(inds, delta)
 				angint = 4*sympy.pi/factorial2(n+1) * prefactor * sympy.tensor.tensor.TensAdd(*delta_combs)
-			else:
-				#TODO: I believe the above should work for any order, but am being a bit careful. I should think about this.
-				angint = AngularIntegral(prod_wavevecs, wavevec)
 		
 		newargs = other + [ angint ]
 		return Expr.func(*newargs).doit(deep=False)
