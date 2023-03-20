@@ -202,8 +202,8 @@ def partialdiff(Expr, wavevec, ampl=None):
 				raise RuntimeError(f"Expanding the given expression failed; the non-coeff part depends on {ampl}.")
 		
 		if indextype is not None:
-			#NOTE: a separate call to contract_metric does not seem to be needed when we have already set the metric of the TensorIndexType to delta
-			ret = ret.contract_delta(indextype.delta).contract_metric(indextype.metric)
+			ret = sympy.tensor.tensor.contract_delta(ret, indextype.delta)
+			ret = sympy.tensor.tensor.contract_metric(ret, indextype.metric)
 		
 		return ret
 
