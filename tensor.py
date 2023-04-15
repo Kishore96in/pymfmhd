@@ -259,7 +259,13 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 		else:
 			expr = self.expr
 		
-		return partialdiff(expr, self.wavevec, self.ampl)
+		ret = partialdiff(expr, self.wavevec, self.ampl)
+		ret = replace_by_ampl_optimized(ret, self.wavevec.component, self.ampl)
+		ret = ret.as_dummy().expand() #to allow cancellation of terms
+		
+		if isinstance(ret, sympy.tensor.tensor.TensAdd):
+			ret = ret.doit(deep=False)
+		return ret
 
 if __name__ == "__main__":
 	sy = sympy
