@@ -207,6 +207,60 @@ def partialdiff(Expr, wavevec, ampl=None):
 		
 		return ret
 
+class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
+	"""
+	Unevaluated form of partialdiff
+	"""
+	def __new__(cls, expr, wavevec, ampl):
+		"""
+		expr: TensExpr
+		wavevec: Tensor, vector with respect to which the partial derivative is taken
+		ampl: Symbol, variable representing magnitude of wavevec
+		"""
+		args, indices, free, dum = sympy.tensor.toperators.PartialDerivative._contract_indices_for_derivative(sympy.S(expr), [wavevec])
+		
+		obj = sympy.tensor.tensor.Basic.__new__(cls, *args, ampl)
+		obj.expr = expr
+		obj.wavevec = wavevec
+		obj.ampl = ampl
+		
+		obj.variables = [wavevec]
+		obj._indices = indices
+		obj._free = free
+		obj._dum = dum
+		
+		return obj
+	
+	@property
+	def coeff(self):
+		return S.One
+	
+	@property
+	def nocoeff(self):
+		return self
+	
+	def get_indices(self):
+		return self._indices
+	
+	def get_free_indices(self):
+		free = sorted(self._free, key=lambda x: x[1])
+		return [i[0] for i in free]
+	
+	def _replace_indices(self, repl):
+		expr = self.expr.xreplace(repl)
+		mirrored = {-k: -v for k, v in repl.items()}
+		variables = [i.xreplace(mirrored) for i in self.variables]
+		return self.func(expr, *variables, self.ampl)
+	
+	def doit(self, **hints):
+		deep = hints.get('deep', True)
+		if deep:
+			expr = self.expr.doit(**hints)
+		else:
+			expr = self.expr
+		
+		return partialdiff(expr, self.wavevec, self.ampl)
+
 if __name__ == "__main__":
 	sy = sympy
 	
