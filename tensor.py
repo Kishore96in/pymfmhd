@@ -248,10 +248,9 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 	
 	def _replace_indices(self, repl):
 		if hasattr(self.expr, "_replace_indices"):
-			#This is needed when expr itself contains a Partial{Vector}Derivative
 			expr = self.expr._replace_indices(repl)
 		else:
-			expr = self.expr.xreplace(repl)
+			expr = self.expr
 		mirrored = {-k: -v for k, v in repl.items()}
 		variables = [i.xreplace(mirrored) for i in self.variables]
 		return self.func(expr, *variables, self.ampl)
