@@ -220,16 +220,28 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 		args, indices, free, dum = sympy.tensor.toperators.PartialDerivative._contract_indices_for_derivative(sympy.S(expr), [wavevec])
 		
 		obj = sympy.tensor.tensor.Basic.__new__(cls, *args, ampl)
-		obj.expr = expr
-		obj.wavevec = wavevec
-		obj.ampl = ampl
 		
-		obj.variables = [wavevec]
 		obj._indices = indices
 		obj._free = free
 		obj._dum = dum
 		
 		return obj
+	
+	@property
+	def expr(self):
+		return self.args[0]
+	
+	@property
+	def wavevec(self):
+		return self.args[1]
+	
+	@property
+	def ampl(self):
+		return self.args[2]
+	
+	@property
+	def variables(self):
+		return [self.wavevec]
 	
 	@property
 	def coeff(self):
