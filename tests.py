@@ -4,7 +4,7 @@ import sympy as sy
 import sympy.tensor.tensor
 
 from average import average
-from tensor import do_epsilon_delta, partialdiff
+from tensor import do_epsilon_delta, partialdiff, PartialVectorDerivative
 from integral import do_angular_integral, AngularIntegral, create_scalar_integral
 from tensorField import TensorFieldHead
 from functionalDerivative import funDer, averagedFunDer
@@ -165,6 +165,18 @@ if __name__ == "__main__":
 			),
 		sympy.Derivative(f(k),k)*K(p)/k - 4/k**2 * f(k)*K(p) + sympy.Derivative(-f(k)/k**2,k)/k * K(p)*K(q)*K(-q)
 		)
+	
+	#Test PartialVectorDerivative
+	pd = PartialVectorDerivative
+	expr = pd(pd(pd(f(k), K(p), k), K(-p), k), K(q), k)
+	R0 = expr.get_indices()[1]
+	assert expr._replace_indices({-q:R0, R0:q, -R0:-q}).get_indices()[1] != R0
+	
+	e1 = pd(pd(f(K), K(p), k), K(-p), k)
+	e2 = pd(g(K), K(p), k)*K(p)
+	e3 = e2.xreplace({g(K): e1})
+	e4 = pd(pd(pd(f(K), K(p), k), K(-p), k), K(q), k)*K(q)
+	assert e3.doit(deep=False) == e4
 	
 	#Tests for create_scalar_integral
 	assert create_scalar_integral(K(p)*K(q)*g(x), x) == sy.Integral(g(x), x)*K(p)*K(q)
