@@ -211,13 +211,13 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 	"""
 	Unevaluated form of partialdiff
 	"""
-	def __new__(cls, expr, wavevec, ampl):
+	def __new__(cls, expr, wavevec, ampl, replace_indices=True):
 		"""
 		expr: TensExpr
 		wavevec: Tensor, vector with respect to which the partial derivative is taken
 		ampl: Symbol, variable representing magnitude of wavevec
 		"""
-		args, indices, free, dum = sympy.tensor.toperators.PartialDerivative._contract_indices_for_derivative(sympy.S(expr), [wavevec])
+		args, indices, free, dum = PartialVectorDerivative._contract_indices_for_derivative(sympy.S(expr), [wavevec], replace_indices=replace_indices)
 		
 		obj = sympy.tensor.tensor.Basic.__new__(cls, *args, ampl)
 		
@@ -265,7 +265,7 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 			expr = self.expr
 		mirrored = {-k: -v for k, v in repl.items()}
 		variables = [i.xreplace(mirrored) for i in self.variables]
-		return self.func(expr, *variables, self.ampl)
+		return self.func(expr, *variables, self.ampl, replace_indices=False)
 	
 	def doit(self, **hints):
 		deep = hints.get('deep', True)
@@ -281,6 +281,32 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 		if isinstance(ret, sympy.tensor.tensor.TensAdd):
 			ret = ret.doit(deep=False)
 		return ret
+	
+	@classmethod
+	def _contract_indices_for_derivative(cls, expr, variables, replace_indices=True):
+		"""
+		Copied from PartialDerivative, but set replace_indices to False
+		"""
+		variables_opposite_valence = []
+		
+		for i in variables:
+			if isinstance(i, sympy.tensor.tensor.Tensor):
+				i_free_indices = i.get_free_indices()
+				variables_opposite_valence.append(
+						i.xreplace({k: -k for k in i_free_indices}))
+			elif isinstance(i, sympy.Symbol):
+				variables_opposite_valence.append(i)
+		
+		args, indices, free, dum = sympy.tensor.tensor.TensMul._tensMul_contract_indices(
+			[expr] + variables_opposite_valence, replace_indices=replace_indices)
+		
+		for i in range(1, len(args)):
+			args_i = args[i]
+			if isinstance(args_i, sympy.tensor.tensor.Tensor):
+				i_indices = args[i].get_free_indices()
+				args[i] = args[i].xreplace({k: -k for k in i_indices})
+		
+		return args, indices, free, dum
 
 if __name__ == "__main__":
 	sy = sympy
