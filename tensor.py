@@ -186,6 +186,7 @@ def partialdiff(Expr, wavevec, ampl=None):
 			lowered_wavevec = wavevec.head(- wavevec.indices[0] )
 			
 			if isinstance(Expr, sympy.tensor.tensor.TensMul):
+				Expr = Expr.doit(deep=False) #make sure coeff is correctly populated.
 				scalarpart = Expr.coeff
 				tensorpart = Expr/scalarpart
 			else:
