@@ -197,7 +197,7 @@ def partialdiff(Expr, wavevec, ampl=None):
 			if scalarpart.has(wavevec.head):
 				warnings.warn("Ignoring {} dependence in {}".format(wavevec, scalarpart), RuntimeWarning)
 			
-			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl).doit()
+			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl).doit(deep=False)
 			
 			if tensorpart.has(ampl):
 				raise RuntimeError(f"Expanding the given expression failed; the non-coeff part depends on {ampl}.")
