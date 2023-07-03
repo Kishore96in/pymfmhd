@@ -257,6 +257,13 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 	def ext_rank(self):
 		return self._ext_rank
 	
+	@property
+	def components(self):
+		components = []
+		for arg in self.args:
+			components.extend(arg.components)
+		return components
+	
 	def get_indices(self):
 		return self._indices
 	
