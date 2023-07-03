@@ -260,7 +260,9 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 	@property
 	def components(self):
 		components = []
-		for arg in self.args:
+		if hasattr(expr, 'components'):
+			components.extend(self.expr.components)
+		for arg in self.variables:
 			components.extend(arg.components)
 		return components
 	
