@@ -178,6 +178,8 @@ if __name__ == "__main__":
 	e4 = pd(pd(pd(f(K), K(p), k), K(-p), k), K(q), k)*K(q)
 	assert e3.doit(deep=False) == e4
 	
+	assert pd(K(p), K(q), k).components == [K, K]
+	
 	#Tests for create_scalar_integral
 	assert create_scalar_integral(K(p)*K(q)*g(x), x) == sy.Integral(g(x), x)*K(p)*K(q)
 	assert create_scalar_integral(K(q)*g(x) + V(q)*f(x), x) == sy.Integral(g(x), x)*K(q) + sy.Integral(f(x), x)*V(q)
