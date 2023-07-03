@@ -280,6 +280,10 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 		variables = [i.xreplace(mirrored) for i in self.variables]
 		return self.func(expr, *variables, self.ampl, replace_indices=False)
 	
+	def _set_indices(self, *indices):
+		repl = dict(zip(self.get_indices(), indices))
+		return self._replace_indices(repl)
+	
 	def doit(self, **hints):
 		deep = hints.get('deep', True)
 		if deep:
