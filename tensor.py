@@ -286,6 +286,9 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 		repl = dict(zip(self.get_indices(), indices))
 		return self._replace_indices(repl)
 	
+	def commutes_with(self, other):
+		return None
+	
 	def doit(self, **hints):
 		deep = hints.get('deep', True)
 		if deep:
