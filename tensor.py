@@ -225,6 +225,7 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 		obj._indices = indices
 		obj._free = free
 		obj._dum = dum
+		obj._ext_rank = len(free) + 2*len(dum)
 		
 		return obj
 	
@@ -251,6 +252,10 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 	@property
 	def nocoeff(self):
 		return self
+	
+	@property
+	def ext_rank(self):
+		return self._ext_rank
 	
 	def get_indices(self):
 		return self._indices
