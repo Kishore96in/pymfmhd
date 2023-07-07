@@ -247,7 +247,7 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 	
 	@property
 	def coeff(self):
-		return S.One
+		return sympy.S.One
 	
 	@property
 	def nocoeff(self):
