@@ -257,14 +257,6 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 	def ext_rank(self):
 		return self._ext_rank
 	
-	@property
-	def components(self):
-		components = []
-		if hasattr(self.expr, 'components'):
-			components.extend(self.expr.components)
-		for arg in self.variables:
-			components.extend(arg.components)
-		return components
 	
 	def get_indices(self):
 		return self._indices
@@ -286,8 +278,6 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 		repl = dict(zip(self.get_indices(), indices))
 		return self._replace_indices(repl)
 	
-	def commutes_with(self, other):
-		return None
 	
 	def doit(self, **hints):
 		deep = hints.get('deep', True)
