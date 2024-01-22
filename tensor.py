@@ -21,7 +21,6 @@ import sympy.tensor.toperators
 
 import warnings
 import itertools
-import scipy
 
 def replace_by_ampl(expr, wavevec, ampl):
 	"""
