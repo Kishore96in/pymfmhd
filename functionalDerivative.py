@@ -10,7 +10,7 @@ except ImportError:
 
 class funDer(PartialDerivative):
 	def __new__(cls, expr, *variables, **kwargs):
-		"""
+		r"""
 		expr: TensExpr
 		variables: list of TensorField
 		
