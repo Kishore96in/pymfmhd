@@ -22,6 +22,8 @@ import sympy.tensor.toperators
 import warnings
 import itertools
 
+class PartialDiffScalarWarning(RuntimeWarning): pass
+
 def replace_by_ampl(expr, wavevec, ampl):
 	"""
 	expr: TensExpr
@@ -189,12 +191,12 @@ def partialdiff(Expr, wavevec, ampl=None):
 				scalarpart = Expr.coeff
 				tensorpart = Expr/scalarpart
 			else:
-				warnings.warn("Could not find any tensor part of {}. Is this correct?".format(Expr), RuntimeWarning)
+				warnings.warn("Could not find any tensor part of {}. Is this correct?".format(Expr), PartialDiffScalarWarning)
 				scalarpart = Expr
 				tensorpart = sympy.S(1)
 			
 			if scalarpart.has(wavevec.head):
-				warnings.warn("Ignoring {} dependence in {}".format(wavevec, scalarpart), RuntimeWarning)
+				warnings.warn("Ignoring {} dependence in {}".format(wavevec, scalarpart), PartialDiffScalarWarning)
 			
 			ret += lowered_wavevec/ampl * tensorpart * sympy.Derivative(scalarpart, ampl).doit(deep=False)
 			
