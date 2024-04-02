@@ -199,6 +199,8 @@ def _do_angular_integral(Expr, wavevec):
 
 def do_wave_integral(expr, wavevec, ampl, debug=False, simp=None, limits=(0,sympy.oo)):
 	"""
+	Given an integral over a wavevector, do the angular part and return a scalar integral over the amplitude of the wavevector.
+	
 	expr: TensExpr
 	wavevec: TensorHead
 	ampl: Symbol
