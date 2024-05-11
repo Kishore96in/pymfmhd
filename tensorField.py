@@ -1,6 +1,6 @@
 import sympy
 import sympy.tensor.tensor
-from sympy import Basic, Symbol, Tuple, S
+from sympy import Basic, Symbol, Tuple, S, sympify
 from sympy.tensor.tensor import TensorHead, Tensor, TensorSymmetry, TensorManager, _IndexStructure
 from collections.abc import Iterable
 
@@ -23,13 +23,16 @@ class TensorFieldHead(TensorHead):
 		else:
 			assert symmetry.rank == len(index_types)
 
-		obj = Basic.__new__(cls, name_symbol, Tuple(*index_types), Tuple(*positions), symmetry)
-		obj.comm = TensorManager.comm_symbols2i(comm)
+		obj = Basic.__new__(cls, name_symbol, Tuple(*index_types), Tuple(*positions), symmetry, sympify(comm))
 		return obj
 	
 	@property
 	def symmetry(self):
 		return self.args[3]
+	
+	@property
+	def comm(self):
+		return TensorManager.comm_symbols2i(self.args[4])
 	
 	@property
 	def positions(self):
