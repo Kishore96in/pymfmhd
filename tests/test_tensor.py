@@ -6,21 +6,10 @@ from .helpers import check_tens_eq
 from pymfmhd.tensor import do_epsilon_delta, partialdiff, PartialVectorDerivative
 
 Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
-p, q, r, s, t, u, w, i, j = sy.tensor.tensor.tensor_indices("p q r s t u w i j", Cartesian)
-wi = sy.Wild("wi")
-p_2 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian, ignore_updown=True)
-q_2 = sy.tensor.tensor.WildTensorIndex("q_2", Cartesian, ignore_updown=True)
-r_2 = sy.tensor.tensor.WildTensorIndex("r_2", Cartesian, ignore_updown=True)
-s_2 = sy.tensor.tensor.WildTensorIndex("s_2", Cartesian, ignore_updown=True)
-t_2 = sy.tensor.tensor.WildTensorIndex("t_2", Cartesian, ignore_updown=True)
-u_2 = sy.tensor.tensor.WildTensorIndex("u_2", Cartesian, ignore_updown=True)
-p_3 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian)
+p, q, r, s, t, u = sy.tensor.tensor.tensor_indices("p q r s t u", Cartesian)
 delta = Cartesian.delta
 eps = Cartesian.epsilon
-
 K = sy.tensor.tensor.TensorHead("K", [Cartesian])
-V = sy.tensor.tensor.TensorHead("V", [Cartesian])
-
 f, g = sympy.symbols('f g', cls=sympy.Function)
 k = sympy.symbols("k") #'amplitude' of K
 
@@ -82,8 +71,12 @@ def test_PartialVectorDerivative():
 	expr = pd(pd(pd(f(k), K(p), k), K(-p), k), K(q), k)
 	R0 = expr.get_indices()[1]
 	assert expr._replace_indices({-q:R0, R0:q, -R0:-q}).get_indices()[1] != R0
+	#TODO: The above was earlier failing, and the same bug is reproducible with PartialDerivative itself (before calling doit, so that more complicated cases are not flattened). Probably the fix can be similar to what I have done in <https://github.com/sympy/sympy/pull/24338>. Now that I have fixed this, I should also fix the one in PartialDerivative.
+	
 	e1 = pd(pd(f(K), K(p), k), K(-p), k)
 	e2 = pd(g(K), K(p), k)*K(p)
 	e3 = e2.xreplace({g(K): e1})
 	e4 = pd(pd(pd(f(K), K(p), k), K(-p), k), K(q), k)*K(q)
 	assert e3.doit(deep=False) == e4
+	
+	# assert pd(K(p), K(q), k).components == []

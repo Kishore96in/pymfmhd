@@ -7,18 +7,7 @@ from pymfmhd.tensorField import TensorFieldHead
 from pymfmhd.functionalDerivative import funDer, averagedFunDer
 
 Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
-p, q, r, s, t, u, w, i, j = sy.tensor.tensor.tensor_indices("p q r s t u w i j", Cartesian)
-wi = sy.Wild("wi")
-p_2 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian, ignore_updown=True)
-q_2 = sy.tensor.tensor.WildTensorIndex("q_2", Cartesian, ignore_updown=True)
-r_2 = sy.tensor.tensor.WildTensorIndex("r_2", Cartesian, ignore_updown=True)
-s_2 = sy.tensor.tensor.WildTensorIndex("s_2", Cartesian, ignore_updown=True)
-t_2 = sy.tensor.tensor.WildTensorIndex("t_2", Cartesian, ignore_updown=True)
-u_2 = sy.tensor.tensor.WildTensorIndex("u_2", Cartesian, ignore_updown=True)
-p_3 = sy.tensor.tensor.WildTensorIndex("p_2", Cartesian)
-delta = Cartesian.delta
-eps = Cartesian.epsilon
-
+p, q = sy.tensor.tensor.tensor_indices("p q", Cartesian)
 up = sy.symbols("↑") #Used to denote the average we are taking
 t, tau = sy.symbols("t tau")
 X = sy.tensor.tensor.TensorHead("X", [Cartesian])
