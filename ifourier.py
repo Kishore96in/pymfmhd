@@ -310,7 +310,9 @@ def ift_convolution(expr, vars_k, var_sum, var_r):
 		if np.sum(dep_on_single) + dep_on_sum > 1:
 			raise RuntimeError(f"{arg = } depends on more than one wavevector")
 		elif np.any(dep_on_single):
-			i = int(*np.where(dep_on_single))
+			w, = np.where(dep_on_single)
+			assert len(w) == 1
+			i = int(w[0])
 			parts_single[i].append(arg)
 		elif dep_on_sum:
 			part_sum.append(arg)
