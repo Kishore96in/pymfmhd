@@ -1,7 +1,7 @@
 from sympy import symbols, S, Wild, Integral, pi, I, Function, oo, Derivative, diff
 from sympy.tensor.tensor import TensorHead, TensorIndex, TensorIndexType, WildTensorHead, WildTensor, WildTensorIndex
 
-from pymfmhd.fourier import ift_derivative_rule, ift_convolution
+from pymfmhd.ifourier import ift_derivative_rule, ift_convolution
 from pymfmhd.tensor import replace_by_ampl_optimized as repl_wavevec
 
 R3 = TensorIndexType('R3', dim=3)
