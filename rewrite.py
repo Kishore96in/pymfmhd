@@ -101,3 +101,13 @@ def revert_product_rule(expr, var, ratio=1.7, maxcalls=100, call=0):
 	else:
 		warnings.warn("revert_product_rule: could not simplify input.", RuntimeWarning)
 		return expr 
+
+def replace_repeat(expr, pattern, replacement):
+	"""
+	Repeatedly perform replacement till the expression no longer changes.
+	"""
+	old_expr = 0
+	while expr != old_expr:
+		old_expr = expr
+		expr = expr.replace(pattern, replacement)
+	return expr 
