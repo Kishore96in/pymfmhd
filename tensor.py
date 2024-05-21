@@ -22,6 +22,8 @@ import sympy.tensor.toperators
 import warnings
 import itertools
 
+from .rewrite import replace_repeat
+
 class PartialDiffScalarWarning(RuntimeWarning): pass
 
 def replace_by_ampl(expr, wavevec, ampl):
@@ -37,7 +39,7 @@ def replace_by_ampl(expr, wavevec, ampl):
 	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0], ignore_updown=True)
 	w = sympy.Wild('w')
 	W = sympy.tensor.tensor.WildTensorHead('W')
-	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
+	expr = replace_repeat(expr, w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2)
 	return expr
 
 def replace_by_ampl_optimized(expr, wavevec, ampl):
@@ -68,7 +70,7 @@ def _replace_by_ampl_for_mul(args, wavevec, ampl):
 	a = sympy.tensor.tensor.WildTensorIndex(True, wavevec.index_types[0], ignore_updown=True)
 	w = sympy.Wild('w')
 	W = sympy.tensor.tensor.WildTensorHead('W')
-	expr = expr.replace( w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2, repeat=True )
+	expr = replace_repeat(expr, w*W()*wavevec(a)*wavevec(-a), w*W()*ampl**2)
 	return expr
 
 def do_epsilon_delta(expr, eps, delta):
