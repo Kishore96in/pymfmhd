@@ -2,6 +2,7 @@ import sympy
 import sympy.tensor.tensor
 from sympy import Basic, Symbol, Tuple, S, sympify
 from sympy.tensor.tensor import TensorHead, Tensor, TensorSymmetry, TensorManager, _IndexStructure
+from sympy.tensor.toperators import PartialDerivative
 from collections.abc import Iterable
 
 class TensorFieldHead(TensorHead):
@@ -102,6 +103,14 @@ class TensorField(Tensor):
 		pos_str = ", ".join([ pos_time_to_str(p) for p in self.positions])
 		
 		return f"{ind_str}({pos_str})"
+	
+	def _eval_partial_derivative(self, s):
+		if not isinstance(s, Tensor):
+			return S.Zero
+		elif s.head not in self.positions:
+			return S.Zero
+		else:
+			return PartialDerivative(self, s)
 
 if __name__ == "__main__":
 	from sympy.tensor.tensor import TensorIndexType, WildTensorIndex, TensorIndex
