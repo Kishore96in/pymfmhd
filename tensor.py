@@ -102,7 +102,7 @@ def do_epsilon_delta(expr, eps, delta):
 		expr = replace_repeat(
 			expr,
 			w*W()*eps(_a, _b, _c)*eps(-_a, _d, _e),
-			w*W()*(delta(_b,_d)*delta(_c,_e) - delta(_b,_e)*delta(_d,_c))
+			w*W()*(delta(_b,_d)*delta(_c,_e) - delta(_b,_e)*delta(_d,_c)),
 			)
 		return expr
 	
