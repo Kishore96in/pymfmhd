@@ -1,9 +1,10 @@
 import sympy as sy
 import sympy.tensor.tensor
+import pytest
 
 from .helpers import check_tens_eq
 
-from pymfmhd.tensor import do_epsilon_delta, partialdiff, PartialVectorDerivative
+from pymfmhd.tensor import do_epsilon_delta, partialdiff, PartialVectorDerivative, PartialDiffScalarWarning
 
 Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
 p, q, r, s, t, u = sy.tensor.tensor.tensor_indices("p q r s t u", Cartesian)
@@ -55,10 +56,13 @@ def test_partial_derivative():
 		partialdiff( K(p) / k , K(q), ampl=k ),
 		( delta(p, -q) - K(p)*K(-q)/k**2 )/k
 		)
-	check_tens_eq(
-		partialdiff( 1 / k**2 , K(p), ampl=k ),
-		-2 * K(-p)/k**4
-		)
+	
+	with pytest.warns(PartialDiffScalarWarning):
+		check_tens_eq(
+			partialdiff( 1 / k**2 , K(p), ampl=k ),
+			-2 * K(-p)/k**4
+			)
+	
 	check_tens_eq(
 		partialdiff(
 			f(k)*( delta(p,q) - K(p)*K(q)/k**2 ), K(q), k
