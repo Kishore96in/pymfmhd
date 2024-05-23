@@ -24,6 +24,9 @@ def bring_to_form(expr, term1, term2, wild_properties=()):
 	repl = w*term2 - (w*term2-w*term1).doit().expand()
 	return expr.replace(w*term1, repl).expand()
 
+class CallLimitWarning(RuntimeWarning): pass
+class ResultRejectedWarning(RuntimeWarning): pass
+
 def revert_product_rule(expr, var, ratio=1.7, maxcalls=100, call=0):
 	"""
 	Given an expression containing derivatives of AppliedUndef instances, try to simplify it by pulling out a derivative using the product rule. Assumes all derivatives in the expression are wrt. var.
@@ -35,7 +38,7 @@ def revert_product_rule(expr, var, ratio=1.7, maxcalls=100, call=0):
 		ratio: accept simplification only if ret.count_ops() < ratio*expr.count_ops()
 	"""
 	if call > maxcalls:
-		warnings.warn("revert_product_rule: reached call limit, so giving up.", RuntimeWarning)
+		warnings.warn("revert_product_rule: reached call limit, so giving up.", CallLimitWarning)
 		return expr
 	
 	assert isinstance(var, Symbol)
@@ -99,7 +102,7 @@ def revert_product_rule(expr, var, ratio=1.7, maxcalls=100, call=0):
 	if ret.count_ops() < ratio*expr.count_ops():
 		return ret
 	else:
-		warnings.warn("revert_product_rule: could not simplify input.", RuntimeWarning)
+		warnings.warn("revert_product_rule: could not simplify input.", ResultRejectedWarning)
 		return expr 
 
 def replace_repeat(expr, pattern, replacement):
