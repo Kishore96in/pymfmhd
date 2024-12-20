@@ -210,7 +210,7 @@ def partialdiff(Expr, wavevec, ampl=None):
 				raise RuntimeError(f"Expanding the given expression failed; the non-coeff part depends on {ampl}.")
 		
 		if indextype is not None:
-			ret = sympy.tensor.tensor.contract_delta(ret, indextype.delta)
+			ret = contract_delta(ret, indextype.delta)
 			ret = sympy.tensor.tensor.contract_metric(ret, indextype.metric)
 		
 		return ret
@@ -326,6 +326,12 @@ class PartialVectorDerivative(sympy.tensor.tensor.TensExpr):
 				args[i] = args[i].xreplace({k: -k for k in i_indices})
 		
 		return args, indices, free, dum
+
+def contract_delta(t, delta):
+	if isinstance(t, sympy.tensor.tensor.TensExpr):
+		return t.contract_delta(delta)
+	else:
+		return t
 
 if __name__ == "__main__":
 	sy = sympy

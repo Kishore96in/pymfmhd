@@ -23,11 +23,13 @@ from sympy.tensor.tensor import (
 	TensExpr,
 	get_free_indices,
 	get_indices,
-	contract_delta,
 	)
 
-from .tensor import PartialVectorDerivative
-from .tensor import replace_by_ampl_optimized as repl_wavevec
+from .tensor import (
+	PartialVectorDerivative,
+	replace_by_ampl_optimized as repl_wavevec,
+	contract_delta,
+	)
 
 def _depends_on_any(expr, syms):
 	"""
