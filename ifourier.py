@@ -14,6 +14,7 @@ from sympy import (
 	Derivative,
 	Basic,
 	sympify,
+	srepr,
 	)
 from sympy.tensor.tensor import (
 	TensorHead,
