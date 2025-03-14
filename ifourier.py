@@ -212,6 +212,8 @@ def ift_derivative_rule(expr, var_fourier, var_real):
 	"""
 	For any 3D wavevector K(a) (with K(a)*K(-a) = k**2), unknown function F(k), and even integer m, write the inverse Fourier transform of K(a_1)*…*K(a_n)*k**(m)*F(k) in terms of the inverse Fourier transform of F.
 	
+	The Fourier transform convention used is: F(x) = Integral(exp(-I*K*x)*F(K))
+	
 	expr: TensMul or Mul
 	var_fourier: [TensorHead, Symbol], representing the Fourier wavevector and the symbol for its magnitude
 	var_real: similar to var_fourier, but for the real-space position
