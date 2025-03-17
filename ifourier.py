@@ -112,19 +112,23 @@ class Laplacian(TensExpr):
 		
 		r = self.ampl
 		rvec = self.wavevec
+		[index_type] = rvec.index_types
 		
-		delta = rvec.index_types[0].delta
+		delta = index_type.delta
 		expr = contract_delta(expr, delta)
 		expr = repl_wavevec(expr, rvec, r)
 		
 		if rvec in expr.atoms(TensorHead):
-			dum = TensorIndex(True, rvec.index_types[0])
+			dum = TensorIndex(True, index_type)
 			ret = PartialVectorDerivative(PartialVectorDerivative(expr, rvec(dum), r).doit(deep=False), rvec(-dum), r).doit(deep=False)
 			ret = contract_delta(ret, delta)
 			ret = repl_wavevec(ret, rvec, r)
 			return ret
 		else:
-			return Derivative(r**2*Derivative(expr, r), r)/r**2
+			if index_type.dim == 3:
+				return Derivative(r**2*Derivative(expr, r), r)/r**2
+			else:
+				raise NotImplementedError
 
 class InverseLaplacian(TensExpr):
 	"""
@@ -190,15 +194,19 @@ class InverseLaplacian(TensExpr):
 		
 		r = self.ampl
 		rvec = self.wavevec
+		[index_type] = rvec.index_types
 		
-		delta = rvec.index_types[0].delta
+		delta = index_type.delta
 		expr = contract_delta(expr, delta)
 		expr = repl_wavevec(expr, rvec, r)
 		
 		if rvec in expr.atoms(TensorHead):
 			raise NotImplementedError(f"Argument of inverse Laplacian is a vector. Sympy's Integral function cannot handle such objects. {expr = }")
-		
-		return Integral(Integral(r**2*expr, (r,0,r))/r**2, (r,0,r))
+		else:
+			if index_type.dim == 3:
+				return Integral(Integral(r**2*expr, (r,0,r))/r**2, (r,0,r))
+			else:
+				raise NotImplementedError
 
 def _check_wavevector(var):
 	"""
