@@ -125,10 +125,8 @@ class Laplacian(TensExpr):
 			ret = repl_wavevec(ret, rvec, r)
 			return ret
 		else:
-			if index_type.dim == 3:
-				return Derivative(r**2*Derivative(expr, r), r)/r**2
-			else:
-				raise NotImplementedError
+			n = index_type.dim
+			return Derivative(r**(n-1)*Derivative(expr, r), r)/r**(n-1)
 
 class InverseLaplacian(TensExpr):
 	"""
@@ -203,10 +201,8 @@ class InverseLaplacian(TensExpr):
 		if rvec in expr.atoms(TensorHead):
 			raise NotImplementedError(f"Argument of inverse Laplacian is a vector. Sympy's Integral function cannot handle such objects. {expr = }")
 		else:
-			if index_type.dim == 3:
-				return Integral(Integral(r**2*expr, (r,0,r))/r**2, (r,0,r))
-			else:
-				raise NotImplementedError
+			n = index_type.dim
+			return Integral(Integral(r**(n-1)*expr, (r,0,r))/r**(n-1), (r,0,r))
 
 def _check_wavevector(var):
 	"""

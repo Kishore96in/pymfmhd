@@ -42,6 +42,21 @@ def test_ift_derivative_rule():
 	#TODO: fdr(k**(-4)*F(k), [K,k], [R,r]).simplify() looks too simple to be true. Figure out what is going on. The unsimplified output looks fine; need to check whether the simplification is legit or if it is a sympy bug.
 	assert fdr(k**(4)*F(k), [K,k], [R,r]).doit().expand() == Derivative(F(r), (r, 4)) + 4*Derivative(F(r), (r, 3))/r
 
+def test_ift_derivative_rule_2d():
+	R2 = TensorIndexType('R2', dim=2)
+	K, R = symbols("K R", cls=TensorHead, index_types=[R2])
+	fdr = lambda *args: ift_derivative_rule(*args).doit()
+	
+	assert fdr(k**(-2) * F(k), [K,k], [R,r]) == -Integral(Integral(r*F(r), (r, 0, r))/r, (r, 0, r))
+
+def test_ift_derivative_rule_1d():
+	R1 = TensorIndexType('R1', dim=1)
+	K, R = symbols("K R", cls=TensorHead, index_types=[R1])
+	fdr = lambda *args: ift_derivative_rule(*args).doit()
+	
+	assert fdr(k**(-2) * F(k), [K,k], [R,r]) == -Integral(Integral(F(r), (r, 0, r)), (r, 0, r))
+	assert fdr(k**4 * F(k), [K,k], [R,r]) == -Derivative(-Derivative(F(r), (r,2)), (r,2))
+
 def test_ift_convolution():
 	fc = lambda *args: ift_convolution(*args).doit()
 	
