@@ -21,3 +21,8 @@ python -m pymfmhd
 ```bash
 pytest
 ```
+
+To also test against the author's fork of Sympy, use
+```bash
+tox
+```
