@@ -213,16 +213,18 @@ def _check_wavevector(var):
 	assert len(var[0].index_types) == 1
 	assert isinstance(var[1], Symbol)
 
-def ift_derivative_rule(expr, var_fourier, var_real):
+def ift_derivative_rule(expr, var_fourier, var_real, sign=1):
 	"""
 	For any 3D wavevector K(a) (with K(a)*K(-a) = k**2), unknown function F(k), and even integer m, write the inverse Fourier transform of K(a_1)*…*K(a_n)*k**(m)*F(k) in terms of the inverse Fourier transform of F.
 	
-	The Fourier transform convention used is: F(x) = Integral(exp(-I*K*x)*F(K))
+	The Fourier transform convention used is: F(x) = Integral(exp(-sign*I*K*x)*F(K))
 	
 	expr: TensMul or Mul
 	var_fourier: [TensorHead, Symbol], representing the Fourier wavevector and the symbol for its magnitude
 	var_real: similar to var_fourier, but for the real-space position
 	"""
+	if not ((sign==1) or (sign==-1)):
+		raise ValueError("sign must be ±1")
 	
 	if isinstance(expr, (TensAdd, Add)):
 		return expr.func(*[ift_derivative_rule(arg, var_fourier, var_real) for arg in expr.args])
@@ -285,7 +287,7 @@ def ift_derivative_rule(expr, var_fourier, var_real):
 	
 	for w in wavevecs:
 		i = w.indices[0]
-		ret = I*PartialVectorDerivative(ret, rvec(-i), r)
+		ret = sign*I*PartialVectorDerivative(ret, rvec(-i), r)
 	
 	other = TensMul(*other).doit(deep=False)
 	return ret*other
