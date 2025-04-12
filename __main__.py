@@ -8,6 +8,13 @@ from IPython.terminal import ipapp
 import sympy
 import sys
 
+#Some magic to make sure the pymfmhd module is always available as 'pymfmhd', regardless of how it is actually installed.
+pre_commands_silent = f"""\
+import importlib
+pymfmhd = importlib.import_module("{__name__.removesuffix(".__main__")}")
+"""
+
+#Other import commands
 pre_commands = """\
 from sympy import *
 import sympy.tensor.tensor as tens
@@ -24,6 +31,7 @@ W1, W2 = symbols('W_1, W_2', cls=tens.WildTensorHead)
 
 message = f"""\
 These commands were executed:
+import pymfmhd
 {pre_commands}
 """
 
@@ -32,7 +40,8 @@ app.display_banner = False
 app.initialize()
 
 app.shell.enable_pylab(import_all=False)
-app.shell.run_cell(pre_commands, False)
+app.shell.run_cell(pre_commands_silent, store_history=False)
+app.shell.run_cell(pre_commands, store_history=False)
 sympy.init_printing(ip=app.shell)
 
 print(message)
