@@ -292,6 +292,9 @@ def ift_derivative_rule(expr, var_fourier, var_real, sign=1):
 	other = TensMul(*other).doit(deep=False)
 	return ret*other
 
+def ft_derivative_rule(*args, sign=1, **kwargs):
+	return ift_derivative_rule(*args, **kwargs, sign=-sign)
+
 def ift_convolution(expr, vars_k, var_sum, var_r):
 	r"""
 	Given expr that depends on more than one Fourier variable (say \vec{p_i} for some integers i=1...n), assume \sum_i\vec{p_i} = \vec{k} and perform the inverse Fourier transform of Integral(expr, \vec{p_1}, ..., \vec{p_{n-1}}) from \vec{k}\to\vec{r}. None of the \vec{p_i} should be explicitly integrated over in the input expression. Note that this function will probably not be able to handle explicit appearance of \vec{k} in more complicated expressions.
