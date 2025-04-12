@@ -12,11 +12,13 @@ pre_commands = """\
 from sympy import *
 import sympy.tensor.tensor as tens
 
-w1, w2 = symbols('w_1, w_2', cls=Wild)
-
 R3 = tens.TensorIndexType("R", dim=3)
 i, j, i1, i2, i3, i4 = tens.tensor_indices("i, j, i_1, i_2, i_3, i_4", R3)
+
+k, q = symbols("k, q", positive=True)
 K, Q = symbols("K, Q", cls=tens.TensorHead, index_types=[R3])
+
+w1, w2 = symbols('w_1, w_2', cls=Wild)
 W1, W2 = symbols('W_1, W_2', cls=tens.WildTensorHead)
 """
 
