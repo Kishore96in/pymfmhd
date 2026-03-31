@@ -97,8 +97,13 @@ def test_FunctionOfTensor():
 	with pytest.raises(ValueError):
 		F(K(p))
 	
-	
 	expr = K(p) * K(-p)
 	fun = F(expr)
 	assert len(fun.get_free_indices()) == 0
 	assert fun.get_indices() == expr.get_indices()
+	assert fun.replace_with_arrays({K(p): [1,2,3], Cartesian: sy.eye(3)}) == F(14)
+	
+	fun = F(expr, k)
+	assert len(fun.get_free_indices()) == 0
+	assert fun.get_indices() == expr.get_indices()
+	assert fun.replace_with_arrays({K(p): [1,2,3], Cartesian: sy.eye(3)}) == F(14,k)
