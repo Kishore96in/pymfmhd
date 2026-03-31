@@ -111,7 +111,6 @@ def test_FunctionOfTensor():
 	fun = 3*F(expr)
 	assert len(fun.get_free_indices()) == 0
 	assert fun.get_indices() == expr.get_indices()
-	#TODO: not sure why doit is required on the RHS below.
 	assert fun.replace_with_arrays({K(p): [1,2,3], Cartesian: sy.eye(3)}) == 3*F(14).doit()
 	
 	assert not isinstance(F(14).doit(), FunctionOfTensor)
