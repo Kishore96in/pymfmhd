@@ -101,12 +101,12 @@ def test_FunctionOfTensor():
 	fun = F(expr)
 	assert len(fun.get_free_indices()) == 0
 	assert fun.get_indices() == expr.get_indices()
-	assert fun.replace_with_arrays({K(p): [1,2,3], Cartesian: sy.eye(3)}) == F(14)
+	assert fun.replace_with_arrays({K(p): [1,2,3], Cartesian: sy.eye(3)}) == F(14).doit()
 	
 	fun = F(expr, k)
 	assert len(fun.get_free_indices()) == 0
 	assert fun.get_indices() == expr.get_indices()
-	assert fun.replace_with_arrays({K(p): [1,2,3], Cartesian: sy.eye(3)}) == F(14,k)
+	assert fun.replace_with_arrays({K(p): [1,2,3], Cartesian: sy.eye(3)}) == F(14,k).doit()
 	
 	fun = 3*F(expr)
 	assert len(fun.get_free_indices()) == 0
