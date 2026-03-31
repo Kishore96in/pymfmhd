@@ -16,9 +16,17 @@ TODO: May need to define a custom Tensor or TensorHead that becomes a non-tensor
 """
 
 import sympy
+from sympy.core.function import (
+	UndefinedFunction,
+	AppliedUndef,
+	)
 import sympy.tensor.tensor
+from sympy.tensor.tensor import (
+	TensExpr,
+	)
 import sympy.tensor.toperators
 
+import abc
 import warnings
 import itertools
 
@@ -332,6 +340,69 @@ def contract_delta(t, delta):
 		return t.contract_delta(delta)
 	else:
 		return t
+
+class _ScalarTensExpr(TensExpr):
+	def __init__(self, *args):
+		for arg in args:
+			if isinstance(arg, TensExpr) and len(arg.get_free_indices()) > 0:
+				raise ValueError("arguments of ScalarTensExpr cannot have free indices")
+	
+	@property
+	def Function(self):
+		return UndefinedFunction(self.name)
+	
+	@property
+	def nocoeff(self):
+		return self
+	
+	@property
+	def coeff(self):
+		return sympy.S.One
+	
+	def get_indices(self):
+		indices = []
+		for arg in self.args:
+			if isinstance(arg, TensExpr):
+				indices.extend([i for i in arg.get_indices() if i not in indices])
+		return indices
+	
+	def get_free_indices(self):
+		return set()
+	
+	def _replace_indices(self, repl):
+		return self.xreplace(repl)
+	
+	def replace_with_arrays(self, repl, inds=None):
+		args = []
+		for arg in self.args:
+			if isinstance(arg, TensExpr):
+				args.append(arg.replace_with_arrays(repl, inds))
+			else:
+				args.append(arg)
+		return self.func(*args)
+	
+	def _extract_data(self, replacement_dict):
+		data = []
+		for arg in self.args:
+			if isinstance(arg, TensExpr):
+				data.append(arg._extract_data(replacement_dict))
+			else:
+				data.append([[], arg])
+		args_indices, args_arrays = zip(*data)
+		
+		assert all(args_indices[i] == 0 for i in range(len(self.args)))
+		
+		return self.Function(*args_arrays)
+
+class FunctionOfTensor(
+	UndefinedFunction,
+	abc.ABCMeta, #TensExpr inherits from abc.ABC
+	):
+	"""
+	Subclass of UndefinedFunction that represents a scalar function of a scalar TensExpr.
+	"""
+	def __new__(mcl, name, **kwargs):
+		return super().__new__(mcl, name, (AppliedUndef, _ScalarTensExpr), {}, **kwargs)
 
 if __name__ == "__main__":
 	sy = sympy
