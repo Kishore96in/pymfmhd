@@ -380,8 +380,20 @@ class _ScalarTensExpr(TensExpr):
 		
 		assert all(len(args_indices[i]) == 0 for i in range(len(self.args)))
 		
-		#TODO: this should actually be Function(*args_arrays), but doing that breaks the tests.
 		return [], self.func(*args_arrays)
+	
+	def doit(self, **hints):
+		deep = hints.get('deep', True)
+		if deep:
+			args = [arg.doit(**hints) for arg in self.args]
+		else:
+			args = self.args
+		
+		if any(isinstance(arg, TensExpr) for arg in args):
+			return self.func(*self.args)
+		else:
+			fun = sympy.Function(self.name)
+			return fun(*self.args)
 
 class FunctionOfTensor(
 	UndefinedFunction,
