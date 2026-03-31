@@ -386,7 +386,7 @@ class _ScalarTensExpr(TensExpr):
 				data.append([[], arg])
 		args_indices, args_arrays = zip(*data)
 		
-		assert all(args_indices[i] == 0 for i in range(len(self.args)))
+		assert all(len(args_indices[i]) == 0 for i in range(len(self.args)))
 		
 		#TODO: this should actually be Function(*args_arrays), but doing that breaks the tests.
 		return self.func(*args_arrays)
