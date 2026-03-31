@@ -1,18 +1,12 @@
 """
 TODO Implement
-* Vector fields
-* Unit vectors (probably just implement as annotation on vector (fields)), but note that I need to be able to differentiate these guys.
-* Tensor fields
 * Derivative object? Need to be able to represent curl, dive, grad etc. Check how much can be shared with sympy's inbuilt derivative object. Probably should be able to add a derivative method to the Tensor object.
 
 TODO: function that prints an index-based expression in vector notation.
 TODO: Function to replicate the 'ind=' functionality from VEST.
 TODO: Something similar to VEST's FullSimplifyVectorForm
 TODO: Figure out what exactly VEST's userFormSpec does. Sounds useful.
-TODO: Check how much of Cadabra's functionality I can reuse. At least Kroenecker delta seems to be implemented there. https://cadabra.science/. AUR package available.
-TODO: Can I somehow tell sympy to not worry about the covariant/contravariant distinction?
 
-TODO: May need to define a custom Tensor or TensorHead that becomes a non-tensor when contracted by itself. Currently, you cannot do something like 1/( K(p)*K(-p) ), even though it is mathematically correct. OR figure out if there's a more graceful way to do it. Also would allow one to do something like ( K(p)*K(-p) ) **2 . Another way may be to implement a pow method for TensMul that raises an error if there are any free indices? Or perhaps one may try to override __pow__, __truediv__, and __rtruediv__ in TensExpr (check what TensAdd and TensMul define these methods as). NOTE: See https://github.com/sympy/sympy/issues/18435 for a discussion.
 """
 
 import sympy
