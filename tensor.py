@@ -374,7 +374,7 @@ class _ScalarTensExpr(TensExpr):
 		
 		assert all(len(args_indices[i]) == 0 for i in range(len(self.args)))
 		
-		return [], self.func(*args_arrays)
+		return [], self.func(*args_arrays).doit(deep=False)
 	
 	def doit(self, **hints):
 		deep = hints.get('deep', True)
