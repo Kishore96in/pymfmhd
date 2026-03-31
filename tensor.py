@@ -389,7 +389,7 @@ class _ScalarTensExpr(TensExpr):
 		assert all(len(args_indices[i]) == 0 for i in range(len(self.args)))
 		
 		#TODO: this should actually be Function(*args_arrays), but doing that breaks the tests.
-		return self.func(*args_arrays)
+		return [], self.func(*args_arrays)
 
 class FunctionOfTensor(
 	UndefinedFunction,
