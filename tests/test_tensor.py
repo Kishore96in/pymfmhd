@@ -4,7 +4,13 @@ import pytest
 
 from .helpers import check_tens_eq
 
-from pymfmhd.tensor import do_epsilon_delta, partialdiff, PartialVectorDerivative, PartialDiffScalarWarning
+from pymfmhd.tensor import (
+	do_epsilon_delta,
+	partialdiff,
+	PartialVectorDerivative,
+	PartialDiffScalarWarning,
+	FunctionOfTensor,
+	)
 
 Cartesian = sy.tensor.tensor.TensorIndexType('Cartesian', dim=3)
 p, q, r, s, t, u = sy.tensor.tensor.tensor_indices("p q r s t u", Cartesian)
@@ -84,3 +90,20 @@ def test_PartialVectorDerivative():
 	assert e3.doit(deep=False) == e4
 	
 	# assert pd(K(p), K(q), k).components == []
+
+def test_FunctionOfTensor():
+	F = FunctionOfTensor("F")
+	expr_1 = K(p)
+	expr_2 = K(p) * K(-p)
+	expr_3 = k
+	
+	with pytest.raises(ValueError):
+		F(expr_1)
+	
+	fun = F(expr_2)
+	assert len(fun.get_free_indices()) == 0
+	assert fun.get_indices() == expr_2.get_indices()
+	
+	fun = F(expr_2, k)
+	assert len(fun.get_free_indices()) == 0
+	assert fun.get_indices() == expr_2.get_indices()
