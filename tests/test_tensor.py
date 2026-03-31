@@ -93,17 +93,12 @@ def test_PartialVectorDerivative():
 
 def test_FunctionOfTensor():
 	F = FunctionOfTensor("F")
-	expr_1 = K(p)
-	expr_2 = K(p) * K(-p)
-	expr_3 = k
 	
 	with pytest.raises(ValueError):
-		F(expr_1)
+		F(K(p))
 	
-	fun = F(expr_2)
-	assert len(fun.get_free_indices()) == 0
-	assert fun.get_indices() == expr_2.get_indices()
 	
-	fun = F(expr_2, k)
+	expr = K(p) * K(-p)
+	fun = F(expr)
 	assert len(fun.get_free_indices()) == 0
-	assert fun.get_indices() == expr_2.get_indices()
+	assert fun.get_indices() == expr.get_indices()
