@@ -368,14 +368,6 @@ class _ScalarTensExpr(TensExpr):
 	def _replace_indices(self, repl):
 		return self.xreplace(repl)
 	
-	def replace_with_arrays(self, repl, inds=None):
-		args = []
-		for arg in self.args:
-			if isinstance(arg, TensExpr):
-				args.append(arg.replace_with_arrays(repl, inds))
-			else:
-				args.append(arg)
-		return self.func(*args)
 	
 	def _extract_data(self, replacement_dict):
 		data = []
