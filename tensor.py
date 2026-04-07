@@ -360,6 +360,7 @@ class _ScalarTensExpr(TensExpr):
 		return set()
 	
 	def _replace_indices(self, repl):
+		#TODO: perhaps makes sense to just keep this as a summy method, since the args should not have any free indices anyway.
 		return self.xreplace(repl)
 	
 	def substitute_indices(self, *index_tuples):
