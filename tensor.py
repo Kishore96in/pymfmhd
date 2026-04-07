@@ -362,6 +362,9 @@ class _ScalarTensExpr(TensExpr):
 	def _replace_indices(self, repl):
 		return self.xreplace(repl)
 	
+	def substitute_indices(self, *index_tuples):
+		#Just a dummy method, since the arguments are not allowed to have any free indices.
+		return self
 	
 	def _extract_data(self, replacement_dict):
 		data = []
