@@ -122,3 +122,7 @@ def test_FunctionOfTensor():
 	
 	fun = F(k, a)
 	assert fun.replace(k, a) == F(a, a)
+	
+	#Test contract_delta
+	fun = (1/2) * F(expr) * K(r) * delta(-r,s)
+	assert fun.contract_delta(delta) == (1/2) * F(expr) * K(s)
