@@ -127,3 +127,26 @@ def test_FunctionOfTensor():
 	#Test contract_delta
 	fun = (1/2) * F(expr) * K(r) * delta(-r,s)
 	assert fun.contract_delta(delta) == (1/2) * F(expr) * K(s)
+	
+	# assert fun.canon_bp() == (1/2) * F(expr) * K(s) # TODO: fails because commutes_with is not implemented yet.
+
+@pytest.mark.xfail(reason="no way to check commutation relations between generic TensExpr instances")
+def test_FunctionOfTensor_commute():
+	TensorManager = sympy.tensor.tensor.TensorManager
+	F = FunctionOfTensor("F")
+	a = sy.Symbol("a")
+	
+	K = sy.tensor.tensor.TensorHead("K", [Cartesian], comm='A')
+	P = sy.tensor.tensor.TensorHead("P", [Cartesian], comm='A')
+	Q = sy.tensor.tensor.TensorHead("Q", [Cartesian], comm='B')
+	
+	TensorManager.set_comm('A', 'A', 0)
+	TensorManager.set_comm('A', 'B', 1)
+	
+	f_1 = F(K(p)*K(-p))
+	
+	assert f_1.commutes_with(K(q)) == 0
+	assert K(q).commutes_with(f_1) == 0
+	
+	assert f_1.commutes_with(Q(q)) != 0
+	assert Q(q).commutes_with(f_1) != 0
