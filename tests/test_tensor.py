@@ -123,6 +123,7 @@ def test_FunctionOfTensor():
 	
 	fun = F(k, a)
 	assert fun.replace(k, a) == F(a, a)
+	# assert fun.replace(k**2, a) == F(k, a) # TODO: fails with AttributeError, suggesting some issue in matching.
 	
 	#Test contract_delta
 	fun = (1/2) * F(expr) * K(r) * delta(-r,s)
