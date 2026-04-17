@@ -93,6 +93,7 @@ def test_PartialVectorDerivative():
 
 def test_FunctionOfTensor():
 	F = FunctionOfTensor("F")
+	a = sy.Symbol("a")
 	
 	with pytest.raises(ValueError):
 		F(K(p))
