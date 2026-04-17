@@ -409,6 +409,18 @@ class _ScalarTensExpr(TensExpr):
 				args[i] = arg._set_indices(*indices[pos:pos+ext_rank])
 				pos += ext_rank
 		return self.func(*args)
+	
+	# def commutes_with(self, other):
+	# 	all_commute = True
+	# 	for arg in self.args:
+	# 		#TODO: problem here: commutes_with is only defined for Tensor (not even TensMul). Perhaps check on all elements of arg.atoms(TensorHead)?
+	# 		if isinstance(arg, TensExpr) and arg.commutes_with(other) != 0:
+	# 			all_commute = False
+	# 	if all_commute:
+	# 		return 0
+	# 	else:
+	# 		#Not really safe to say anything here.
+	# 		return None
 
 class FunctionOfTensor(
 	UndefinedFunction,
