@@ -392,6 +392,10 @@ class _ScalarTensExpr(TensExpr):
 		else:
 			fun = sympy.Function(self.name)
 			return fun(*self.args)
+	
+	@property
+	def ext_rank(self):
+		return len(self.get_indices())
 
 class FunctionOfTensor(
 	UndefinedFunction,
