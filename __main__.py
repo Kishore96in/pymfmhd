@@ -11,7 +11,7 @@ import sys
 #Some magic to make sure the pymfmhd module is always available as 'pymfmhd', regardless of how it is actually installed.
 pre_commands_silent = f"""\
 import importlib
-pymfmhd = importlib.import_module("{__name__.removesuffix(".__main__")}")
+pymfmhd = importlib.import_module("{__package__}")
 """
 
 #Other import commands
