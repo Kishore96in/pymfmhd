@@ -396,6 +396,19 @@ class _ScalarTensExpr(TensExpr):
 	@property
 	def ext_rank(self):
 		return len(self.get_indices())
+	
+	def _set_indices(self, *indices):
+		# copied from TensMul
+		if len(indices) != self.ext_rank:
+			raise ValueError("indices length mismatch")
+		args = list(self.args)
+		pos = 0
+		for i, arg in enumerate(args):
+			if isinstance(arg, TensExpr):
+				ext_rank = arg.ext_rank
+				args[i] = arg._set_indices(*indices[pos:pos+ext_rank])
+				pos += ext_rank
+		return self.func(*args)
 
 class FunctionOfTensor(
 	UndefinedFunction,
